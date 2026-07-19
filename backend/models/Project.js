@@ -1,0 +1,263 @@
+const { pool, query } = require('../config/db');
+
+// All project_details columns that come from the registration form.
+// Centralized here so insert/update stay in sync and we never trust
+// arbitrary keys from req.body directly into SQL.
+const DETAIL_FIELDS = [
+  'duration_years', 'crediting_period_years', 'project_start_date', 'project_summary',
+  'funding_sources', 'publicly_funded',
+  'country', 'state_region', 'latitude', 'longitude', 'total_project_area_hectares',
+  'eligible_area_hectares', 'set_aside_conservation_percent', 'climate_zone', 'soil_type',
+  'hydrology_status', 'land_title_status',
+  'dominant_species', 'species_type', 'measurement_season', 'above_ground_biomass',
+  'below_ground_biomass', 'soil_organic_carbon_0_30cm', 'soil_organic_carbon_30_100cm',
+  'dead_wood_carbon', 'litter_carbon', 'sampling_plots', 'biodiversity_index',
+  'uncertainty_percentage',
+  'technologies_measures_description', 'methodology_applied', 'ghg_sources_included',
+  'baseline_scenario', 'additionality_demonstration', 'sdg_targets', 'total_co2_claimed',
+  'estimated_vers', 'monitoring_frequency', 'responsible_person',
+  'stakeholder_consultation_summary', 'grievance_mechanism',
+  'owner_full_name', 'owner_id_type', 'owner_id_number', 'land_ownership_type',
+  'live_verification_photo_ipfs_cid',
+];
+
+// Creates the core project row + its details row in a single transaction —
+// if either insert fails, both roll back, so we never get an orphaned
+// project with no details (or vice versa).
+async function createProject(sellerId, data) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const coreResult = await client.query(
+      `INSERT INTO projects (seller_id, title, project_type, project_scale, status)
+       VALUES ($1, $2, $3, $4, 'draft')
+       RETURNING *`,
+      [sellerId, data.title, data.project_type, data.project_scale]
+    );
+    const project = coreResult.rows[0];
+
+    const { columns, values, placeholders } = buildDetailInsert(project.id, data);
+    await client.query(
+      `INSERT INTO project_details (${columns.join(', ')}) VALUES (${placeholders})`,
+      values
+    );
+
+    await client.query('COMMIT');
+    return findProjectById(project.id);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+function buildDetailInsert(projectId, data) {
+  const columns = ['project_id'];
+  const values = [projectId];
+
+  for (const field of DETAIL_FIELDS) {
+    if (data[field] !== undefined) {
+      columns.push(field);
+      values.push(data[field]);
+    }
+  }
+
+  const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+  return { columns, values, placeholders };
+}
+
+// Updates only fields that are present in `data`. Only allowed while the
+// project is still in 'draft' status — enforced in the controller, not here,
+// so this model stays a pure data layer.
+async function updateProject(projectId, data) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Core fields (title/type/scale) live on `projects`
+    const coreFields = ['title', 'project_type', 'project_scale'];
+    const coreUpdates = coreFields.filter((f) => data[f] !== undefined);
+    if (coreUpdates.length > 0) {
+      const setClause = coreUpdates.map((f, i) => `${f} = $${i + 2}`).join(', ');
+      await client.query(
+        `UPDATE projects SET ${setClause}, updated_at = NOW() WHERE id = $1`,
+        [projectId, ...coreUpdates.map((f) => data[f])]
+      );
+    }
+
+    // Everything else lives on `project_details`
+    const detailUpdates = DETAIL_FIELDS.filter((f) => data[f] !== undefined);
+    if (detailUpdates.length > 0) {
+      const setClause = detailUpdates.map((f, i) => `${f} = $${i + 2}`).join(', ');
+      await client.query(
+        `UPDATE project_details SET ${setClause}, updated_at = NOW() WHERE project_id = $1`,
+        [projectId, ...detailUpdates.map((f) => data[f])]
+      );
+    }
+
+    await client.query('COMMIT');
+    return findProjectById(projectId);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+// Full project record: core + details joined together
+async function findProjectById(projectId) {
+  const result = await query(
+    `SELECT p.*, d.*
+     FROM projects p
+     LEFT JOIN project_details d ON d.project_id = p.id
+     WHERE p.id = $1`,
+    [projectId]
+  );
+  return result.rows[0] || null;
+}
+
+// Lightweight list for dashboards — core fields only, no ~40 detail columns
+async function findProjectsBySeller(sellerId) {
+  const result = await query(
+    `SELECT id, title, project_type, project_scale, status, created_at, updated_at
+     FROM projects
+     WHERE seller_id = $1
+     ORDER BY created_at DESC`,
+    [sellerId]
+  );
+  return result.rows;
+}
+
+// Only allowed while still a draft — enforced by caller checking status first
+async function deleteProject(projectId) {
+  await query('DELETE FROM projects WHERE id = $1', [projectId]); // cascades to project_details
+}
+
+async function changeProjectStatus(projectId, status) {
+  const result = await query(
+    `UPDATE projects SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
+    [status, projectId]
+  );
+  return result.rows[0];
+}
+
+// Admin review queue — all projects in a given status, with seller name
+// attached for display. Core fields only (no ~40 detail columns) to keep
+// the queue list fast; full detail is a separate findProjectById call
+// when admin opens one specific project.
+async function findByStatus(status) {
+  const result = await query(
+    `SELECT p.id, p.title, p.project_type, p.project_scale, p.status,
+            p.agent_id, p.created_at, u.name AS seller_name, u.email AS seller_email
+     FROM projects p
+     JOIN users u ON u.id = p.seller_id
+     WHERE p.status = $1
+     ORDER BY p.created_at ASC`,
+    [status]
+  );
+  return result.rows;
+}
+
+// Assigns an agent and moves the project into 'assigned' status in one step —
+// a project shouldn't sit as 'pending' with an agent already on it.
+async function assignAgent(projectId, agentId) {
+  const result = await query(
+    `UPDATE projects SET agent_id = $1, status = 'assigned', updated_at = NOW()
+     WHERE id = $2 RETURNING *`,
+    [agentId, projectId]
+  );
+  return result.rows[0];
+}
+
+// Unassigns the agent and reverts to 'pending' — verification can't
+// meaningfully continue with no agent, so the status must roll back too.
+async function removeAgent(projectId) {
+  const result = await query(
+    `UPDATE projects SET agent_id = NULL, status = 'pending', updated_at = NOW()
+     WHERE id = $1 RETURNING *`,
+    [projectId]
+  );
+  return result.rows[0];
+}
+
+// Per-agent counts across all agents in one query — used for the admin's
+// agent management view so it doesn't need N queries for N agents.
+async function findAgentWorkloadSummary() {
+  const result = await query(
+    `SELECT agent_id,
+            COUNT(*) FILTER (WHERE status = 'assigned') AS active_count,
+            COUNT(*) FILTER (WHERE status IN ('verified', 'approved', 'rejected', 'minted')) AS completed_count,
+            COUNT(*) AS total_count
+     FROM projects
+     WHERE agent_id IS NOT NULL
+     GROUP BY agent_id`
+  );
+  return result.rows;
+}
+
+// All projects (any status) currently or previously assigned to one agent —
+// used for the agent's own queue (status filter) and admin's workload
+// drill-down (no filter). Optional `status` narrows to e.g. just 'assigned'.
+async function findProjectsByAgent(agentId, status = null) {
+  const result = await query(
+    `SELECT id, title, project_type, status, created_at
+     FROM projects
+     WHERE agent_id = $1 ${status ? 'AND status = $2' : ''}
+     ORDER BY created_at DESC`,
+    status ? [agentId, status] : [agentId]
+  );
+  return result.rows;
+}
+
+// Computes expected_completion_date = project_start_date + duration_years,
+// reading directly from project_details, and stores it on the core
+// projects row for fast querying later. Called once, at submission time
+// (both fields are guaranteed present by then — see REQUIRED_ON_SUBMIT).
+// This date becomes the earliest a completion verification can happen —
+// the agent can't certify a project as "built" before the seller's own
+// declared timeline says it should be.
+async function setExpectedCompletionDate(projectId) {
+  const result = await query(
+    `UPDATE projects p
+     SET expected_completion_date = (pd.project_start_date + (pd.duration_years || ' years')::interval)::date
+     FROM project_details pd
+     WHERE p.id = pd.project_id AND p.id = $1
+     RETURNING p.*`,
+    [projectId]
+  );
+  return result.rows[0];
+}
+
+// Projects assigned to an agent whose completion verification is now due
+// (status still 'in_progress' AND today >= expected_completion_date) —
+// used for the agent's "due for completion check" queue.
+async function findDueForCompletion(agentId) {
+  const result = await query(
+    `SELECT id, title, project_type, status, expected_completion_date, created_at
+     FROM projects
+     WHERE agent_id = $1 AND status = 'in_progress' AND expected_completion_date <= CURRENT_DATE
+     ORDER BY expected_completion_date ASC`,
+    [agentId]
+  );
+  return result.rows;
+}
+
+module.exports = {
+  createProject,
+  updateProject,
+  findProjectById,
+  findProjectsBySeller,
+  deleteProject,
+  changeProjectStatus,
+  findByStatus,
+  assignAgent,
+  removeAgent,
+  findAgentWorkloadSummary,
+  findProjectsByAgent,
+  setExpectedCompletionDate,
+  findDueForCompletion,
+  DETAIL_FIELDS,
+};
