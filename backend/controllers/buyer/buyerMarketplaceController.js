@@ -34,4 +34,4 @@ async function getListingDetails(req, res) {
   }
 }
 
-module.exports = { browseMarketplace, getListingDetails };
+module.exports = { browseMarketplace,getListingDetails  };
