@@ -42,4 +42,29 @@ async function mintTokens({ toAddress, amount, projectId }) {
   };
 }
 
-module.exports = { mintTokens };
+// ANOTHER STUB — same reasoning as mintTokens above. Real implementation
+// will fetch the actual transaction receipt and decode its Transfer event:
+//
+//   async function verifyPurchaseTransaction({ txHash, expectedAmount, expectedBuyer, expectedSeller }) {
+//     const receipt = await provider.getTransactionReceipt(txHash);
+//     if (!receipt || receipt.status !== 1) return { valid: false, reason: 'Transaction failed or not found' };
+//     const transferEvent = decodeTransferLog(receipt.logs, CarbonTokenABI);
+//     const matches = transferEvent.from === expectedSeller
+//                   && transferEvent.to === expectedBuyer
+//                   && transferEvent.amount === expectedAmount;
+//     return { valid: matches, reason: matches ? null : 'Transaction does not match claimed purchase' };
+//   }
+//
+// Until contracts are deployed, this always returns valid: true — meaning
+// purchase verification is NOT actually trustworthy yet. This is flagged
+// loudly on purpose so nobody mistakes stub-mode for production-ready.
+async function verifyPurchaseTransaction({ txHash, expectedAmount, expectedBuyer, expectedSeller }) {
+  console.warn(
+    `[blockchainService STUB] Simulating verification of purchase tx ${txHash} ` +
+    `(${expectedAmount} credits, ${expectedSeller} -> ${expectedBuyer}) — NOT actually checking the chain. ` +
+    `Build and deploy the contracts to replace this.`
+  );
+  return { valid: true, reason: null };
+}
+
+module.exports = { mintTokens, verifyPurchaseTransaction };

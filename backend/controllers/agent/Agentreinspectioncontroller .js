@@ -3,13 +3,7 @@ const Reinspection = require('../../models/Reinspection');
 
 // POST /api/agent/projects/:id/reinspect
 // body: { gps_lat, gps_lng, photo_ipfs_cid, notes, reversal_detected, reversal_amount }
-//
-// Distinct from Initial/Completion verification — this happens AFTER minting,
-// as a periodic check during the project's permanence period. If a reversal
-// is flagged, this does NOT itself touch any buffer credits — it only
-// records the finding. Actually cancelling buffer credits is a separate
-// admin-reviewed action (see admin/reversalController.js), so a single
-// agent's report can't unilaterally deplete the buffer pool.
+
 async function submitReinspection(req, res) {
   try {
     const { gps_lat, gps_lng, photo_ipfs_cid, notes, reversal_detected, reversal_amount } = req.body;
