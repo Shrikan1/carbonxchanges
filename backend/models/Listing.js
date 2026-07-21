@@ -1,4 +1,4 @@
-const { query } = require('../config/db');
+const { pool, query } = require('../config/db');
 
 async function createListing(batchId, sellerId, pricePerCredit, amountListed) {
   const result = await query(
@@ -134,8 +134,53 @@ async function findListingPublicById(listingId) {
   return result.rows[0] || null;
 }
 
+// Records a purchase against a listing. Uses SELECT ... FOR UPDATE to lock
+// the row for the duration of the transaction — without this, two buyers
+// purchasing the same limited-stock listing at nearly the same moment could
+// both read "5 available" and both succeed, overselling past what actually
+// exists. Throws specific error codes the controller translates to HTTP responses.
+async function purchaseFromListing(listingId, amountToBuy) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const result = await client.query('SELECT * FROM credit_listings WHERE id = $1 FOR UPDATE', [listingId]);
+    const listing = result.rows[0];
+    if (!listing) {
+      await client.query('ROLLBACK');
+      const err = new Error('Listing not found'); err.code = 'LISTING_NOT_FOUND'; throw err;
+    }
+    if (listing.status !== 'active') {
+      await client.query('ROLLBACK');
+      const err = new Error(`Listing is ${listing.status}, not active`); err.code = 'LISTING_NOT_ACTIVE'; throw err;
+    }
+
+    const available = Number(listing.amount_listed) - Number(listing.amount_sold);
+    if (Number(amountToBuy) > available) {
+      await client.query('ROLLBACK');
+      const err = new Error(`Only ${available} credits available, requested ${amountToBuy}`); err.code = 'INSUFFICIENT_STOCK'; throw err;
+    }
+
+    const newSold = Number(listing.amount_sold) + Number(amountToBuy);
+    const newStatus = newSold >= Number(listing.amount_listed) ? 'sold_out' : 'active';
+
+    await client.query(
+      'UPDATE credit_listings SET amount_sold = $1, status = $2, updated_at = NOW() WHERE id = $3',
+      [newSold, newStatus, listingId]
+    );
+
+    await client.query('COMMIT');
+    return { ...listing, amount_sold: newSold, status: newStatus };
+  } catch (err) {
+    if (!err.code) { try { await client.query('ROLLBACK'); } catch (_) {} }
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
 module.exports = {
   createListing, findListingById, updateListing, deleteListing,
   findSellerListings, getReservedAmountBySeller,
-  findActiveListings, findListingPublicById,
+  findActiveListings, findListingPublicById, purchaseFromListing,
 };
