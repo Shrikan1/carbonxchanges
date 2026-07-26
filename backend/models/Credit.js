@@ -63,19 +63,31 @@ async function calculateSellerBalance(sellerId) {
   };
 }
 
-// Records a newly minted batch. Called right after blockchainService.mintTokens()
-// succeeds — this is the off-chain mirror of that on-chain event.
-async function createCreditBatch(projectId, tokenAmount, contractAddress, mintTxHash) {
+// Step 1 of minting: inserts the batch row FIRST, before any on-chain call,
+// specifically so its auto-generated `id` can be used as the ERC-1155
+// tokenId passed to the actual mint transaction. contract_address/
+// mint_tx_hash are left null here.
+async function createPendingBatch(projectId, tokenAmount, vintageYear) {
   const result = await query(
-    `INSERT INTO credit_batches (project_id, token_amount, contract_address, mint_tx_hash)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO credit_batches (project_id, token_amount, vintage_year)
+     VALUES ($1, $2, $3)
      RETURNING *`,
-    [projectId, tokenAmount, contractAddress, mintTxHash]
+    [projectId, tokenAmount, vintageYear]
+  );
+  return result.rows[0];
+}
+
+// Step 2: called after blockchainService.mintTokens() returns, filling in
+// the actual on-chain result now that the transaction has confirmed.
+async function finalizeCreditBatch(batchId, contractAddress, mintTxHash) {
+  const result = await query(
+    `UPDATE credit_batches SET contract_address = $1, mint_tx_hash = $2 WHERE id = $3 RETURNING *`,
+    [contractAddress, mintTxHash, batchId]
   );
   return result.rows[0];
 }
 
 module.exports = {
   findCreditsByProject, findCreditsBySeller, findCreditTransactions, calculateSellerBalance,
-  createCreditBatch,
+  createPendingBatch, finalizeCreditBatch,
 };
