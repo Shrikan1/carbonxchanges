@@ -40,6 +40,7 @@ async function purchaseCredits(req, res) {
       expectedAmount: amount,
       expectedBuyer: buyer.wallet_address,
       expectedSeller: seller.wallet_address,
+      tokenId: listing.batch_id,
     });
     if (!verification.valid) {
       return res.status(400).json({ error: verification.reason || 'Transaction could not be verified on-chain' });

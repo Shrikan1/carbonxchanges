@@ -5,7 +5,22 @@ const Verification = require('../../models/Verification');
 const BufferCredit = require('../../models/BufferCredit');
 const blockchainService = require('../../services/blockchainService');
 
-
+// Core auto-mint logic — NOT a route handler itself. Called automatically
+// by adminProjectController.approveProject() right after approval, and by
+// retryMint() below for the one case that legitimately needs a retry
+// (seller hadn't connected a wallet at approval time).
+//
+// Deliberately takes NO amount parameter from any caller. The mint amount
+// is always read from the agent's own verified_co2_amount — never the
+// seller's self-reported claim, and never an admin's manual entry. This is
+// what keeps the token supply trustless: no single role can decide how
+// many credits get created.
+//
+// A percentage of the verified amount (project.buffer_pool_percent) is held
+// back as non-tradeable buffer — standard reversal-risk insurance. Only the
+// remainder actually gets minted to the seller; the buffer portion is
+// tracked separately and only ever gets cancelled later if an agent's
+// re-inspection confirms a reversal (see Reinspection/Buffer models).
 async function attemptMint(project) {
   const completionReport = await Verification.findLatestCompletionReport(project.id);
   const verifiedAmount = completionReport?.verified_co2_amount;
@@ -23,13 +38,23 @@ async function attemptMint(project) {
   const bufferAmount = Math.round(Number(verifiedAmount) * (bufferPercent / 100) * 100) / 100;
   const tradeableAmount = Math.round((Number(verifiedAmount) - bufferAmount) * 100) / 100;
 
+  // Vintage year = the year the reduction/removal was actually confirmed,
+  // i.e. the completion report's own submission date — not registration date.
+  const vintageYear = new Date(completionReport.submitted_at).getFullYear();
+
+  // Step 1: insert the batch row FIRST to obtain its id, which becomes the
+  // ERC-1155 tokenId used in the actual mint call below.
+  const pendingBatch = await Credit.createPendingBatch(project.id, tradeableAmount, vintageYear);
+
   const mintResult = await blockchainService.mintTokens({
     toAddress: seller.wallet_address,
     amount: tradeableAmount,
+    tokenId: pendingBatch.id,
     projectId: project.id,
   });
 
-  const batch = await Credit.createCreditBatch(project.id, tradeableAmount, mintResult.contractAddress, mintResult.txHash);
+  // Step 2: fill in the on-chain result now that the transaction confirmed
+  const batch = await Credit.finalizeCreditBatch(pendingBatch.id, mintResult.contractAddress, mintResult.txHash);
 
   if (bufferAmount > 0) {
     await BufferCredit.createBufferEntry(project.id, batch.id, bufferAmount);
