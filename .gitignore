@@ -1,3 +1,6 @@
 node_modules/
 backend/node_modules/
 .env
+blockchain/node_modules/
+blockchain/.env
+blockchain/.env.local
