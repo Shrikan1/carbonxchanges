@@ -1,4 +1,4 @@
-const Dashboard = require('../models/Dashboard');
+const Dashboard = require('../../models/Dashboard');
 
 // GET /api/dashboard
 async function getDashboardSummary(req, res) {

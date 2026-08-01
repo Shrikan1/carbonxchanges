@@ -14,10 +14,19 @@ app.get('/api/health', (req, res) => {
 });
 
 // --- Routes ---
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-app.use('/api/projects', require('./routes/projectRoutes'));
-app.use('/share', require('./routes/ogRoutes'));
+app.use('/api/auth', require('../routes/authRoutes'));
+app.use('/api/admin', require('../routes/adminRoutes'));
+app.use('/api/agent', require('../routes/agentRoutes'));
+app.use('/api/projects', require('../routes/projectRoutes'));
+app.use('/api/project-posts', require('../routes/projectPostRoutes'));
+app.use('/api/verification', require('../routes/verificationRoutes'));
+app.use('/api/profile', require('../routes/profileRoutes'));
+app.use('/api/wallet', require('../routes/walletRoutes'));
+app.use('/api/role', require('../routes/roleRoutes'));
+app.use('/api/dashboard', require('../routes/dashboardRoutes'));
+app.use('/api/sales', require('../routes/salesRoutes'));
+app.use('/api/buyer', require('../routes/buyerRoutes'));
+app.use('/share', require('../routes/ogRoutes'));
 
 
 app.use((req, res) => {

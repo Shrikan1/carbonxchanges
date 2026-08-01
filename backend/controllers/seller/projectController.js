@@ -1,4 +1,4 @@
-const Project = require('../models/Project');
+const Project = require('../../models/Project');
 
 
 const REQUIRED_ON_CREATE = ['title', 'project_type', 'project_scale'];
@@ -84,7 +84,7 @@ async function getMyProjects(req, res) {
 // GWT /api/projects/all
 async function getAllProject(req,res){
     try {
-        const project = await Project.findAllProjects()
+    const project = await Project.findAllProjects();
 
         if(!project){
             return res.status(404).json({message: "No Project Found !"})
