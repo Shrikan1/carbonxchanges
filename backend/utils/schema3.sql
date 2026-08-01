@@ -5,7 +5,8 @@ CREATE TYPE user_role AS ENUM ('user', 'seller', 'buyer', 'agent', 'admin');
 -- NOTE: 'seller' and 'buyer' values are kept in the enum for backward
 -- compatibility but are no longer assigned to self-signup users going
 -- forward — see is_seller/is_buyer below. 'user' is now the signup default.
-CREATE TYPE project_status AS ENUM ('draft', 'pending', 'assigned', 'verified', 'approved', 'rejected', 'minted');
+CREATE TYPE project_status AS ENUM ('draft', 'pending', 'assigned', 'in_progress', 'verified', 'approved', 'rejected', 'minted');
+CREATE TYPE verification_report_type AS ENUM ('initial', 'completion');
 CREATE TYPE tx_type AS ENUM ('purchase', 'retire');
 
 CREATE TABLE users (
@@ -14,8 +15,10 @@ CREATE TABLE users (
     email VARCHAR(150) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role user_role NOT NULL DEFAULT 'user',   -- meaningful values now: 'user', 'agent', 'admin'
-    is_seller BOOLEAN NOT NULL DEFAULT false, -- granted automatically on first "Add Project"
-    is_buyer BOOLEAN NOT NULL DEFAULT false,  -- granted automatically on first "Buy Credit"
+    is_seller BOOLEAN NOT NULL DEFAULT false, -- granted only after role-upgrade OTP verification
+    is_buyer BOOLEAN NOT NULL DEFAULT false,  -- granted only after role-upgrade OTP verification
+    phone_number VARCHAR(20),                 -- collected during role upgrade (Buy/Add Project)
+    pending_role_request VARCHAR(20),         -- 'seller' or 'buyer' while awaiting OTP; NULL otherwise
     wallet_address VARCHAR(42) UNIQUE,        -- MetaMask address; UNIQUE prevents two accounts sharing one wallet
     wallet_connected_at TIMESTAMP,
     is_verified BOOLEAN NOT NULL DEFAULT false,  -- true after OTP verification (or admin-created)
@@ -27,6 +30,7 @@ CREATE TABLE otps (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     otp_code VARCHAR(6) NOT NULL,
+    purpose VARCHAR(30) NOT NULL DEFAULT 'signup',  -- 'signup' or 'role_upgrade'
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -44,6 +48,7 @@ CREATE TABLE projects (
     project_type VARCHAR(100) NOT NULL,       -- e.g. 'afforestation', 'REDD+', 'soil carbon'
     project_scale VARCHAR(50),                -- e.g. 'small', 'large'
     status project_status NOT NULL DEFAULT 'draft',
+    expected_completion_date DATE,  -- computed from project_details.project_start_date + duration_years at submission; completion verification can't happen before this
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -97,6 +102,7 @@ CREATE TABLE project_details (
     sdg_targets TEXT,                          -- comma-separated or JSON array as text
     total_co2_claimed NUMERIC(14,2),
     estimated_vers NUMERIC(14,2),
+    buffer_pool_percent NUMERIC(5,2) DEFAULT 15.00,  -- % of verified credits held back (non-tradeable) as reversal-risk insurance, per standard VCS/Gold Standard practice
     monitoring_frequency VARCHAR(100),
     responsible_person VARCHAR(150),
     stakeholder_consultation_summary TEXT,
@@ -124,21 +130,33 @@ CREATE TABLE verification_reports (
     id SERIAL PRIMARY KEY,
     project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
     agent_id INTEGER NOT NULL REFERENCES users(id),
+    report_type verification_report_type NOT NULL,  -- 'initial' (docs/site check) or 'completion' (post-build monitoring visit)
     gps_lat NUMERIC(9,6),
     gps_lng NUMERIC(9,6),
     photo_ipfs_cid VARCHAR(100),
     notes TEXT,
+    verified_co2_amount NUMERIC(14,2),  -- only ever set on 'completion' reports — see agentVerificationController
     seller_response TEXT,              -- seller's reply/clarification to the agent's findings
     seller_response_at TIMESTAMP,
     submitted_at TIMESTAMP DEFAULT NOW()
 );
 
+-- One row per mint event. This table's own `id` IS the ERC-1155 token ID
+-- used on-chain — no separate mapping needed. contract_address and
+-- mint_tx_hash start NULL: the row is inserted first (to obtain the id/
+-- token ID) via createPendingBatch, THEN the actual on-chain mint call uses
+-- that id as the tokenId, and finalizeCreditBatch fills in the tx result.
+-- This is what gives each project+vintage a genuinely distinct, non-
+-- fungible-with-other-batches on-chain identity (ERC-1155), instead of a
+-- single fungible pool (plain ERC-20) where provenance would be lost the
+-- moment a buyer holds tokens from two different projects.
 CREATE TABLE credit_batches (
     id SERIAL PRIMARY KEY,
     project_id INTEGER NOT NULL REFERENCES projects(id),
     token_amount NUMERIC(12,2) NOT NULL,
-    contract_address VARCHAR(42) NOT NULL,
-    mint_tx_hash VARCHAR(66) NOT NULL,
+    vintage_year INTEGER NOT NULL,      -- year the verified reduction/removal actually occurred (from the completion verification report)
+    contract_address VARCHAR(42),       -- NULL until finalizeCreditBatch runs
+    mint_tx_hash VARCHAR(66),           -- NULL until finalizeCreditBatch runs
     minted_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -222,6 +240,19 @@ CREATE TABLE credit_listings (
 CREATE INDEX idx_listings_seller ON credit_listings(seller_id);
 CREATE INDEX idx_listings_status ON credit_listings(status);
 
+-- Multi-round conversation on a verification report — supersedes relying
+-- solely on the single seller_response field above (kept for backward
+-- compatibility; new conversation happens here instead).
+CREATE TABLE verification_messages (
+    id SERIAL PRIMARY KEY,
+    report_id INTEGER NOT NULL REFERENCES verification_reports(id) ON DELETE CASCADE,
+    sender_id INTEGER NOT NULL REFERENCES users(id),
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_verification_messages_report ON verification_messages(report_id);
+
 -- Generic notification, addressed to one user. Not yet triggered by any
 -- controller (that wiring happens as we build Admin/Agent actions that
 -- should notify a seller — e.g. "your project was approved"). This section
@@ -243,3 +274,43 @@ CREATE INDEX idx_post_updates_post ON project_post_updates(post_id);
 CREATE INDEX idx_projects_seller ON projects(seller_id);
 CREATE INDEX idx_projects_status ON projects(status);
 CREATE INDEX idx_transactions_buyer ON transactions(buyer_id);
+
+CREATE TYPE buffer_credit_status AS ENUM ('reserved', 'partially_cancelled', 'depleted');
+
+-- Non-tradeable credits held back at mint time, per project's
+-- buffer_pool_percent. Never given to the seller, never sold. Exists purely
+-- as reversal-risk insurance — if an agent's re-inspection later confirms a
+-- reversal, credits get cancelled FROM HERE, never from a buyer's already-
+-- purchased holdings.
+CREATE TABLE buffer_credits (
+    id SERIAL PRIMARY KEY,
+    project_id INTEGER NOT NULL REFERENCES projects(id),
+    batch_id INTEGER NOT NULL REFERENCES credit_batches(id),
+    amount_reserved NUMERIC(14,2) NOT NULL,
+    amount_cancelled NUMERIC(14,2) NOT NULL DEFAULT 0,
+    status buffer_credit_status NOT NULL DEFAULT 'reserved',
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Periodic post-mint field checks during the project's permanence period,
+-- distinct from the pre-mint Initial/Completion verification reports.
+-- reversal_amount, when reversal_detected is true, drives how much buffer
+-- gets cancelled — reviewed and executed by an admin, not automatically,
+-- so a single agent's report can't unilaterally deplete the buffer pool.
+CREATE TABLE reinspection_reports (
+    id SERIAL PRIMARY KEY,
+    project_id INTEGER NOT NULL REFERENCES projects(id),
+    agent_id INTEGER NOT NULL REFERENCES users(id),
+    gps_lat NUMERIC(9,6),
+    gps_lng NUMERIC(9,6),
+    photo_ipfs_cid VARCHAR(100),
+    notes TEXT,
+    reversal_detected BOOLEAN NOT NULL DEFAULT false,
+    reversal_amount NUMERIC(14,2),      -- only meaningful when reversal_detected = true
+    resolved BOOLEAN NOT NULL DEFAULT false,   -- true once admin has actioned (or dismissed) the finding
+    resolved_at TIMESTAMP,
+    submitted_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_buffer_credits_project ON buffer_credits(project_id);
+CREATE INDEX idx_reinspection_project ON reinspection_reports(project_id);

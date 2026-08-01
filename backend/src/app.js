@@ -14,7 +14,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // --- Routes ---
-app.use('/api/auth', require('../routes/authRoutes'));
+app.use('/api/auth', require('../routes/shared/authRoutes'));
 app.use('/api/admin', require('../routes/adminRoutes'));
 app.use('/api/agent', require('../routes/agentRoutes'));
 app.use('/api/projects', require('../routes/projectRoutes'));
@@ -26,8 +26,7 @@ app.use('/api/role', require('../routes/roleRoutes'));
 app.use('/api/dashboard', require('../routes/dashboardRoutes'));
 app.use('/api/sales', require('../routes/salesRoutes'));
 app.use('/api/buyer', require('../routes/buyerRoutes'));
-app.use('/share', require('../routes/ogRoutes'));
-
+app.use('/share', require('../routes/shared/ogRoutes'));
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

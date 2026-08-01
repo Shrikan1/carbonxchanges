@@ -4,6 +4,7 @@ const Sales = require('./Sales');
 const Wallet = require('./Wallet');
 const Notification = require('./Notification');
 const Verification = require('./Verification');
+const Portfolio = require('./Portfolio');
 
 async function getProjectCounts(sellerId) {
   const result = await query(
@@ -155,4 +156,29 @@ async function getAdminDashboardSummary() {
   };
 }
 
-module.exports = { getDashboardSummary, getAgentDashboardSummary, getAdminDashboardSummary };
+async function getBuyerDashboardSummary(buyerId) {
+  const [portfolioSummary, holdings, wallet, notifications] = await Promise.all([
+    Portfolio.getPortfolioSummary(buyerId),
+    Portfolio.findPortfolioByBuyer(buyerId),
+    Wallet.findWallet(buyerId),
+    Notification.findRecentByUser(buyerId, 10),
+  ]);
+
+  return {
+    total_purchased: portfolioSummary.total_purchased,
+    total_retired: portfolioSummary.total_retired,
+    // "CO2 offset" is exactly total_retired — retirement IS the offset claim
+    // (see the earlier discussion: holding credits doesn't offset anything,
+    // only burning them does), so this is not a separate calculation.
+    total_co2_offset: portfolioSummary.total_retired,
+    current_holdings: portfolioSummary.current_holdings,
+    projects_supported: holdings.length,
+    wallet: {
+      address: wallet?.wallet_address || null,
+      connected: !!wallet?.wallet_address,
+    },
+    recent_notifications: notifications,
+  };
+}
+
+module.exports = { getDashboardSummary, getAgentDashboardSummary, getAdminDashboardSummary, getBuyerDashboardSummary };
