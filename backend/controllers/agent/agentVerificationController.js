@@ -30,7 +30,7 @@ async function submitInitialVerification(req, res) {
       gps_lat, gps_lng, photo_ipfs_cid, notes,
     });
 
-    
+    await Project.setExpectedCompletionDate(project.id);
     const updatedProject = await Project.changeProjectStatus(project.id, 'in_progress');
 
     res.status(201).json({

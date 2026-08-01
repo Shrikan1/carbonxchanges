@@ -1,9 +1,8 @@
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const User = require('./models/User');
-const { sendAgentCredentialsEmail } = require('./services/emailService');
-const Project = require("../models/Project")
-const User = require("../models/User")
+const User = require('../../models/User');
+const Project = require('../../models/Project');
+const { sendAgentCredentialsEmail } = require('../../services/emailService');
 
 function generateTempPassword() {
   return crypto.randomBytes(4).toString('hex');

@@ -5,7 +5,7 @@ CREATE TYPE user_role AS ENUM ('user', 'seller', 'buyer', 'agent', 'admin');
 -- NOTE: 'seller' and 'buyer' values are kept in the enum for backward
 -- compatibility but are no longer assigned to self-signup users going
 -- forward — see is_seller/is_buyer below. 'user' is now the signup default.
-CREATE TYPE project_status AS ENUM ('draft', 'pending', 'assigned', 'verified', 'approved', 'rejected', 'minted');
+CREATE TYPE project_status AS ENUM ('draft', 'pending', 'assigned', 'in_progress', 'verified', 'approved', 'rejected', 'minted');
 CREATE TYPE tx_type AS ENUM ('purchase', 'retire');
 
 CREATE TABLE users (
@@ -47,6 +47,7 @@ CREATE TABLE projects (
     project_type VARCHAR(100) NOT NULL,       -- e.g. 'afforestation', 'REDD+', 'soil carbon'
     project_scale VARCHAR(50),                -- e.g. 'small', 'large'
     status project_status NOT NULL DEFAULT 'draft',
+    expected_completion_date DATE,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -127,6 +128,7 @@ CREATE TABLE verification_reports (
     id SERIAL PRIMARY KEY,
     project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
     agent_id INTEGER NOT NULL REFERENCES users(id),
+    report_type VARCHAR(20) NOT NULL DEFAULT 'initial',
     gps_lat NUMERIC(9,6),
     gps_lng NUMERIC(9,6),
     photo_ipfs_cid VARCHAR(100),

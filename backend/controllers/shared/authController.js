@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('./models/User');
-const Otp = require('./models/Otp');
-const { sendOtpEmail } = require('./services/emailService');
+const User = require('../../models/User');
+const Otp = require('../../models/Otp');
+const { sendOtpEmail } = require('../../services/emailService');
+const { generateToken } = require('../../utils/token');
 
 const SELF_SIGNUP_ROLES = ['seller', 'buyer'];
 
@@ -102,14 +103,6 @@ async function login(req, res) {
 async function getProfile(req, res) {
   const user = await User.findById(req.user.id);
   res.json({ user });
-}
-
-function generateToken(user) {
-  return jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-  );
 }
 
 module.exports = { signup, verifyOtp, login, getProfile };

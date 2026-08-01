@@ -131,6 +131,15 @@ async function findProjectsBySeller(sellerId) {
   return result.rows;
 }
 
+async function findAllProjects() {
+  const result = await query(
+    `SELECT id, seller_id, agent_id, title, project_type, project_scale, status, expected_completion_date, created_at, updated_at
+     FROM projects
+     ORDER BY created_at DESC`
+  );
+  return result.rows;
+}
+
 // Only allowed while still a draft — enforced by caller checking status first
 async function deleteProject(projectId) {
   await query('DELETE FROM projects WHERE id = $1', [projectId]); // cascades to project_details
@@ -250,6 +259,7 @@ module.exports = {
   updateProject,
   findProjectById,
   findProjectsBySeller,
+  findAllProjects,
   deleteProject,
   changeProjectStatus,
   findByStatus,

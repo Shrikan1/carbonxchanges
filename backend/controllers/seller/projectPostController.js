@@ -1,5 +1,5 @@
-const ProjectPost = require('../models/ProjectPost');
-const Project = require('../models/Project');
+const ProjectPost = require('../../models/ProjectPost');
+const Project = require('../../models/Project');
 
 // POST /api/project-posts   body: { project_id, title, description, story, how_it_works, images, videos }
 async function createProjectPost(req, res) {

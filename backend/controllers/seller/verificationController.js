@@ -1,6 +1,6 @@
-const Verification = require('../models/Verification');
-const Document = require('../models/Document');
-const Project = require('../models/Project');
+const Verification = require('../../models/Verification');
+const Document = require('../../models/Document');
+const Project = require('../../models/Project');
 
 // GET /api/verification/:projectId/status
 async function getVerificationStatus(req, res) {
