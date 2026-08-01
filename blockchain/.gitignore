@@ -1,0 +1,8 @@
+node_modules/
+artifacts/
+cache/
+broadcast/
+deployments/
+typechain/
+.env
+.env.local
