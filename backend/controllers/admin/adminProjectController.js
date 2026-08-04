@@ -1,7 +1,7 @@
 const Project = require('../../models/Project');
 const User = require('../../models/User');
 const mintController = require('./mintController');
-
+const Paginate = require('../../utils/paginate')
 
 const REJECTABLE_STATUSES = ['pending', 'assigned', 'in_progress', 'verified'];
 
@@ -9,8 +9,14 @@ const REJECTABLE_STATUSES = ['pending', 'assigned', 'in_progress', 'verified'];
 async function getReviewQueue(req, res) {
   try {
     const status = req.query.status || 'pending';
-    const projects = await Project.findByStatus(status);
-    res.json({ projects });
+    const {page , limit , offset} = Paginate.getPagination(req.query)
+    const {rows , total} = await Project.findByStatus(status,{limit , offset});
+    //const project = Paginate.paginatedResponse(rows , total , page , limit);
+    return res.status(200).json({
+          success: true,
+          message: "Assigned projects fetched successfully",
+          ...Paginate.paginatedResponse(rows, total, page, limit),
+        });
   } catch (err) {
     console.error('Get review queue error:', err);
     res.status(500).json({ error: 'Failed to fetch review queue' });

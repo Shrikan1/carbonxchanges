@@ -120,25 +120,41 @@ async function findProjectById(projectId) {
 }
 
 // Lightweight list for dashboards — core fields only, no ~40 detail columns
-async function findProjectsBySeller(sellerId) {
-  const result = await query(
-    `SELECT id, title, project_type, project_scale, status, created_at, updated_at
-     FROM projects
-     WHERE seller_id = $1
-     ORDER BY created_at DESC`,
-    [sellerId]
-  );
-  return result.rows;
+async function findProjectsBySeller(sellerId, { limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT id, title, project_type, project_scale, status, created_at, updated_at
+       FROM projects
+       WHERE seller_id = $1
+       ORDER BY created_at DESC LIMIT $2 OFFSET $3`,
+      [sellerId, limit, offset]
+    ),
+    query(`SELECT COUNT(*) FROM projects WHERE seller_id = $1`, [sellerId]),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
-async function findAllProjects() {
-  const result = await query(
-    `SELECT id, seller_id, agent_id, title, project_type, project_scale, status, expected_completion_date, created_at, updated_at
-     FROM projects
-     ORDER BY created_at DESC`
-  );
-  return result.rows;
+// async function findAllProjects() {
+//   const result = await query(
+//     `SELECT id, seller_id, agent_id, title, project_type, project_scale, status, expected_completion_date, created_at, updated_at
+//      FROM projects
+//      ORDER BY created_at DESC`
+//   );
+//   return result.rows;
+// }
+
+async function findAllProjects({ limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT id, seller_id, agent_id, title, project_type, status, created_at
+       FROM projects ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    ),
+    query(`SELECT COUNT(*) FROM projects`),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
+
 
 // Only allowed while still a draft — enforced by caller checking status first
 async function deleteProject(projectId) {
@@ -157,17 +173,20 @@ async function changeProjectStatus(projectId, status) {
 // attached for display. Core fields only (no ~40 detail columns) to keep
 // the queue list fast; full detail is a separate findProjectById call
 // when admin opens one specific project.
-async function findByStatus(status) {
-  const result = await query(
-    `SELECT p.id, p.title, p.project_type, p.project_scale, p.status,
-            p.agent_id, p.created_at, u.name AS seller_name, u.email AS seller_email
-     FROM projects p
-     JOIN users u ON u.id = p.seller_id
-     WHERE p.status = $1
-     ORDER BY p.created_at ASC`,
-    [status]
-  );
-  return result.rows;
+async function findByStatus(status, { limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT p.id, p.title, p.project_type, p.project_scale, p.status,
+              p.agent_id, p.created_at, u.name AS seller_name, u.email AS seller_email
+       FROM projects p
+       JOIN users u ON u.id = p.seller_id
+       WHERE p.status = $1
+       ORDER BY p.created_at ASC LIMIT $2 OFFSET $3`,
+      [status, limit, offset]
+    ),
+    query(`SELECT COUNT(*) FROM projects WHERE status = $1`, [status]),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 // Assigns an agent and moves the project into 'assigned' status in one step —
@@ -210,15 +229,25 @@ async function findAgentWorkloadSummary() {
 // All projects (any status) currently or previously assigned to one agent —
 // used for the agent's own queue (status filter) and admin's workload
 // drill-down (no filter). Optional `status` narrows to e.g. just 'assigned'.
-async function findProjectsByAgent(agentId, status = null) {
-  const result = await query(
-    `SELECT id, title, project_type, status, created_at
-     FROM projects
-     WHERE agent_id = $1 ${status ? 'AND status = $2' : ''}
-     ORDER BY created_at DESC`,
-    status ? [agentId, status] : [agentId]
-  );
-  return result.rows;
+async function findProjectsByAgent(agentId, { status = null, limit = 20, offset = 0 } = {}) {
+  const filterValues = status ? [agentId, status] : [agentId];
+  const limitIdx = filterValues.length + 1;
+  const offsetIdx = limitIdx + 1;
+
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT id, title, project_type, status, created_at
+       FROM projects
+       WHERE agent_id = $1 ${status ? 'AND status = $2' : ''}
+       ORDER BY created_at DESC LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+      [...filterValues, limit, offset]
+    ),
+    query(
+      `SELECT COUNT(*) FROM projects WHERE agent_id = $1 ${status ? 'AND status = $2' : ''}`,
+      filterValues
+    ),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 // Computes expected_completion_date = project_start_date + duration_years,

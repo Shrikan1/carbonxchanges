@@ -31,17 +31,20 @@ async function createRetireTransaction(batchId, buyerId, txHash, amount) {
 // Every transaction (both 'purchase' and 'retire') for one buyer, most
 // recent first — includes vintage_year and project info since a buyer's
 // history should always show which specific batch each transaction touched.
-async function findByBuyer(buyerId) {
-  const result = await query(
-    `SELECT t.*, p.title AS project_title, p.project_type, cb.vintage_year
-     FROM transactions t
-     JOIN credit_batches cb ON cb.id = t.batch_id
-     JOIN projects p ON p.id = cb.project_id
-     WHERE t.buyer_id = $1
-     ORDER BY t.created_at DESC`,
-    [buyerId]
-  );
-  return result.rows;
+async function findByBuyer(buyerId, { limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT t.*, p.title AS project_title, p.project_type, cb.vintage_year
+       FROM transactions t
+       JOIN credit_batches cb ON cb.id = t.batch_id
+       JOIN projects p ON p.id = cb.project_id
+       WHERE t.buyer_id = $1
+       ORDER BY t.created_at DESC LIMIT $2 OFFSET $3`,
+      [buyerId, limit, offset]
+    ),
+    query(`SELECT COUNT(*) FROM transactions WHERE buyer_id = $1`, [buyerId]),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 module.exports = { createPurchaseTransaction, createRetireTransaction, findById, findByBuyer };

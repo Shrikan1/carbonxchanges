@@ -4,7 +4,7 @@ const Credit = require('../../models/Credit');
 const Verification = require('../../models/Verification');
 const BufferCredit = require('../../models/BufferCredit');
 const blockchainService = require('../../services/blockchainService');
-
+const Paginate = require('../../utils/paginate')
 // Core auto-mint logic — NOT a route handler itself. Called automatically
 // by adminProjectController.approveProject() right after approval, and by
 // retryMint() below for the one case that legitimately needs a retry
@@ -69,8 +69,16 @@ async function attemptMint(project) {
 // (i.e. auto-mint failed at approval time, usually a missing seller wallet)
 async function getMintableProjects(req, res) {
   try {
-    const projects = await Project.findByStatus('approved');
-    res.json({ projects });
+    const {page , limit , offset} = Paginate.getPagination(req.query)
+
+    const {rows , total} = await Project.findByStatus('approved' , {limit , offset});
+
+    //const project = Paginate.paginatedResponse(rows , total , page , limit);
+    return res.status(200).json({
+          success: true,
+          message: "Minted projects fetched successfully",
+          ...Paginate.paginatedResponse(rows, total, page, limit),
+        });
   } catch (err) {
     console.error('Get mintable projects error:', err);
     res.status(500).json({ error: 'Failed to fetch mintable projects' });

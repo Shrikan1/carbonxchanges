@@ -1,16 +1,39 @@
 const Project = require('../../models/Project');
-
+const Paginate = require('../../utils/paginate')
 // GET /api/agent/projects?status=assigned
 // Defaults to 'assigned' (active queue needing action). Pass ?status=all
 // (or any other value) to see the agent's full history instead.
 async function getAssignedProjects(req, res) {
   try {
-    const statusFilter = req.query.status === 'all' ? null : (req.query.status || 'assigned');
-    const projects = await Project.findProjectsByAgent(req.user.id, statusFilter);
-    res.json({ projects });
+    const { page, limit, offset } = Paginate.getPagination(req.query);
+
+    const statusFilter =
+      req.query.status === "all"
+        ? null
+        : (req.query.status || "assigned");
+
+    const { rows, total } = await Project.findProjectsByAgent(
+      req.user.id,
+      {
+        status: statusFilter,
+        limit,
+        offset,
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Assigned projects fetched successfully",
+      ...Paginate.paginatedResponse(rows, total, page, limit),
+    });
+
   } catch (err) {
-    console.error('Get assigned projects error:', err);
-    res.status(500).json({ error: 'Failed to fetch assigned projects' });
+    console.error("Get assigned projects error:", err);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to fetch assigned projects",
+    });
   }
 }
 
