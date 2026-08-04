@@ -1,7 +1,7 @@
 const { query } = require('../../config/db');
 const Listing = require('../../models/Listing');
 const Credit = require('../../models/Credit');
-
+const Paginate = require('../../utils/paginate')
 // POST /api/marketplace/listings   body: { batch_id, price_per_credit, amount_listed }
 async function createCreditListing(req, res) {
   try {
@@ -88,8 +88,13 @@ async function cancelListing(req, res) {
 // GET /api/marketplace/listings/mine
 async function getMyListings(req, res) {
   try {
-    const listings = await Listing.findSellerListings(req.user.id);
-    res.json({ listings });
+    const {page , limit , offset} = Paginate.getPagination(req.query)
+    const {rows , total} = await Listing.findSellerListings(req.user.id , {limit , offset});
+    res.status(200).json({ 
+          success:true,
+          message:"Listing Fetch Successfully",
+          ...Paginate.paginatedResponse(rows , total , page , limit)
+         });
   } catch (err) {
     console.error('Get my listings error:', err);
     res.status(500).json({ error: 'Failed to fetch your listings' });

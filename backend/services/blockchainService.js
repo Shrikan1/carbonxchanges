@@ -1,96 +1,136 @@
-const crypto = require('crypto');
+const { ethers } = require('ethers');
+const path = require('path');
 
-// STUB — no real blockchain call happens here yet. This gets replaced once
-// blockchain/contracts/CarbonToken.sol (an ERC-1155, via OpenZeppelin) +
-// CarbonRegistry.sol are written, tested, and deployed to Polygon Amoy.
-//
-// ERC-1155, not ERC-20: every project+vintage batch gets its own distinct
-// on-chain tokenId (== our own credit_batches.id — see Credit.createPendingBatch),
-// so tokens from different projects/vintages are NEVER fungible with each
-// other, only within their own tokenId. This preserves provenance the way
-// real carbon registries require, which a single shared ERC-20 pool cannot.
-//
-// The REAL implementation will look like this:
-//
-//   const { ethers } = require('ethers');
-//   const CarbonTokenABI = require('../../abi/CarbonToken.json'); // ERC-1155
-//
-//   const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-//   const adminWallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-//   const token = new ethers.Contract(process.env.CARBON_TOKEN_ADDRESS, CarbonTokenABI, adminWallet);
-//
-//   async function mintTokens({ toAddress, amount, tokenId }) {
-//     // ERC-1155 mint: specific tokenId, not a shared pool
-//     const tx = await token.mint(toAddress, tokenId, ethers.parseUnits(String(amount), 18), '0x');
-//     const receipt = await tx.wait();
-//     return { txHash: receipt.hash, contractAddress: process.env.CARBON_TOKEN_ADDRESS };
-//   }
-//
-// Until then, this stub returns a response shaped IDENTICALLY to the real
-// one, so callers (mintController.js) never need to change when the real
-// implementation lands — only this file does.
-async function mintTokens({ toAddress, amount, tokenId, projectId }) {
-  console.warn(
-    `[blockchainService STUB] Simulating ERC-1155 mint of ${amount} credits ` +
-    `(tokenId ${tokenId}, project ${projectId}) to ${toAddress} — no real transaction was sent. ` +
-    `Build and deploy the contracts to replace this.`
+// Credits are stored off-chain as NUMERIC(12,2) — fractional tonnes are
+// allowed (e.g. 123.45 tCO2e). ERC-1155 balances are uint256 — whole
+// numbers only. SCALE fixes this the same way ETH uses 18-decimal "wei":
+// every on-chain amount is the off-chain amount × 100, so 2 decimal places
+// of precision survive the round trip. This conversion is applied HERE,
+// once, so no other file needs to think about it.
+const CREDIT_DECIMALS = 2;
+const SCALE = 10 ** CREDIT_DECIMALS;
+
+function toOnChainAmount(amount) {
+  return BigInt(Math.round(Number(amount) * SCALE));
+}
+
+// Loads the compiled contract artifact (ABI). Assumes this repo's
+// monorepo layout — backend/ and blockchain/ as sibling folders. If they
+// ever get split into separate repos, copy CarbonToken.json's ABI into
+// backend/ directly and adjust this path.
+let cachedContract = null;
+
+function getContract() {
+  if (cachedContract) return cachedContract;
+
+  const artifactPath = path.join(
+    __dirname, '..', '..', '..', 'blockchain', 'artifacts', 'contracts', 'CarbonToken.sol', 'CarbonToken.json'
   );
+  const artifact = require(artifactPath);
 
-  const fakeTxHash = '0x' + crypto.randomBytes(32).toString('hex');
+  if (!process.env.CARBON_TOKEN_ADDRESS || !process.env.RPC_URL || !process.env.PRIVATE_KEY) {
+    throw new Error('RPC_URL, PRIVATE_KEY, and CARBON_TOKEN_ADDRESS must be set in .env to use the real blockchain service');
+  }
+
+  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+  const adminWallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+  cachedContract = new ethers.Contract(process.env.CARBON_TOKEN_ADDRESS, artifact.abi, adminWallet);
+  return cachedContract;
+}
+
+// Mints a new batch. tokenId is our own credit_batches.id — see
+// Credit.createPendingBatch/finalizeCreditBatch for why minting happens in
+// two steps (the id has to exist before it can be used as the tokenId here).
+async function mintTokens({ toAddress, amount, tokenId, projectId, vintageYear, tokenMetadataURI }) {
+  const contract = getContract();
+  const onChainAmount = toOnChainAmount(amount);
+
+  // Falls back to a placeholder URI until ipfsService.js is wired in —
+  // same placeholder-accepting pattern used everywhere else in this project.
+  const uri = tokenMetadataURI || `ipfs://placeholder-metadata-token-${tokenId}`;
+
+  const tx = await contract.mintCredits(toAddress, tokenId, onChainAmount, projectId, vintageYear, uri);
+  const receipt = await tx.wait();
 
   return {
-    txHash: fakeTxHash,
-    contractAddress: process.env.CARBON_TOKEN_ADDRESS || '0xSTUB_CONTRACT_NOT_DEPLOYED',
+    txHash: receipt.hash,
+    contractAddress: await contract.getAddress(),
   };
 }
 
-// ANOTHER STUB — same reasoning as mintTokens above. Real implementation
-// fetches the actual transaction receipt and decodes its ERC-1155
-// TransferSingle event (which includes the tokenId, unlike ERC-20's Transfer):
-//
-//   async function verifyPurchaseTransaction({ txHash, expectedAmount, expectedBuyer, expectedSeller, tokenId }) {
-//     const receipt = await provider.getTransactionReceipt(txHash);
-//     if (!receipt || receipt.status !== 1) return { valid: false, reason: 'Transaction failed or not found' };
-//     const transferEvent = decodeTransferSingleLog(receipt.logs, CarbonTokenABI);
-//     const matches = transferEvent.id === tokenId
-//                   && transferEvent.from === expectedSeller
-//                   && transferEvent.to === expectedBuyer
-//                   && transferEvent.value === expectedAmount;
-//     return { valid: matches, reason: matches ? null : 'Transaction does not match claimed purchase' };
-//   }
-//
-// Until contracts are deployed, this always returns valid: true — meaning
-// purchase verification is NOT actually trustworthy yet. This is flagged
-// loudly on purpose so nobody mistakes stub-mode for production-ready.
+// Verifies a purchase actually happened on-chain by decoding the
+// transaction's TransferSingle event and checking it matches exactly what
+// the buyer claims — this is what makes buyerPurchaseController trustworthy
+// instead of just trusting a client-submitted tx hash.
 async function verifyPurchaseTransaction({ txHash, expectedAmount, expectedBuyer, expectedSeller, tokenId }) {
-  console.warn(
-    `[blockchainService STUB] Simulating verification of purchase tx ${txHash} ` +
-    `(tokenId ${tokenId}, ${expectedAmount} credits, ${expectedSeller} -> ${expectedBuyer}) — ` +
-    `NOT actually checking the chain. Build and deploy the contracts to replace this.`
-  );
-  return { valid: true, reason: null };
+  const contract = getContract();
+  const provider = contract.runner.provider;
+
+  const receipt = await provider.getTransactionReceipt(txHash);
+  if (!receipt || receipt.status !== 1) {
+    return { valid: false, reason: 'Transaction failed or not found' };
+  }
+
+  const expectedAmountOnChain = toOnChainAmount(expectedAmount);
+  const iface = contract.interface;
+
+  for (const log of receipt.logs) {
+    let parsed;
+    try {
+      parsed = iface.parseLog(log);
+    } catch (_) {
+      continue; // log isn't from our contract's ABI — skip
+    }
+    if (!parsed || parsed.name !== 'TransferSingle') continue;
+
+    const { from, to, id, value } = parsed.args;
+    const matches =
+      id.toString() === String(tokenId) &&
+      from.toLowerCase() === expectedSeller.toLowerCase() &&
+      to.toLowerCase() === expectedBuyer.toLowerCase() &&
+      value === expectedAmountOnChain;
+
+    if (matches) return { valid: true, reason: null };
+  }
+
+  return { valid: false, reason: 'No matching transfer found in this transaction' };
 }
 
-// Same reasoning as the two stubs above. Real implementation decodes the
-// burn's TransferSingle event and confirms it went to the zero address,
-// for the correct tokenId:
-//
-//   async function verifyBurnTransaction({ txHash, expectedAmount, expectedBurner, tokenId }) {
-//     const receipt = await provider.getTransactionReceipt(txHash);
-//     if (!receipt || receipt.status !== 1) return { valid: false, reason: 'Transaction failed or not found' };
-//     const transferEvent = decodeTransferSingleLog(receipt.logs, CarbonTokenABI);
-//     const isBurn = transferEvent.to === '0x0000000000000000000000000000000000000000';
-//     const matches = isBurn && transferEvent.id === tokenId
-//                   && transferEvent.from === expectedBurner && transferEvent.value === expectedAmount;
-//     return { valid: matches, reason: matches ? null : 'Transaction is not a matching burn' };
-//   }
+// Same idea as verifyPurchaseTransaction, but confirms the transfer went TO
+// the zero address (the standard ERC-1155/ERC-20 signature for a burn) and
+// came FROM the buyer claiming to have retired it.
 async function verifyBurnTransaction({ txHash, expectedAmount, expectedBurner, tokenId }) {
-  console.warn(
-    `[blockchainService STUB] Simulating verification of burn tx ${txHash} ` +
-    `(tokenId ${tokenId}, ${expectedAmount} credits burned by ${expectedBurner}) — ` +
-    `NOT actually checking the chain. Build and deploy the contracts to replace this.`
-  );
-  return { valid: true, reason: null };
+  const contract = getContract();
+  const provider = contract.runner.provider;
+
+  const receipt = await provider.getTransactionReceipt(txHash);
+  if (!receipt || receipt.status !== 1) {
+    return { valid: false, reason: 'Transaction failed or not found' };
+  }
+
+  const expectedAmountOnChain = toOnChainAmount(expectedAmount);
+  const iface = contract.interface;
+
+  for (const log of receipt.logs) {
+    let parsed;
+    try {
+      parsed = iface.parseLog(log);
+    } catch (_) {
+      continue;
+    }
+    if (!parsed || parsed.name !== 'TransferSingle') continue;
+
+    const { from, to, id, value } = parsed.args;
+    const matches =
+      to === ethers.ZeroAddress &&
+      id.toString() === String(tokenId) &&
+      from.toLowerCase() === expectedBurner.toLowerCase() &&
+      value === expectedAmountOnChain;
+
+    if (matches) return { valid: true, reason: null };
+  }
+
+  return { valid: false, reason: 'No matching burn found in this transaction' };
 }
 
-module.exports = { mintTokens, verifyPurchaseTransaction, verifyBurnTransaction };
+module.exports = { mintTokens, verifyPurchaseTransaction, verifyBurnTransaction, toOnChainAmount };

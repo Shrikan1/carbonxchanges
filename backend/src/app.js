@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-
+const {generalLimiter} = require("../middleware/rateLimiter")
 const app = express();
 
 // --- Global middleware ---
@@ -13,7 +13,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Carbon Credit API is running' });
 });
 
+
 // --- Routes ---
+app.use(generalLimiter);
+
 app.use('/api/auth', require('../routes/shared/authRoutes'));
 app.use('/api/admin', require('../routes/adminRoutes'));
 app.use('/api/agent', require('../routes/agentRoutes'));

@@ -120,11 +120,15 @@ async function findAgentById(agentId) {
 }
 
 // Full agent roster — used by the admin UI's agent picker/workload view
-async function findAllAgents() {
-  const result = await query(
-    `SELECT id, name, email, created_at FROM users WHERE role = 'agent' ORDER BY name ASC`
-  );
-  return result.rows;
+async function findAllAgents({ limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT id, name, email, created_at FROM users WHERE role = 'agent' ORDER BY name ASC LIMIT $1 OFFSET $2`,
+      [limit, offset]
+    ),
+    query(`SELECT COUNT(*) FROM users WHERE role = 'agent'`),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 module.exports = {

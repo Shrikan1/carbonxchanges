@@ -1,5 +1,5 @@
 const Project = require('../../models/Project');
-
+const { getPagination, paginatedResponse } = require('../../utils/paginate')
 
 const REQUIRED_ON_CREATE = ['title', 'project_type', 'project_scale'];
 
@@ -74,8 +74,13 @@ async function getProjectById(req, res) {
 // GET /api/projects/mine
 async function getMyProjects(req, res) {
   try {
-    const projects = await Project.findProjectsBySeller(req.user.id);
-    res.json({ projects });
+    const {page , limit , offset} = getPagination(req.query)
+    const { rows, total }  = await Project.findProjectsBySeller(req.user.id , { limit, offset });
+    res.status(200).json({ 
+      success:true,
+      message:"Project Fetch Successfully",
+      ...paginatedResponse(rows , total , page , limit)
+     });
   } catch (err) {
     console.error('Get my projects error:', err);
     res.status(500).json({ error: 'Failed to fetch your projects' });
@@ -84,13 +89,19 @@ async function getMyProjects(req, res) {
 // GWT /api/projects/all
 async function getAllProject(req,res){
     try {
-    const project = await Project.findAllProjects();
 
-        if(!project){
-            return res.status(404).json({message: "No Project Found !"})
-        }
+      const {page , limit , offset} = getPagination(req.query)
+      const { rows, total } = await Project.findAllProjects({ limit, offset });
 
-        return res.json({project})
+       if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No Projects Found",
+      });
+    }
+
+        res.json(paginatedResponse(rows, total, page, limit));
+
     } catch (err) {
         console.error("Get all projects error:", err);
         res.status(500).json({ error: "Failed to fetch projects" });
@@ -140,30 +151,30 @@ async function deleteProject(req , res){
 
 //Admin Action
 
-async function deleteProjectByAdmin(req , res){
-    try{
-        const project = await Project.findProjectById(req.params.id)
-        if(!project){
-            return res.status(404).json({
-                message:"No Project Found",
-            })
-        }
+// async function deleteProjectByAdmin(req , res){
+//     try{
+//         const project = await Project.findProjectById(req.params.id)
+//         if(!project){
+//             return res.status(404).json({
+//                 message:"No Project Found",
+//             })
+//         }
 
         
-           const deletedProject = await Project.deleteProject(req.params.id)
-           return res.status(200).json({
-            success: true,
-            message:"Project Deleted Successfully",
-            deletedProject})
+//            const deletedProject = await Project.deleteProject(req.params.id)
+//            return res.status(200).json({
+//             success: true,
+//             message:"Project Deleted Successfully",
+//             deletedProject})
         
-    }catch(err){
-        console.error("Get all projects error:", err);
-        res.status(500).json({ 
-            success:false,
-            error: "Failed to fetch projects" 
-        });
-    }
-}
+//     }catch(err){
+//         console.error("Get all projects error:", err);
+//         res.status(500).json({ 
+//             success:false,
+//             error: "Failed to fetch projects" 
+//         });
+//     }
+// }
 
 
 

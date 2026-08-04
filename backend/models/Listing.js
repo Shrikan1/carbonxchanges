@@ -58,17 +58,20 @@ async function deleteListing(listingId) {
   return result.rows[0];
 }
 
-async function findSellerListings(sellerId) {
-  const result = await query(
-    `SELECT cl.*, cb.project_id, p.title AS project_title
-     FROM credit_listings cl
-     JOIN credit_batches cb ON cb.id = cl.batch_id
-     JOIN projects p ON p.id = cb.project_id
-     WHERE cl.seller_id = $1
-     ORDER BY cl.created_at DESC`,
-    [sellerId]
-  );
-  return result.rows;
+async function findSellerListings(sellerId, { limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT cl.*, cb.project_id, p.title AS project_title
+       FROM credit_listings cl
+       JOIN credit_batches cb ON cb.id = cl.batch_id
+       JOIN projects p ON p.id = cb.project_id
+       WHERE cl.seller_id = $1
+       ORDER BY cl.created_at DESC LIMIT $2 OFFSET $3`,
+      [sellerId, limit, offset]
+    ),
+    query(`SELECT COUNT(*) FROM credit_listings WHERE seller_id = $1`, [sellerId]),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 // Sum of credits currently "locked" in active listings (listed but not yet
@@ -88,7 +91,7 @@ async function getReservedAmountBySeller(sellerId) {
 // with optional filters. This is intentionally NOT scoped to any user;
 // browsing doesn't require being logged in as a buyer at all (only the
 // actual purchase does, via ensureBuyer).
-async function findActiveListings(filters = {}) {
+async function findActiveListings(filters = {}, { limit = 20, offset = 0 } = {}) {
   const conditions = [`cl.status = 'active'`, `(cl.amount_listed - cl.amount_sold) > 0`];
   const values = [];
   let i = 1;
@@ -98,22 +101,35 @@ async function findActiveListings(filters = {}) {
   if (filters.min_price) { conditions.push(`cl.price_per_credit >= $${i++}`); values.push(filters.min_price); }
   if (filters.max_price) { conditions.push(`cl.price_per_credit <= $${i++}`); values.push(filters.max_price); }
 
-  const result = await query(
-    `SELECT cl.id AS listing_id, cl.price_per_credit, cl.amount_listed, cl.amount_sold,
-            (cl.amount_listed - cl.amount_sold) AS amount_available, cl.created_at,
-            p.id AS project_id, p.title AS project_title, p.project_type, p.project_scale,
-            pd.country, pd.state_region, pd.latitude, pd.longitude,
-            u.name AS seller_name
-     FROM credit_listings cl
-     JOIN credit_batches cb ON cb.id = cl.batch_id
-     JOIN projects p ON p.id = cb.project_id
-     LEFT JOIN project_details pd ON pd.project_id = p.id
-     JOIN users u ON u.id = cl.seller_id
-     WHERE ${conditions.join(' AND ')}
-     ORDER BY cl.created_at DESC`,
-    values
-  );
-  return result.rows;
+  const whereClause = `WHERE ${conditions.join(' AND ')}`;
+
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT cl.id AS listing_id, cl.price_per_credit, cl.amount_listed, cl.amount_sold,
+              (cl.amount_listed - cl.amount_sold) AS amount_available, cl.created_at,
+              p.id AS project_id, p.title AS project_title, p.project_type, p.project_scale,
+              pd.country, pd.state_region, pd.latitude, pd.longitude,
+              u.name AS seller_name
+       FROM credit_listings cl
+       JOIN credit_batches cb ON cb.id = cl.batch_id
+       JOIN projects p ON p.id = cb.project_id
+       LEFT JOIN project_details pd ON pd.project_id = p.id
+       JOIN users u ON u.id = cl.seller_id
+       ${whereClause}
+       ORDER BY cl.created_at DESC LIMIT $${i++} OFFSET $${i++}`,
+      [...values, limit, offset]
+    ),
+    query(
+      `SELECT COUNT(*)
+       FROM credit_listings cl
+       JOIN credit_batches cb ON cb.id = cl.batch_id
+       JOIN projects p ON p.id = cb.project_id
+       LEFT JOIN project_details pd ON pd.project_id = p.id
+       ${whereClause}`,
+      values
+    ),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 // Full detail for one listing — the buyer's "product page" before purchasing

@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const User = require('../../models/User');
 const Project = require('../../models/Project');
+const Paginate = require('../../utils/paginate')
 const { sendAgentCredentialsEmail } = require('../../services/emailService');
 
 function generateTempPassword() {
@@ -45,17 +46,22 @@ async function createAgent(req, res) {
 
 async function getAllAgent(req, res) {
     try {
-        const agents = await User.findAllAgents();
+        const {page , limit , offset} = Paginate.getPagination(req.query)
+        const {rows , total} = await User.findAllAgents({limit , offset});
 
-        if (agents.length === 0) {
+        if (rows.length === 0) {
             return res.status(404).json({
                 message: "No agents found"
             });
         }
 
-        return res.status(200).json({
-            message: "Agents fetched successfully",
-            agents
+        const response = Paginate.paginatedResponse(rows , total , page , limit)
+
+        return res.status(200).json(
+        {
+            success:true,
+            message: "Agents fetched successfully",    
+            ...response, 
         });
 
     } catch (error) {
@@ -107,8 +113,13 @@ async function getAgentWorkload(req, res) {
     const agent = await User.findAgentById(req.params.id);
     if (!agent) return res.status(404).json({ error: 'Agent not found' });
 
-    const projects = await Project.findProjectsByAgent(req.params.id);
-    res.json({ agent, projects });
+    const { page, limit, offset } = Paginate.getPagination(req.query);
+    const { rows, total } = await Project.findProjectsByAgent(req.params.id, { limit, offset });
+
+    res.json({
+      agent,
+      ...Paginate.paginatedResponse(rows, total, page, limit),
+    });
   } catch (err) {
     console.error('Get agent workload error:', err);
     res.status(500).json({ error: 'Failed to fetch agent workload' });

@@ -1,6 +1,6 @@
 const Listing = require('../../models/Listing');
 const ProjectPost = require('../../models/ProjectPost');
-
+const Paginate = require('../../utils/paginate')
 // GET /api/buyer/marketplace?project_type=&country=&min_price=&max_price=
 async function browseMarketplace(req, res) {
   try {
@@ -11,8 +11,14 @@ async function browseMarketplace(req, res) {
     if (min_price) filters.min_price = Number(min_price);
     if (max_price) filters.max_price = Number(max_price);
 
-    const listings = await Listing.findActiveListings(filters);
-    res.json({ listings });
+    const {page , limit , offset} = Paginate.getPagination(req.query);
+
+    const {rows , total} = await Listing.findActiveListings(filters , {limit , offset});
+    res.status(200).json({ 
+      success: true,
+      message:"Active Listing Fetch Successfully",
+      ...Paginate.paginatedResponse(rows , total , page , limit)
+     });
   } catch (err) {
     console.error('Browse marketplace error:', err);
     res.status(500).json({ error: 'Failed to fetch marketplace listings' });

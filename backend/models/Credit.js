@@ -11,31 +11,46 @@ async function findCreditsByProject(projectId) {
 
 // All credit batches across every project this seller owns — used for
 // the seller's "Issued Credits" list, joined with project title for display.
-async function findCreditsBySeller(sellerId) {
-  const result = await query(
-    `SELECT cb.*, p.title AS project_title
-     FROM credit_batches cb
-     JOIN projects p ON p.id = cb.project_id
-     WHERE p.seller_id = $1
-     ORDER BY cb.minted_at DESC`,
-    [sellerId]
-  );
-  return result.rows;
+async function findCreditsBySeller(sellerId, { limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT cb.*, p.title AS project_title
+       FROM credit_batches cb
+       JOIN projects p ON p.id = cb.project_id
+       WHERE p.seller_id = $1
+       ORDER BY cb.minted_at DESC LIMIT $2 OFFSET $3`,
+      [sellerId, limit, offset]
+    ),
+    query(
+      `SELECT COUNT(*) FROM credit_batches cb JOIN projects p ON p.id = cb.project_id WHERE p.seller_id = $1`,
+      [sellerId]
+    ),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 // Every transaction (purchase or retirement) tied to this seller's batches
-async function findCreditTransactions(sellerId) {
-  const result = await query(
-    `SELECT t.*, p.title AS project_title, u.name AS buyer_name
-     FROM transactions t
-     JOIN credit_batches cb ON cb.id = t.batch_id
-     JOIN projects p ON p.id = cb.project_id
-     LEFT JOIN users u ON u.id = t.buyer_id
-     WHERE p.seller_id = $1
-     ORDER BY t.created_at DESC`,
-    [sellerId]
-  );
-  return result.rows;
+async function findCreditTransactions(sellerId, { limit = 20, offset = 0 } = {}) {
+  const [dataResult, countResult] = await Promise.all([
+    query(
+      `SELECT t.*, p.title AS project_title, u.name AS buyer_name
+       FROM transactions t
+       JOIN credit_batches cb ON cb.id = t.batch_id
+       JOIN projects p ON p.id = cb.project_id
+       LEFT JOIN users u ON u.id = t.buyer_id
+       WHERE p.seller_id = $1
+       ORDER BY t.created_at DESC LIMIT $2 OFFSET $3`,
+      [sellerId, limit, offset]
+    ),
+    query(
+      `SELECT COUNT(*) FROM transactions t
+       JOIN credit_batches cb ON cb.id = t.batch_id
+       JOIN projects p ON p.id = cb.project_id
+       WHERE p.seller_id = $1`,
+      [sellerId]
+    ),
+  ]);
+  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
 // Off-chain approximation of the seller's remaining (unsold) credit balance:
