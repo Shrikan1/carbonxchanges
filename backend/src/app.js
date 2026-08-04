@@ -1,12 +1,16 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const {generalLimiter} = require("../middleware/rateLimiter")
 const app = express();
 
+
 // --- Global middleware ---
-app.use(cors());               // Allow the React frontend (different port) to call this API
+app.use(cors({ origin: true, credentials: true })); // credentials:true allows cookies cross-origin
 app.use(express.json());       // Parse incoming JSON request bodies
+app.use(cookieParser());       // Parse httpOnly cookies (used for refresh token)
+
 
 // --- Health check (useful to confirm the server is alive) ---
 app.get('/api/health', (req, res) => {

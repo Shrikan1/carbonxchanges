@@ -1,9 +1,9 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
 const Otp = require('../../models/Otp');
 const { sendOtpEmail } = require('../../services/emailService');
-const { generateToken } = require('../../utils/token');
+const { generateToken, generateRefreshToken, verifyToken } = require('../../utils/token');
+
 
 const SELF_SIGNUP_ROLES = ['seller', 'buyer'];
 
@@ -91,8 +91,21 @@ async function login(req, res) {
     }
 
     const token = generateToken(user);
+    const refreshToken = generateRefreshToken(user);
     delete user.password_hash; // never send the hash back to the client
-    res.json({ user, token });
+
+    // Refresh token travels as an httpOnly cookie — never accessible to JS,
+    // so it can't be stolen via XSS. Access token goes in the response body
+    // for the frontend to store in memory (not localStorage).
+    res
+      .cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
+      })
+      .json({ user, token });
+
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Failed to log in' });
@@ -105,6 +118,50 @@ async function getProfile(req, res) {
   res.json({ user });
 }
 
-module.exports = { signup, verifyOtp, login, getProfile };
+// POST /api/auth/refresh
+// Issues a new access token from the httpOnly refresh cookie set at login.
+// This lets the frontend silently re-authenticate when the short-lived access
+// token expires, without forcing the user to re-enter their password.
+async function refreshToken(req, res) {
+  const token = req.cookies?.refreshToken;
+  if (!token) {
+    return res.status(401).json({ error: 'No refresh token provided' });
+  }
+
+  let decoded;
+  try {
+    decoded = verifyToken(token);
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid or expired refresh token' });
+  }
+
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    return res.status(401).json({ error: 'User not found' });
+  }
+
+  // Revocation check — same as middleware/auth.js
+  if ((user.token_version ?? 0) !== (decoded.tv ?? 0)) {
+    return res.status(401).json({ error: 'Refresh token has been revoked. Please log in again.' });
+  }
+
+  const newAccessToken = generateToken(user);
+  res.json({ token: newAccessToken });
+}
+
+// POST /api/auth/logout
+// Bumps token_version so ALL existing tokens (access + refresh) for this user
+// are immediately revoked, then clears the refresh cookie.
+async function logout(req, res) {
+  if (req.user?.id) {
+    await User.bumpTokenVersion(req.user.id);
+  }
+  res
+    .clearCookie('refreshToken')
+    .json({ message: 'Logged out successfully' });
+}
+
+module.exports = { signup, verifyOtp, login, getProfile, refreshToken, logout };
+
 
 
