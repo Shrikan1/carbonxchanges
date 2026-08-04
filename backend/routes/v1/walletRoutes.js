@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth } = require('../middleware/auth');
-const walletController = require('../controllers/shared/walletController');
+const { requireAuth } = require('../../middleware/auth');
+const walletController = require('../../controllers/shared/walletController');
 
 router.use(requireAuth);
 

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth } = require('../middleware/auth');
-const buyerMarketplaceController = require('../controllers/buyer/buyerMarketplaceController');
+const { requireAuth } = require('../../middleware/auth');
+const buyerMarketplaceController = require('../../controllers/buyer/buyerMarketplaceController');
 
 router.use(requireAuth);
 
