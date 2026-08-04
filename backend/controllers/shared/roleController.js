@@ -3,6 +3,7 @@ const Otp = require('../../models/Otp');
 const { sendOtpEmail } = require('../../services/emailService');
 const { generateToken } = require('../../utils/token');
 
+
 const VALID_ROLE_TYPES = ['seller', 'buyer'];
 const PHONE_REGEX = /^\+?[0-9]{7,15}$/;
 
@@ -72,9 +73,17 @@ async function verifyRoleUpgrade(req, res) {
     await Otp.deleteOtpsForUser(req.user.id, 'role_upgrade');
 
     const updatedUser = await User.findById(req.user.id);
-    const token = generateToken(updatedUser);
+
+    // Bump token_version so the OLD token (which has the pre-upgrade role
+    // claims) is immediately revoked. The new token below reflects the
+    // updated is_seller/is_buyer flags, so the frontend can switch roles
+    // without the user needing to log out and back in.
+    await User.bumpTokenVersion(req.user.id);
+    const freshUser = await User.findById(req.user.id); // re-fetch with new token_version
+    const token = generateToken(freshUser);
 
     res.json({ message: 'Role upgrade verified', user: updatedUser, token });
+
   } catch (err) {
     console.error('Verify role upgrade error:', err);
     res.status(500).json({ error: 'Failed to verify role upgrade' });

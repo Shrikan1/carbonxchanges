@@ -22,7 +22,7 @@ async function findByEmail(email) {
 
 async function findById(id) {
   const result = await query(
-    'SELECT id, name, email, role, wallet_address, created_at FROM users WHERE id = $1',
+    'SELECT id, name, email, role, is_seller, is_buyer, wallet_address, token_version, created_at FROM users WHERE id = $1',
     [id]
   );
   return result.rows[0];
@@ -102,6 +102,18 @@ async function updatePassword(userId, newPasswordHash) {
   await query('UPDATE users SET password_hash = $1 WHERE id = $2', [newPasswordHash, userId]);
 }
 
+// Increments token_version, immediately invalidating ALL previously issued
+// JWTs for this user — the middleware checks tv === token_version on each
+// request. Call this after a role upgrade or password change so stale tokens
+// can no longer be used even if they haven't expired yet.
+async function bumpTokenVersion(userId) {
+  const result = await query(
+    'UPDATE users SET token_version = token_version + 1 WHERE id = $1 RETURNING token_version',
+    [userId]
+  );
+  return result.rows[0].token_version;
+}
+
 // Includes password_hash — used ONLY internally (e.g. changePassword's
 // current-password check), never sent back in an API response.
 async function findByIdWithPassword(userId) {
@@ -134,5 +146,5 @@ async function findAllAgents({ limit = 20, offset = 0 } = {}) {
 module.exports = {
   createUser, findByEmail, findById, markVerified, createAgent,
   setSellerFlag, setBuyerFlag, updateProfile, updatePassword, findByIdWithPassword,
-  findAgentById, findAllAgents, startRoleRequest, clearPendingRoleRequest,
-};
+  findAgentById, findAllAgents, startRoleRequest, clearPendingRoleRequest, bumpTokenVersion,
+};

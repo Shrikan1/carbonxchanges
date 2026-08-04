@@ -1,6 +1,7 @@
-const jwt = require('jsonwebtoken');
+const { verifyToken } = require('../utils/token');
+const User = require('../models/User');
 
-function requireAuth(req, res, next) {
+async function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -9,13 +10,26 @@ function requireAuth(req, res, next) {
 
   const token = authHeader.split(' ')[1];
 
+  let decoded;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { id, email, role }
-    next();
+    decoded = verifyToken(token);
   } catch (err) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
+
+  // Check token_version: if the user's DB version is higher than what's in
+  // the token (tv), the token was issued before a role upgrade or password
+  // change and must be treated as revoked — even if it hasn't expired yet.
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    return res.status(401).json({ error: 'User not found' });
+  }
+  if ((user.token_version ?? 0) !== (decoded.tv ?? 0)) {
+    return res.status(401).json({ error: 'Token has been revoked. Please log in again.' });
+  }
+
+  req.user = decoded; // { id, email, role, tv }
+  next();
 }
 
-module.exports = { requireAuth };
+module.exports = { requireAuth };
