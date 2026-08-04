@@ -17,19 +17,19 @@ app.get('/api/health', (req, res) => {
 // --- Routes ---
 app.use(generalLimiter);
 
-app.use('/api/auth', require('../routes/shared/authRoutes'));
-app.use('/api/admin', require('../routes/adminRoutes'));
-app.use('/api/agent', require('../routes/agentRoutes'));
-app.use('/api/projects', require('../routes/projectRoutes'));
-app.use('/api/project-posts', require('../routes/projectPostRoutes'));
-app.use('/api/verification', require('../routes/verificationRoutes'));
-app.use('/api/profile', require('../routes/profileRoutes'));
-app.use('/api/wallet', require('../routes/walletRoutes'));
-app.use('/api/role', require('../routes/roleRoutes'));
-app.use('/api/dashboard', require('../routes/dashboardRoutes'));
-app.use('/api/sales', require('../routes/salesRoutes'));
-app.use('/api/buyer', require('../routes/buyerRoutes'));
-app.use('/share', require('../routes/shared/ogRoutes'));
+app.use('/api/v1/auth', require('../routes/v1/shared/authRoutes'));
+app.use('/api/v1/admin', require('../routes/v1/adminRoutes'));
+app.use('/api/v1/agent', require('../routes/v1/agentRoutes'));
+app.use('/api/v1/projects', require('../routes/v1/projectRoutes'));
+app.use('/api/v1/project-posts', require('../routes/v1/projectPostRoutes'));
+app.use('/api/v1/verification', require('../routes/v1/verificationRoutes'));
+app.use('/api/v1/profile', require('../routes/v1/profileRoutes'));
+app.use('/api/v1/wallet', require('../routes/v1/walletRoutes'));
+app.use('/api/v1/role', require('../routes/v1/roleRoutes'));
+app.use('/api/v1/dashboard', require('../routes/v1/dashboardRoutes'));
+app.use('/api/v1/sales', require('../routes/v1/salesRoutes'));
+app.use('/api/v1/buyer', require('../routes/v1/buyerRoutes'));
+app.use('/v1/share', require('../routes/v1/shared/ogRoutes'));
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

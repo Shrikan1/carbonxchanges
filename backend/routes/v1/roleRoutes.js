@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth } = require('../middleware/auth');
-const roleController = require('../controllers/shared/roleController');
+const { requireAuth } = require('../../middleware/auth');
+const roleController = require('../../controllers/shared/roleController');
 
 router.use(requireAuth);
 

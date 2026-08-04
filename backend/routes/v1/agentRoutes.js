@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth } = require('../middleware/auth');
-const { requireRole } = require('../middleware/roleCheck');
-const agentDashboardController = require('../controllers/agent/agentDashboardController');
-const agentProjectController = require('../controllers/agent/agentProjectController');
-const agentVerificationController = require('../controllers/agent/agentVerificationController');
+const { requireAuth } = require('../../middleware/auth');
+const { requireRole } = require('../../middleware/roleCheck');
+const agentDashboardController = require('../../controllers/agent/agentDashboardController');
+const agentProjectController = require('../../controllers/agent/agentProjectController');
+const agentVerificationController = require('../../controllers/agent/agentVerificationController');
 
 router.use(requireAuth, requireRole('agent'));
 
