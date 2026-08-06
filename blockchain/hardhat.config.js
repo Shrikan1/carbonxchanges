@@ -23,9 +23,22 @@ module.exports = {
     },
   },
   etherscan: {
-    // hardhat-toolbox's verify plugin also understands PolygonScan via this key
-    apiKey: {
-      polygonAmoy: process.env.POLYGONSCAN_API_KEY || '',
-    },
+    // Etherscan V2: ONE api key now works across 60+ chains (Polygon
+    // included) — get it from etherscan.io/myapikey, NOT polygonscan.com
+    // (that separate-key system was deprecated August 2025).
+    apiKey: process.env.ETHERSCAN_API_KEY || '',
+    customChains: [
+      {
+        network: 'amoy', // must match the network name below
+        chainId: 80002,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=80002',
+          browserURL: 'https://amoy.polygonscan.com',
+        },
+      },
+    ],
+  },
+  sourcify: {
+    enabled: false, // avoids the "Sourcify verification skipped" notice
   },
 };

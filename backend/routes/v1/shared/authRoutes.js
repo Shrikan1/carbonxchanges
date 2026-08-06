@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const authController = require('../../controllers/shared/authController');
-const { requireAuth } = require('../../middleware/auth');
-const {otpLimiter , loginLimiter} = require('../../middleware/rateLimiter')
+const authController = require('../../../controllers/shared/authController');
+const { requireAuth } = require('../../../middleware/auth');
+const {otpLimiter , loginLimiter} = require('../../../middleware/rateLimiter')
 
 
 router.post('/signup', otpLimiter, authController.signup);

@@ -2,10 +2,17 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error('FATAL: DATABASE_URL is not set. Set it in backend/.env before starting the server.');
+}
+
+const requiresSsl = connectionString.includes('supabase.co');
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  // Supabase and most managed Postgres providers require SSL
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  connectionString,
+  ssl: process.env.NODE_ENV === 'production' || requiresSsl ? { rejectUnauthorized: false } : false,
 });
 
 pool.on('error', (err) => {
