@@ -4,14 +4,7 @@ const User = require('../../models/User');
 const blockchainService = require('../../services/blockchainService');
 
 // POST /api/buyer/purchase   body: { listing_id, amount, tx_hash }
-//
-// The buyer has already signed and sent the on-chain transfer themselves via
-// MetaMask before calling this — tx_hash is the result. This endpoint does
-// NOT just trust that hash; it independently verifies it against the chain
-// (see blockchainService.verifyPurchaseTransaction) before recording
-// anything or touching listing stock. Currently that verification is a
-// STUB (always returns valid) until contracts are deployed — see the loud
-// warning it logs.
+
 async function purchaseCredits(req, res) {
   try {
     const { listing_id, amount, tx_hash } = req.body;

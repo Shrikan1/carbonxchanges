@@ -5,18 +5,14 @@ const { sendOtpEmail } = require('../../services/emailService');
 const { generateToken, generateRefreshToken, verifyToken } = require('../../utils/token');
 
 
-const SELF_SIGNUP_ROLES = ['seller', 'buyer'];
 
 // POST /api/auth/signup
 async function signup(req, res) {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({ error: 'name, email, password, and role are required' });
-    }
-    if (!SELF_SIGNUP_ROLES.includes(role)) {
-      return res.status(400).json({ error: `role must be one of: ${SELF_SIGNUP_ROLES.join(', ')}` });
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'name, email, and password are required' });
     }
 
     const existing = await User.findByEmail(email);
@@ -25,7 +21,8 @@ async function signup(req, res) {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.createUser({ name, email, passwordHash, role }); // is_verified defaults to false
+    // No role passed — every account starts as base 'user' with no seller/buyer capability
+    const user = await User.createUser({ name, email, passwordHash });
 
     const otpCode = await Otp.createOtp(user.id, 'signup');
     await sendOtpEmail(email, otpCode);

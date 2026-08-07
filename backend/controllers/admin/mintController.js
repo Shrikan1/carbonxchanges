@@ -51,7 +51,7 @@ async function attemptMint(project) {
   amount: tradeableAmount,
   tokenId: pendingBatch.id,
   projectId: project.id,
-  vintageYear,        // add this — already computed earlier in attemptMint
+  vintageYear,        
 });
 
   // Step 2: fill in the on-chain result now that the transaction confirmed
