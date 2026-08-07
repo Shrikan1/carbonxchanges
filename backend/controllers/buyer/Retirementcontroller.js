@@ -6,12 +6,7 @@ const blockchainService = require('../../services/blockchainService');
 const { streamCertificatePdf } = require('../../services/certificateService');
 
 // POST /api/buyer/retire   body: { batch_id, amount, burn_tx_hash }
-//
-// Same trust pattern as purchase: the buyer has already signed and sent the
-// burn themselves via MetaMask (calling the token's own burn() — nobody
-// else CAN burn their tokens). This endpoint independently verifies that
-// transaction happened before recording anything (currently a STUB — see
-// blockchainService.verifyBurnTransaction).
+
 async function retireCredits(req, res) {
   try {
     const { batch_id, amount, burn_tx_hash, retirement_reason, beneficiary_name } = req.body;

@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router;
 
-const postController = require("../../controllers/seller/projectPostController");
+const postController = require("../../../controllers/seller/projectPostController");
 
 
-const { requireAuth } = require('../../middleware/auth');
-const { ensureSeller } = require('../../middleware/capabilityGate');
+const { requireAuth } = require('../../../middleware/auth');
+const { ensureSeller } = require('../../../middleware/capabilityGate');
 
 
 // Public read — no login required to view a project's showcase

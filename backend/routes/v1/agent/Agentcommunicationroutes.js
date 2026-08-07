@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const agentCommunicationController = require('../../controllers/agent/agentCommunicationController');
-const { requireAuth } = require('../../middleware/auth');
-const { requireRole } = require('../../middleware/roleCheck');
+const agentCommunicationController = require('../../../controllers/agent/agentCommunicationController');
+const { requireAuth } = require('../../../middleware/auth');
+const { requireRole } = require('../../../middleware/roleCheck');
 
 router.use(requireAuth, requireRole('agent'));
 

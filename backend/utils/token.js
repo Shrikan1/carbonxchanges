@@ -2,9 +2,14 @@ const jwt = require('jsonwebtoken');
 
 function generateToken(user) {
   return jwt.sign(
-    // token_version lets us invalidate all existing tokens for a user
-    // (e.g. after a role upgrade) without a token blacklist table.
-    { id: user.id, email: user.email, role: user.role, tv: user.token_version ?? 0 },
+    {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      is_seller: user.is_seller,
+      is_buyer: user.is_buyer,
+      tv: user.token_version ?? 0,
+    },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
@@ -24,4 +29,4 @@ function verifyToken(token) {
   return jwt.verify(token, process.env.JWT_SECRET);
 }
 
-module.exports = { generateToken, generateRefreshToken, verifyToken };
+module.exports = { generateToken, generateRefreshToken, verifyToken };

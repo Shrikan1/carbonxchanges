@@ -47,11 +47,12 @@ async function attemptMint(project) {
   const pendingBatch = await Credit.createPendingBatch(project.id, tradeableAmount, vintageYear);
 
   const mintResult = await blockchainService.mintTokens({
-    toAddress: seller.wallet_address,
-    amount: tradeableAmount,
-    tokenId: pendingBatch.id,
-    projectId: project.id,
-  });
+  toAddress: seller.wallet_address,
+  amount: tradeableAmount,
+  tokenId: pendingBatch.id,
+  projectId: project.id,
+  vintageYear,        
+});
 
   // Step 2: fill in the on-chain result now that the transaction confirmed
   const batch = await Credit.finalizeCreditBatch(pendingBatch.id, mintResult.contractAddress, mintResult.txHash);

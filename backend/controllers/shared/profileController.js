@@ -54,7 +54,15 @@ async function changePassword(req, res) {
     const newHash = await bcrypt.hash(new_password, 10);
     await User.updatePassword(req.user.id, newHash);
 
-    res.json({ message: 'Password changed successfully' });
+    // Invalidates every token issued before this change — including this
+    // session's own current token — then immediately issues a fresh one so
+    // THIS session keeps working seamlessly. Any other device/session using
+    // an old token is logged out for real, not just cosmetically.
+    await User.bumpTokenVersion(req.user.id);
+    const freshUser = await User.findById(req.user.id);
+    const token = generateToken(freshUser);
+
+    res.json({ message: 'Password changed successfully', token });
   } catch (err) {
     console.error('Change password error:', err);
     res.status(500).json({ error: 'Failed to change password' });
