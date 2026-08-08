@@ -1,9 +1,7 @@
 import React from 'react'
 import Home from './pages/shared/Home';
+import AuthPage from './pages/shared/AuthPage';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from './pages/shared/Login.jsx';
-
-
 
 const router = createBrowserRouter([
   {
@@ -11,21 +9,19 @@ const router = createBrowserRouter([
     element: <Home />
   },
   {
-    path: "/register",
-    element: <Register />
+    path: "/signup",
+    element: <AuthPage />
   },
   {
     path: "/login",
-    element: <Login />
+    element: <AuthPage />
   }
-
 ])
 
 const App = () => {
   return (
-    <div className="h-screen w-screen overflow-hidden">
+    <div className="min-h-screen w-full">
       <RouterProvider router={router} />
-      
     </div>
   )
 }
