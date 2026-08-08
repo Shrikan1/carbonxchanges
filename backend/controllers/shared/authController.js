@@ -71,7 +71,7 @@ async function login(req, res) {
     if (!email || !password) {
       return res.status(400).json({ error: 'email and password are required' });
     }
-y
+
     const user = await User.findByEmail(email);
     if (!user) {
       // Same error for missing user vs wrong password — don't reveal which one
