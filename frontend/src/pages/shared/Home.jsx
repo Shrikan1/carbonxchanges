@@ -22,6 +22,8 @@ import heroBg from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524
 import ParticleText from '../../components/ui/ParticleText';
 import GlareHover from '../../components/ui/GlareHover';
 import DecryptedText from '../../components/ui/DecryptedText';
+import DepthText from '../../components/ui/DepthText';
+import ScrollExpand from '../../components/ui/ScrollExpand';
 
 const projectGalleryItems = [
   { image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop', title: 'Tropical Rainforest' },
@@ -57,11 +59,38 @@ const Home = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-20">
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.95] tracking-tight text-white mb-8">
-            Offset Emissions.
-            <br />
-            <span className="text-white/40">Build the Future.</span>
-          </h1>
+          <div className="flex flex-col items-center justify-center space-y-3 mb-10 mt-4">
+            <DepthText
+              text="Offset Emissions."
+              layers={16}
+              depth={1.5}
+              faceColor="#ffffff"
+              depthColor="#042f14"
+              tilt={4}
+              pointerTracking={true}
+              smoothing={0.1}
+              perspective={1200}
+              autoOrbit={false}
+              fontSize="clamp(3.5rem, 9vw, 6.5rem)"
+              fontWeight={900}
+              shadow={true}
+            />
+            <DepthText
+              text="Build the Future."
+              layers={16}
+              depth={1.5}
+              faceColor="#f3f4f6"
+              depthColor="#042f14"
+              tilt={4}
+              pointerTracking={true}
+              smoothing={0.1}
+              perspective={1200}
+              autoOrbit={false}
+              fontSize="clamp(3.5rem, 9vw, 6.5rem)"
+              fontWeight={900}
+              shadow={true}
+            />
+          </div>
 
           {/* Subtext */}
           <p className="text-white/50 text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-12">
@@ -426,6 +455,35 @@ const Home = () => {
             </div>
 
           </div>
+        </div>
+      </section>
+
+      {/* ─── GLOBAL IMPACT SHOWCASE ─── */}
+      <section className="border-t border-[#222]">
+        <div style={{ height: '700px', backgroundColor: '#000' }} className="w-full relative">
+          <ScrollExpand 
+            src="https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80" 
+            title="Global Impact" 
+            scrollHint="Scroll to explore"
+            startWidth={45}
+            startHeight={65}
+            startRadius={24}
+            endRadius={0}
+            mediaZoom={1.35}
+            scrollDistance={1.2}
+            holdDistance={0.35}
+            smoothing={0.1}
+            overlayScrim={0.65}
+            useWindowScroll={true}
+            enabled={true}
+          >
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black text-white tracking-tight mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+              Every credit makes a difference.
+            </h2>
+            <p className="text-white/90 text-sm sm:text-lg max-w-xl mx-auto font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] leading-relaxed">
+              The carbon market isn't just about numbers. It's about protecting real ecosystems, funding sustainable communities, and restoring the planet.
+            </p>
+          </ScrollExpand>
         </div>
       </section>
 

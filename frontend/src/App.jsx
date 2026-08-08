@@ -1,6 +1,7 @@
 import React from 'react'
 import Home from './pages/shared/Home';
 import AuthPage from './pages/shared/AuthPage';
+import VerifyEmail from './pages/shared/VerifyEmail';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <AuthPage />
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmail />
   }
 ])
 

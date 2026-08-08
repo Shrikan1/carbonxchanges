@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'motion/react';
 import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
 
 const AuthPage = () => {
@@ -9,7 +10,6 @@ const AuthPage = () => {
   const [mode, setMode] = useState(location.pathname === '/signup' ? 'signup' : 'login');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Sync mode with URL on external navigation
   useEffect(() => {
@@ -20,18 +20,12 @@ const AuthPage = () => {
   }, [location.pathname]);
 
   const switchMode = (newMode) => {
-    if (newMode === mode || isTransitioning) return;
-    setIsTransitioning(true);
-    
-    // Brief fade-out, swap, fade-in
-    setTimeout(() => {
-      setMode(newMode);
-      setShowPassword(false);
-      setShowConfirmPassword(false);
-      // Update URL without full page reload
-      navigate(newMode === 'signup' ? '/signup' : '/login', { replace: true });
-      setTimeout(() => setIsTransitioning(false), 30);
-    }, 200);
+    if (newMode === mode) return;
+    setMode(newMode);
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    // Update URL without full page reload
+    navigate(newMode === 'signup' ? '/signup' : '/login', { replace: true });
   };
 
   return (
@@ -78,27 +72,32 @@ const AuthPage = () => {
                 </span>
               </div>
 
-              {/* Bottom Copy — changes with mode */}
-              <div>
-                <h2 
-                  className="text-white text-4xl font-black leading-[1.05] tracking-tight mb-4 transition-opacity duration-300"
-                  style={{ opacity: isTransitioning ? 0 : 1 }}
-                >
-                  {mode === 'login' ? (
-                    <>Trade Carbon,<br />Save Earth.</>
-                  ) : (
-                    <>Join the Green<br />Revolution.</>
-                  )}
-                </h2>
-                <p 
-                  className="text-white/60 text-sm leading-relaxed max-w-xs transition-opacity duration-300"
-                  style={{ opacity: isTransitioning ? 0 : 1 }}
-                >
-                  {mode === 'login' 
-                    ? 'Blockchain-powered carbon credit marketplace for a sustainable future.'
-                    : 'Build a sustainable future with blockchain-powered carbon credits.'
-                  }
-                </p>
+              {/* Bottom Copy — changes with mode smoothly */}
+              <div className="relative h-32">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={mode}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    className="absolute inset-0"
+                  >
+                    <h2 className="text-white text-4xl font-black leading-[1.05] tracking-tight mb-4">
+                      {mode === 'login' ? (
+                        <>Trade Carbon,<br />Save Earth.</>
+                      ) : (
+                        <>Join the Green<br />Revolution.</>
+                      )}
+                    </h2>
+                    <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                      {mode === 'login' 
+                        ? 'Blockchain-powered carbon credit marketplace for a sustainable future.'
+                        : 'Build a sustainable future with blockchain-powered carbon credits.'
+                      }
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
           </div>
@@ -113,7 +112,7 @@ const AuthPage = () => {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex items-center space-x-6 mb-10">
+            <div className="flex items-center space-x-6 mb-8">
               <button
                 onClick={() => switchMode('login')}
                 className={`relative text-xl font-black tracking-tight pb-2 transition-colors duration-300 ${
@@ -141,154 +140,172 @@ const AuthPage = () => {
             </div>
 
             {/* Animated Form Container */}
-            <div 
-              className="transition-all duration-300 ease-out"
-              style={{ 
-                opacity: isTransitioning ? 0 : 1,
-                transform: isTransitioning ? 'translateY(8px)' : 'translateY(0)'
-              }}
-            >
-              {mode === 'login' ? (
-                /* ─── SIGN IN FORM ─── */
-                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                  <div>
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="name@example.com"
-                      className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
-                    />
-                  </div>
+            <div className="relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={mode}
+                  initial={{ opacity: 0, x: mode === 'login' ? -20 : 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: mode === 'login' ? 20 : -20 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                >
+                  {mode === 'login' ? (
+                    /* ─── SIGN IN FORM ─── */
+                    <>
+                      <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                        <div>
+                          <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            placeholder="name@example.com"
+                            className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+                          />
+                        </div>
 
-                  <div>
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="••••••••••"
-                        className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c] transition-colors"
-                      >
-                        {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                      </button>
-                    </div>
-                  </div>
+                        <div>
+                          <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                            Password
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              placeholder="••••••••••"
+                              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c] transition-colors"
+                            >
+                              {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+                            </button>
+                          </div>
+                        </div>
 
-                  <div className="flex items-center justify-between pt-1">
-                    <label className="flex items-center space-x-2 cursor-pointer select-none">
-                      <input type="checkbox" className="w-[14px] h-[14px] border-[#ccc] rounded-none accent-[#0c0c0c]" />
-                      <span className="text-[13px] text-[#666]">Remember me</span>
-                    </label>
-                    <Link to="/forgot-password" className="text-[13px] text-[#666] hover:text-[#0c0c0c] transition-colors">
-                      Forgot Password?
-                    </Link>
-                  </div>
+                        <div className="flex items-center justify-between pt-1">
+                          <label className="flex items-center space-x-2 cursor-pointer select-none">
+                            <input type="checkbox" className="w-[14px] h-[14px] border-[#ccc] rounded-none accent-[#0c0c0c]" />
+                            <span className="text-[13px] text-[#666]">Remember me</span>
+                          </label>
+                          <Link to="/forgot-password" className="text-[13px] text-[#666] hover:text-[#0c0c0c] transition-colors">
+                            Forgot Password?
+                          </Link>
+                        </div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2"
-                  >
-                    Sign In
-                  </button>
-                </form>
-              ) : (
-                /* ─── SIGN UP FORM ─── */
-                <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-                  <div>
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Alex Johnson"
-                      className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
-                    />
-                  </div>
+                        <button
+                          type="submit"
+                          className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2"
+                        >
+                          Sign In
+                        </button>
+                      </form>
 
-                  <div>
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="name@example.com"
-                      className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
-                    />
-                  </div>
+                      {/* Bottom link */}
+                      <p className="mt-8 text-center text-[13px] text-[#999]">
+                        Don't have an account?{' '}
+                        <button onClick={() => switchMode('signup')} className="text-[#0c0c0c] font-semibold hover:underline">
+                          Sign Up
+                        </button>
+                      </p>
+                    </>
+                  ) : (
+                    /* ─── SIGN UP FORM ─── */
+                    <>
+                      <form className="space-y-5" onSubmit={(e) => {
+                        e.preventDefault();
+                        navigate('/verify-email');
+                      }}>
+                        <div>
+                          <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                            Full Name
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Alex Johnson"
+                            className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+                          />
+                        </div>
 
-                  <div>
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="••••••••••"
-                        className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c] transition-colors"
-                      >
-                        {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                      </button>
-                    </div>
-                  </div>
+                        <div>
+                          <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            placeholder="name@example.com"
+                            className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+                          />
+                        </div>
 
-                  <div>
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
-                      Confirm Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder="••••••••••"
-                        className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c] transition-colors"
-                      >
-                        {showConfirmPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                      </button>
-                    </div>
-                  </div>
+                        <div>
+                          <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                            Password
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              placeholder="••••••••••"
+                              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c] transition-colors"
+                            >
+                              {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+                            </button>
+                          </div>
+                        </div>
 
-                  <div className="flex items-start space-x-2 pt-1">
-                    <input type="checkbox" className="w-[14px] h-[14px] mt-0.5 border-[#ccc] rounded-none accent-[#0c0c0c]" />
-                    <span className="text-[13px] text-[#666] leading-snug">
-                      I agree to the{' '}
-                      <Link to="/terms" className="text-[#0c0c0c] font-semibold hover:underline">Terms & Conditions</Link>
-                    </span>
-                  </div>
+                        <div>
+                          <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                            Confirm Password
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showConfirmPassword ? 'text' : 'password'}
+                              placeholder="••••••••••"
+                              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c] transition-colors"
+                            >
+                              {showConfirmPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+                            </button>
+                          </div>
+                        </div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2"
-                  >
-                    Create Account
-                  </button>
-                </form>
-              )}
+                        <div className="flex items-start space-x-2 pt-1">
+                          <input type="checkbox" className="w-[14px] h-[14px] mt-0.5 border-[#ccc] rounded-none accent-[#0c0c0c]" />
+                          <span className="text-[13px] text-[#666] leading-snug">
+                            I agree to the{' '}
+                            <Link to="/terms" className="text-[#0c0c0c] font-semibold hover:underline">Terms & Conditions</Link>
+                          </span>
+                        </div>
 
-              {/* Bottom link */}
-              <p className="mt-8 text-center text-[13px] text-[#999]">
-                {mode === 'login' ? (
-                  <>Don't have an account?{' '}<button onClick={() => switchMode('signup')} className="text-[#0c0c0c] font-semibold hover:underline">Sign Up</button></>
-                ) : (
-                  <>Already have an account?{' '}<button onClick={() => switchMode('login')} className="text-[#0c0c0c] font-semibold hover:underline">Sign In</button></>
-                )}
-              </p>
+                        <button
+                          type="submit"
+                          className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2"
+                        >
+                          Create Account
+                        </button>
+                      </form>
+
+                      {/* Bottom link */}
+                      <p className="mt-8 text-center text-[13px] text-[#999]">
+                        Already have an account?{' '}
+                        <button onClick={() => switchMode('login')} className="text-[#0c0c0c] font-semibold hover:underline">
+                          Sign In
+                        </button>
+                      </p>
+                    </>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
 
           </div>
