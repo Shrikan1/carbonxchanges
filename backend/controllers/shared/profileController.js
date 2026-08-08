@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../models/User');
-
+const generateToken = require("../../utils/token")
 // GET /api/profile
 // Note: this covers your "findSellerById()" query — it's the same as the
 // already-existing User.findById(), since profile lookup isn't actually
