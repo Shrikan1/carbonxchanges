@@ -12,8 +12,9 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Marketplace', path: '/marketplace' },
-    { name: 'Projects', path: '/projects' },
+    { name: 'Article', path: '/article' },
+    { name: 'Posts', path: '/posts' },
+    { name: 'Gallery', path: '/gallery' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ];
@@ -26,7 +27,7 @@ const Navbar = () => {
           
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-white text-[17px] font-black tracking-tight">
+            <span className="logo-retro text-[18px]">
               CarbonXplanet
             </span>
           </Link>
@@ -39,13 +40,20 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`px-3 py-1.5 text-[13px] font-medium tracking-wide transition-colors ${
+                  className={`group px-3 py-1.5 text-[13px] font-['JetBrains_Mono'] uppercase font-medium tracking-wide flex items-center justify-center transition-colors ${
                     isActive 
                       ? 'text-white' 
                       : 'text-[#888] hover:text-white'
                   }`}
                 >
-                  {link.name}
+                  <span className="relative overflow-hidden block leading-tight">
+                    <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                      {link.name}
+                    </span>
+                    <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                      {link.name}
+                    </span>
+                  </span>
                 </Link>
               );
             })}
@@ -55,15 +63,23 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-2">
             <Link 
               to="/login" 
-              className="px-4 py-1.5 text-[#888] hover:text-white text-[13px] font-medium transition-colors"
+              className="group px-4 py-1.5 text-[#888] hover:text-white text-[13px] font-['JetBrains_Mono'] uppercase font-medium flex items-center justify-center transition-colors"
             >
-              Sign In
+              <span className="relative overflow-hidden block leading-tight">
+                <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                  Login
+                </span>
+                <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                  Login
+                </span>
+              </span>
             </Link>
             <Link 
               to="/signup" 
-              className="px-5 py-2 bg-white text-[#0c0c0c] text-[13px] font-semibold rounded-full hover:bg-[#eee] transition-colors"
+              className="px-5 py-2 bg-white text-[#0c0c0c] text-[13px] font-['JetBrains_Mono'] uppercase font-semibold rounded-full hover:bg-[#eee] transition-colors flex items-center space-x-1"
             >
-              Get Started
+              <span>Sign Up</span>
+              <span>→</span>
             </Link>
           </div>
 
@@ -102,7 +118,7 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 onClick={toggleMobileMenu}
-                className="px-4 py-3 text-[#888] hover:text-white text-sm font-medium transition-colors"
+                className="px-4 py-3 text-[#888] hover:text-white text-sm font-['JetBrains_Mono'] uppercase font-medium transition-colors"
               >
                 {link.name}
               </Link>
@@ -114,16 +130,17 @@ const Navbar = () => {
             <Link 
               to="/login" 
               onClick={toggleMobileMenu}
-              className="block w-full px-4 py-3 text-center text-[#888] text-sm font-medium border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+              className="block w-full px-4 py-3 text-center text-[#888] text-sm font-['JetBrains_Mono'] uppercase font-medium border border-[#333] hover:text-white hover:border-[#555] transition-colors"
             >
-              Sign In
+              Login
             </Link>
             <Link 
               to="/signup" 
               onClick={toggleMobileMenu}
-              className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-sm font-semibold hover:bg-[#eee] transition-colors"
+              className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-sm font-['JetBrains_Mono'] uppercase font-semibold hover:bg-[#eee] transition-colors flex items-center justify-center space-x-1"
             >
-              Get Started
+              <span>Sign Up</span>
+              <span>→</span>
             </Link>
           </div>
 

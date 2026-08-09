@@ -32,11 +32,6 @@ const Login = () => {
             <div className="relative z-10 h-full flex flex-col justify-between p-10">
               {/* Top Logo */}
               <div className="flex items-center space-x-3">
-                <img 
-                  src="/fevicon.png" 
-                  alt="CarbonXplanet" 
-                  className="h-8 w-8 object-contain"
-                />
                 <span className="text-white text-lg font-bold tracking-tight">
                   CarbonXplanet
                 </span>
@@ -63,8 +58,7 @@ const Login = () => {
           <div className="bg-white p-8 sm:p-12 lg:p-14 flex flex-col justify-center min-h-[600px]">
             
             {/* Mobile logo (visible only on small screens) */}
-            <div className="flex items-center space-x-2 mb-10 lg:hidden">
-              <img src="/fevicon.png" alt="CarbonXplanet" className="h-7 w-7 object-contain" />
+            <div className="flex items-center space-x-2 mb-8 lg:hidden">
               <span className="text-[#0c0c0c] text-base font-bold tracking-tight">CarbonXplanet</span>
             </div>
 

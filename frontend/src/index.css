@@ -1,7 +1,31 @@
 @import "tailwindcss";
 
+@layer utilities {
+  .logo-retro {
+    font-family: 'Bungee', cursive;
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Removed text-shadow to prevent duplicate font rendering bug with background-clip */
+    letter-spacing: 0.05em;
+  }
+}
+
 @layer base {
-  input, textarea, select, button {
+
+  input,
+  textarea,
+  select,
+  button {
     font-family: inherit;
+  }
+  
+  h1 {
+    font-family: "Sekuya", system-ui;
+    font-weight: 400 !important;
+    font-style: normal;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
   }
 }

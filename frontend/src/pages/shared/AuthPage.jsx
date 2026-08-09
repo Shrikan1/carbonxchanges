@@ -52,7 +52,7 @@ const AuthPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#0c0c0c] border border-[#222] overflow-hidden">
 
           {/* Left Panel — Image + Branding */}
-          <div className="relative hidden lg:block min-h-[640px]">
+          <div className="relative hidden lg:block overflow-hidden h-[700px]">
             <div 
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${authBg})` }}
@@ -62,12 +62,7 @@ const AuthPage = () => {
             <div className="relative z-10 h-full flex flex-col justify-between p-10">
               {/* Top Logo */}
               <div className="flex items-center space-x-3">
-                <img 
-                  src="/fevicon.png" 
-                  alt="CarbonXplanet" 
-                  className="h-8 w-8 object-contain"
-                />
-                <span className="text-white text-lg font-bold tracking-tight">
+                <span className="logo-retro text-[20px]">
                   CarbonXplanet
                 </span>
               </div>
@@ -83,7 +78,7 @@ const AuthPage = () => {
                     transition={{ duration: 0.3, ease: 'easeOut' }}
                     className="absolute inset-0"
                   >
-                    <h2 className="text-white text-4xl font-black leading-[1.05] tracking-tight mb-4">
+                    <h2 className="text-white text-4xl font-black font-sans leading-[1.05] tracking-tight mb-4">
                       {mode === 'login' ? (
                         <>Trade Carbon,<br />Save Earth.</>
                       ) : (
@@ -103,19 +98,18 @@ const AuthPage = () => {
           </div>
 
           {/* Right Panel — Auth Form */}
-          <div className="bg-white p-8 sm:p-12 lg:p-14 flex flex-col justify-center min-h-[640px]">
+          <div className="bg-white p-8 sm:p-12 lg:p-14 flex flex-col justify-center h-[700px]">
             
             {/* Mobile logo */}
             <div className="flex items-center space-x-2 mb-8 lg:hidden">
-              <img src="/fevicon.png" alt="CarbonXplanet" className="h-7 w-7 object-contain" />
-              <span className="text-[#0c0c0c] text-base font-bold tracking-tight">CarbonXplanet</span>
+              <span className="logo-retro text-[18px]">CarbonXplanet</span>
             </div>
 
             {/* Tab Navigation */}
             <div className="flex items-center space-x-6 mb-8">
               <button
                 onClick={() => switchMode('login')}
-                className={`relative text-xl font-black tracking-tight pb-2 transition-colors duration-300 ${
+                className={`relative text-xl font-black font-sans tracking-tight pb-2 transition-colors duration-300 ${
                   mode === 'login' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
                 }`}
               >
@@ -127,7 +121,7 @@ const AuthPage = () => {
               </button>
               <button
                 onClick={() => switchMode('signup')}
-                className={`relative text-xl font-black tracking-tight pb-2 transition-colors duration-300 ${
+                className={`relative text-xl font-black font-sans tracking-tight pb-2 transition-colors duration-300 ${
                   mode === 'signup' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
                 }`}
               >
@@ -223,7 +217,7 @@ const AuthPage = () => {
                           </label>
                           <input
                             type="text"
-                            placeholder="Alex Johnson"
+                            placeholder="Sahil Yadav"
                             className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
                           />
                         </div>

@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { 
-  FaArrowRight, 
-  FaTree, 
-  FaWind, 
-  FaSolarPanel, 
-  FaShieldAlt, 
-  FaBolt, 
-  FaChartLine, 
+import {
+  FaArrowRight,
+  FaTree,
+  FaWind,
+  FaSolarPanel,
+  FaShieldAlt,
+  FaBolt,
+  FaChartLine,
   FaFileContract,
   FaWallet,
   FaSearch,
@@ -19,28 +19,40 @@ import {
 import Navbar from '../../components/layout/Navbar';
 import DriftWall from '../../components/ui/DriftWall';
 import heroBg from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.jpg';
-import ParticleText from '../../components/ui/ParticleText';
 import GlareHover from '../../components/ui/GlareHover';
 import DecryptedText from '../../components/ui/DecryptedText';
-import DepthText from '../../components/ui/DepthText';
 import ScrollExpand from '../../components/ui/ScrollExpand';
+import img1 from '../../assets/1744ff3b8f6c99355ca2b0eafe081094.webp';
+import img2 from '../../assets/18297.jpg';
+import img3 from '../../assets/4k-wallpaper-clouds-cropland-dawn.jpg';
+import img4 from '../../assets/634013.jpg';
+import img5 from '../../assets/Mangrove-Forest-Coast-2000x1237-1.jpg';
+import img6 from '../../assets/b6bd59b154cff2b6bcee4252068bfbaf.webp';
+import img7 from '../../assets/images (3).jpg';
+import img8 from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
+import img9 from '../../assets/nature-outdoors-countryside-hill.jpg';
+import img10 from '../../assets/os-x-mavericks-3840x2160-24079.jpg';
+import img11 from '../../assets/pexels-adnan-atasoy-261355608-12644453.jpg';
+import img12 from '../../assets/shutterstock_297591356.jpg.webp';
+import img13 from '../../assets/wp2557992.jpg';
+import img14 from '../../assets/wp9161748.jpg';
 
 const projectGalleryItems = [
-  { image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop', title: 'Tropical Rainforest' },
-  { image: 'https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=600&h=400&fit=crop', title: 'Wind Turbines' },
-  { image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&h=400&fit=crop', title: 'Solar Panels' },
-  { image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop', title: 'Mountain Valley' },
-  { image: 'https://images.unsplash.com/photo-1518173946687-a696ef0c30d4?w=600&h=400&fit=crop', title: 'Ocean Conservation' },
-  { image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop', title: 'Green Plantation' },
-  { image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&h=400&fit=crop', title: 'Sunrise Forest' },
-  { image: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&h=400&fit=crop', title: 'Recycling Hub' },
-  { image: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=600&h=400&fit=crop', title: 'Evergreen Landscape' },
-  { image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop', title: 'Golden Fields' },
-  { image: 'https://images.unsplash.com/photo-1548337138-e87d889cc369?w=600&h=400&fit=crop', title: 'Mangrove Roots' },
-  { image: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=400&fit=crop', title: 'Aerial Forest' },
-  { image: 'https://images.unsplash.com/photo-1413752362258-7af2a667b590?w=600&h=400&fit=crop', title: 'Waterfall Canyon' },
-  { image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop', title: 'Alpine Peaks' },
-  { image: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=400&fit=crop', title: 'River Bridge' },
+  { image: img1, title: 'Tropical Rainforest' },
+  { image: img2, title: 'Wind Turbines' },
+  { image: img3, title: 'Solar Panels' },
+  { image: img4, title: 'Mountain Valley' },
+  { image: img5, title: 'Ocean Conservation' },
+  { image: img6, title: 'Green Plantation' },
+  { image: img7, title: 'Sunrise Forest' },
+  { image: img8, title: 'Recycling Hub' },
+  { image: img9, title: 'Evergreen Landscape' },
+  { image: img10, title: 'Golden Fields' },
+  { image: img11, title: 'Mangrove Roots' },
+  { image: img12, title: 'Aerial Forest' },
+  { image: img13, title: 'Waterfall Canyon' },
+  { image: img14, title: 'Alpine Peaks' },
+  { image: heroBg, title: 'River Bridge' },
 ];
 
 const Home = () => {
@@ -51,7 +63,7 @@ const Home = () => {
       {/* ─── HERO SECTION ─── */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
@@ -59,37 +71,9 @@ const Home = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-20">
           {/* Headline */}
-          <div className="flex flex-col items-center justify-center space-y-3 mb-10 mt-4">
-            <DepthText
-              text="Offset Emissions."
-              layers={16}
-              depth={1.5}
-              faceColor="#ffffff"
-              depthColor="#042f14"
-              tilt={4}
-              pointerTracking={true}
-              smoothing={0.1}
-              perspective={1200}
-              autoOrbit={false}
-              fontSize="clamp(3.5rem, 9vw, 6.5rem)"
-              fontWeight={900}
-              shadow={true}
-            />
-            <DepthText
-              text="Build the Future."
-              layers={16}
-              depth={1.5}
-              faceColor="#f3f4f6"
-              depthColor="#042f14"
-              tilt={4}
-              pointerTracking={true}
-              smoothing={0.1}
-              perspective={1200}
-              autoOrbit={false}
-              fontSize="clamp(3.5rem, 9vw, 6.5rem)"
-              fontWeight={900}
-              shadow={true}
-            />
+          <div className="flex flex-col items-center justify-center space-y-2 mb-10 mt-4">
+            <h1 className="logo-retro text-[clamp(2.5rem,6vw,5rem)] text-white uppercase tracking-tight drop-shadow-lg leading-[1.1]" style={{ WebkitTextFillColor: 'white', background: 'none' }}>Offset Emissions.</h1>
+            <h1 className="logo-retro text-[clamp(2.5rem,6vw,5rem)] text-[#f3f4f6] uppercase tracking-tight drop-shadow-lg leading-[1.1]" style={{ WebkitTextFillColor: '#f3f4f6', background: 'none' }}>Build the Future.</h1>
           </div>
 
           {/* Subtext */}
@@ -99,15 +83,15 @@ const Home = () => {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              to="/marketplace" 
-              className="inline-flex items-center space-x-2 bg-white text-[#0c0c0c] px-8 py-3.5 text-[14px] font-semibold hover:bg-[#eee] transition-colors"
+            <Link
+              to="/marketplace"
+              className="inline-flex items-center space-x-2 bg-white text-[#0c0c0c] px-8 py-3.5 text-[14px] font-semibold hover:bg-[#eee] transition-colors rounded-full"
             >
               <span>Explore Marketplace</span>
               <FaArrowRight className="text-[11px]" />
             </Link>
-            <Link 
-              to="/signup" 
+            <Link
+              to="/signup"
               className="inline-block"
             >
               <GlareHover
@@ -115,13 +99,13 @@ const Home = () => {
                 height="auto"
                 background="transparent"
                 borderColor="rgba(255,255,255,0.2)"
-                borderRadius="0px"
+                borderRadius="9999px"
                 glareColor="#ffffff"
                 glareOpacity={0.3}
                 glareAngle={-30}
                 glareSize={300}
                 transitionDuration={800}
-                className="px-8 py-3.5 hover:border-white/50 transition-colors !border-[rgba(255,255,255,0.2)] hover:!border-[rgba(255,255,255,0.5)]"
+                className="px-8 py-3.5 hover:border-white/50 transition-colors !border-[rgba(255,255,255,0.2)] hover:!border-[rgba(255,255,255,0.5)] rounded-full"
               >
                 <span className="text-white text-[14px] font-semibold">Get Started</span>
               </GlareHover>
@@ -129,361 +113,236 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Bottom Stats Bar */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-white/10 bg-[#0c0c0c]/80">
-          <div className="max-w-5xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-white/40 mb-1">Total Volume</p>
-              <p className="text-xl font-bold text-white">
-                <DecryptedText text="$24.8M" animateOn="view" speed={60} maxIterations={12} encryptedClassName="text-white/60" />
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-white/40 mb-1">Credits Retired</p>
-              <p className="text-xl font-bold text-white">
-                <DecryptedText text="1.2M tCO₂" animateOn="view" speed={60} maxIterations={12} encryptedClassName="text-white/60" />
-              </p>
-            </div>
-            <div className="hidden md:block">
-              <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-white/40 mb-1">Active Projects</p>
-              <p className="text-xl font-bold text-white">
-                <DecryptedText text="340+" animateOn="view" speed={60} maxIterations={12} encryptedClassName="text-white/60" />
-              </p>
-            </div>
-            <div className="hidden md:block">
-              <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-white/40 mb-1">Avg. Price/Credit</p>
-              <p className="text-xl font-bold text-white">
-                <DecryptedText text="$18.40" animateOn="view" speed={60} maxIterations={12} encryptedClassName="text-white/60" />
-              </p>
-            </div>
-          </div>
-        </div>
+
       </section>
 
-      {/* ─── FEATURED PROJECTS ─── */}
+      {/* ─── ABOUT THE PLATFORM ─── */}
       <section className="border-t border-[#222]">
         <div className="max-w-5xl mx-auto px-6 py-24">
-          
-          {/* Section Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-14 gap-4">
-            <div>
-              <p className="text-[11px] font-mono uppercase tracking-[0.15em] text-[#666] mb-3">Featured</p>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-                Carbon Credit Projects
+
+          <div className="flex flex-col md:flex-row items-center gap-16">
+            <div className="flex-1 space-y-6">
+              <p className="text-[11px] font-mono uppercase tracking-[0.15em] text-[#666]">Our Purpose</p>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+                Empowering Global Climate Action.
               </h2>
+              <p className="text-white/60 text-lg leading-relaxed">
+                CarbonXplanet is a next-generation decentralized marketplace designed to bridge the gap between verified carbon credit projects and eco-conscious organizations.
+              </p>
+              <p className="text-white/60 text-lg leading-relaxed">
+                By leveraging blockchain infrastructure, we bring unprecedented transparency, security, and efficiency to the trading of environmental assets—ensuring that every transaction directly contributes to a sustainable future.
+              </p>
+
+              <div className="pt-6 grid grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-white font-bold text-lg mb-2">Verified Impact</h4>
+                  <p className="text-[#888] text-sm">Every project is stringently vetted against global standards like Verra and Gold Standard.</p>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold text-lg mb-2">Immutable Ledger</h4>
+                  <p className="text-[#888] text-sm">Blockchain technology guarantees that credits cannot be double-counted or manipulated.</p>
+                </div>
+              </div>
             </div>
-            <Link to="/projects" className="text-[13px] text-[#888] hover:text-white font-medium flex items-center space-x-1.5 transition-colors">
-              <span>View all projects</span>
-              <FaArrowRight className="text-[10px]" />
-            </Link>
+
+            <div className="flex-1 w-full">
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl h-[500px]">
+                <img
+                  src={img4}
+                  alt="Sustainable Future"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/20 to-transparent" />
+                <div className="absolute bottom-10 left-10 right-10">
+                  <div>
+                    <p className="text-white font-medium text-lg leading-snug drop-shadow-md">"The transition to a net-zero global economy requires radical transparency and verifiable action."</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Project Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            {/* Project 1 (Full Image Card - Like New York) */}
-            <div className="bg-white p-2.5 rounded-[2.5rem] shadow-xl h-[480px] flex flex-col relative group">
-              <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=800&auto=format&fit=crop" 
-                  alt="Amazon Rainforest Conservation" 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                />
-                
-                {/* Heart Icon */}
-                <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center cursor-pointer hover:bg-white/40 transition-colors z-10">
-                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                </div>
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                  <h3 className="text-[22px] font-bold text-white mb-1">Amazon Rainforest</h3>
-                  <p className="text-[13px] text-white/70 font-medium mb-5">Forestry · Verra VCS</p>
-                  
-                  <div className="flex items-center space-x-4 mb-6 text-[13px] font-semibold text-white/90">
-                    <div className="flex items-center space-x-1.5">
-                       <span className="text-white/60">from</span> <span>$14.20</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                       <FaTree className="text-white/60" /> <span>BRZ</span>
-                    </div>
-                  </div>
-
-                  <Link to="/projects" className="block w-full text-center bg-white text-black py-3.5 rounded-[1.25rem] text-[14px] font-bold hover:bg-gray-100 transition-colors shadow-lg">
-                    View Details
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Project 2 (Split Image/White Card - Like San Francisco) */}
-            <div className="bg-white p-2.5 rounded-[2.5rem] shadow-xl h-[480px] flex flex-col group">
-              <div className="relative w-full h-[55%] rounded-[2rem] overflow-hidden mb-4">
-                <img 
-                  src="https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?q=80&w=800&auto=format&fit=crop" 
-                  alt="Gujarat Wind Farm Cluster" 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                />
-              </div>
-              
-              <div className="flex-grow flex flex-col px-4 pb-3">
-                <h3 className="text-[22px] font-bold text-[#111] mb-1">Gujarat Wind Farm</h3>
-                <p className="text-[13px] text-[#888] font-medium mb-5">Wind Energy · Gold Standard</p>
-                
-                <div className="flex items-center space-x-4 mb-auto text-[13px] font-bold text-[#111]">
-                  <div className="flex items-center space-x-1.5">
-                     <span className="text-[#888] font-medium">from</span> <span>$22.50</span>
-                  </div>
-                  <div className="flex items-center space-x-1.5">
-                     <FaWind className="text-[#888]" /> <span>IND</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3 mt-4">
-                  <Link to="/projects" className="flex-grow text-center bg-[#1a1a1a] text-white py-3.5 rounded-[1.25rem] text-[14px] font-bold hover:bg-black transition-colors shadow-lg">
-                    View Details
-                  </Link>
-                  <button className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-red-400 hover:bg-red-50 transition-colors flex-shrink-0">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Project 3 (Full Image Card - Like New York) */}
-            <div className="bg-white p-2.5 rounded-[2.5rem] shadow-xl h-[480px] flex flex-col relative group">
-              <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=800&auto=format&fit=crop" 
-                  alt="Rajasthan Solar Grid" 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                />
-                
-                {/* Heart Icon */}
-                <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center cursor-pointer hover:bg-white/40 transition-colors z-10">
-                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                </div>
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                  <h3 className="text-[22px] font-bold text-white mb-1">Rajasthan Solar Grid</h3>
-                  <p className="text-[13px] text-white/70 font-medium mb-5">Solar · Verra VCS</p>
-                  
-                  <div className="flex items-center space-x-4 mb-6 text-[13px] font-semibold text-white/90">
-                    <div className="flex items-center space-x-1.5">
-                       <span className="text-white/60">from</span> <span>$18.80</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                       <FaSolarPanel className="text-white/60" /> <span>IND</span>
-                    </div>
-                  </div>
-
-                  <Link to="/projects" className="block w-full text-center bg-white text-black py-3.5 rounded-[1.25rem] text-[14px] font-bold hover:bg-gray-100 transition-colors shadow-lg">
-                    View Details
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-          </div>
         </div>
       </section>
 
-      {/* ─── PROJECT GALLERY (DRIFT WALL) ─── */}
-      <section className="border-t border-[#222]">
-        <div className="max-w-5xl mx-auto px-6 pt-24 pb-8">
-          <div className="text-center mb-4">
-            <p className="text-[11px] font-mono uppercase tracking-[0.15em] text-[#666] mb-3">Gallery</p>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-              Projects Around the World
+      {/* ─── PROJECT GALLERY (DARK & FLOATING GALLERY) ─── */}
+      <section id="gallery" className="bg-[#0a0a0a] text-white overflow-hidden py-32 relative">
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="max-w-md z-10">
+            <h2 className="text-5xl sm:text-7xl font-normal tracking-tight mb-6 text-white logo-retro" style={{ WebkitTextFillColor: 'white', background: 'none' }}>
+              Explore<br />Projects.
             </h2>
-            <p className="text-[#888] text-[14px] mt-3 max-w-lg mx-auto">
-              From rainforest preservation to renewable energy — explore the initiatives shaping a carbon-neutral future.
+            <p className="text-white/70 text-lg leading-relaxed mb-8 font-medium">
+              A profile, portfolio, and social feed in one place.
+              Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
             </p>
           </div>
-        </div>
-        <div style={{ height: 560 }}>
-          <DriftWall
-            items={projectGalleryItems}
-            columns={5}
-            tileWidth={220}
-            tileHeight={148}
-            gap={14}
-            tilt={14}
-            turn={-12}
-            perspective={1200}
-            depth={100}
-            speed={36}
-            direction="up"
-            variance={0.4}
-            parallax={0.5}
-            lift={56}
-            fade={0.55}
-            dim={1}
-            overlayColor="#060010"
-            radius={10}
-            roll={0}
-            pauseOnHover={false}
-            grayscale={false}
-          />
-        </div>
-      </section>
-
-      {/* ─── PLATFORM FEATURES ─── */}
-      <section className="border-t border-[#222]">
-        <div className="max-w-5xl mx-auto px-6 py-24">
           
-          <div className="mb-14">
-            <p className="text-[11px] font-mono uppercase tracking-[0.15em] text-[#666] mb-3">Platform</p>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-              Why CarbonXplanet
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#222]">
-            
-            <div className="bg-[#0c0c0c] p-8 sm:p-10">
-              <div className="w-10 h-10 bg-[#1a1a1a] border border-[#333] flex items-center justify-center mb-5">
-                <FaBolt className="text-white text-sm" />
-              </div>
-              <h3 className="text-base font-bold text-white mb-2">Instant Settlement</h3>
-              <p className="text-[13px] text-[#888] leading-relaxed">
-                Smart contract-powered transactions settle in seconds with zero intermediaries and full on-chain transparency.
-              </p>
-            </div>
-
-            <div className="bg-[#0c0c0c] p-8 sm:p-10">
-              <div className="w-10 h-10 bg-[#1a1a1a] border border-[#333] flex items-center justify-center mb-5">
-                <FaShieldAlt className="text-white text-sm" />
-              </div>
-              <h3 className="text-base font-bold text-white mb-2">Blockchain Proof</h3>
-              <p className="text-[13px] text-[#888] leading-relaxed">
-                Every credit is minted as an NFT with verifiable provenance. Tamper-proof audit trail from issuance to retirement.
-              </p>
-            </div>
-
-            <div className="bg-[#0c0c0c] p-8 sm:p-10">
-              <div className="w-10 h-10 bg-[#1a1a1a] border border-[#333] flex items-center justify-center mb-5">
-                <FaChartLine className="text-white text-sm" />
-              </div>
-              <h3 className="text-base font-bold text-white mb-2">Real-Time Analytics</h3>
-              <p className="text-[13px] text-[#888] leading-relaxed">
-                Track your carbon footprint, portfolio performance, and market trends with live dashboards and reporting tools.
-              </p>
-            </div>
-
-            <div className="bg-[#0c0c0c] p-8 sm:p-10">
-              <div className="w-10 h-10 bg-[#1a1a1a] border border-[#333] flex items-center justify-center mb-5">
-                <FaFileContract className="text-white text-sm" />
-              </div>
-              <h3 className="text-base font-bold text-white mb-2">ESG Compliance</h3>
-              <p className="text-[13px] text-[#888] leading-relaxed">
-                Generate audit-ready ESG reports. Aligned with Verra VCS, Gold Standard, and international carbon accounting frameworks.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ─── HOW IT WORKS ─── */}
-      <section className="border-t border-[#222]">
-        <div className="max-w-5xl mx-auto px-6 py-24">
-          
-          <div className="mb-14">
-            <p className="text-[11px] font-mono uppercase tracking-[0.15em] text-[#666] mb-3">Process</p>
-            <div className="relative w-full h-[120px] -ml-2 -mt-4 mb-4">
-              <ParticleText
-                text="How It Works"
-                particleSize={2.5}
-                density={3}
-                color="#ffffff"
-                highlightColor="#aaf7a7"
-                scatter={80}
-                gatherDuration={1500}
-                stagger={200}
-                trigger="scroll"
-                fontSize="clamp(2rem, 6vw, 3.5rem)"
-                fontWeight={900}
-                glow={true}
-                className="!min-h-0"
+          <div className="relative h-[600px] w-full transform lg:translate-x-12">
+            <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_100px_rgba(10,10,10,1)] rounded-[40px]"></div>
+            <div className="w-[120%] h-full overflow-hidden transform -rotate-6 scale-[1.05] -ml-[10%]">
+              <DriftWall
+                items={projectGalleryItems}
+                columns={4}
+                tileWidth={260}
+                tileHeight={180}
+                gap={16}
+                tilt={0}
+                turn={0}
+                perspective={1000}
+                depth={0}
+                speed={30}
+                direction="up"
+                variance={0.2}
+                parallax={0}
+                lift={0}
+                fade={0}
+                dim={1}
+                overlayColor="#0a0a0a"
+                radius={16}
+                roll={0}
+                pauseOnHover={false}
+                grayscale={false}
               />
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#222]">
-            
-            <div className="bg-[#0c0c0c] p-8 sm:p-10">
-              <div className="flex items-center space-x-3 mb-6">
-                <span className="text-[11px] font-mono text-[#666] border border-[#333] w-8 h-8 flex items-center justify-center">01</span>
-                <FaWallet className="text-white text-sm" />
-              </div>
-              <h3 className="text-base font-bold text-white mb-2">Connect Wallet</h3>
-              <p className="text-[13px] text-[#888] leading-relaxed">
-                Link your Web3 wallet to securely authenticate and access the marketplace. No passwords, no email signups needed.
-              </p>
+      {/* ─── PLATFORM FEATURES (WHITE & FLOATING ICONS) ─── */}
+      <section className="bg-white text-[#0a0a0a] overflow-hidden py-32 relative">
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="max-w-xl lg:pr-10 z-10">
+            <h2 className="text-5xl sm:text-7xl font-black tracking-tight mb-8 leading-[1.05] text-[#0a0a0a]">
+              Why CarbonXplanet.
+            </h2>
+            <p className="text-[#333] text-[18px] leading-relaxed mb-6 font-medium">
+              The infrastructure for a sustainable future. A space for verifiable action, instant settlement, and complete transparency.
+            </p>
+            <p className="text-[#555] text-[16px] leading-relaxed mb-10">
+              Generate audit-ready ESG reports aligned with Verra VCS and Gold Standard. Every credit is minted as an NFT with an immutable audit trail.
+            </p>
+            <Link to="/signup" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 rounded-full shadow-xl">
+              <span>CREATE AN ACCOUNT</span>
+              <FaArrowRight className="text-[11px]" />
+            </Link>
+          </div>
+          
+          <div className="relative h-[600px] flex items-center justify-center lg:justify-end lg:-mr-[5vw]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 transform -rotate-12 scale-110">
+              {[FaBolt, FaShieldAlt, FaChartLine, FaFileContract, FaTree, FaWind, FaSolarPanel, FaWallet, FaHandshake].map((Icon, idx) => (
+                <div key={idx} className="bg-white rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.08)] w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center transform transition-transform duration-500 hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
+                  <Icon className={`text-4xl sm:text-6xl ${['text-emerald-500', 'text-blue-500', 'text-indigo-500', 'text-rose-500', 'text-amber-500'][idx % 5]}`} />
+                </div>
+              ))}
             </div>
-
-            <div className="bg-[#0c0c0c] p-8 sm:p-10">
-              <div className="flex items-center space-x-3 mb-6">
-                <span className="text-[11px] font-mono text-[#666] border border-[#333] w-8 h-8 flex items-center justify-center">02</span>
-                <FaSearch className="text-white text-sm" />
-              </div>
-              <h3 className="text-base font-bold text-white mb-2">Browse & Select</h3>
-              <p className="text-[13px] text-[#888] leading-relaxed">
-                Explore audited carbon credit projects filtered by type, region, standard, vintage, and price per tonne.
-              </p>
-            </div>
-
-            <div className="bg-[#0c0c0c] p-8 sm:p-10">
-              <div className="flex items-center space-x-3 mb-6">
-                <span className="text-[11px] font-mono text-[#666] border border-[#333] w-8 h-8 flex items-center justify-center">03</span>
-                <FaHandshake className="text-white text-sm" />
-              </div>
-              <h3 className="text-base font-bold text-white mb-2">Trade & Retire</h3>
-              <p className="text-[13px] text-[#888] leading-relaxed">
-                Purchase credits via smart contract, hold them in your portfolio, or retire them on-chain to offset your emissions.
-              </p>
-            </div>
-
           </div>
         </div>
       </section>
 
-      {/* ─── GLOBAL IMPACT SHOWCASE ─── */}
-      <section className="border-t border-[#222]">
-        <div style={{ height: '700px', backgroundColor: '#000' }} className="w-full relative">
-          <ScrollExpand 
-            src="https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80" 
-            title="Global Impact" 
-            scrollHint="Scroll to explore"
-            startWidth={45}
-            startHeight={65}
-            startRadius={24}
-            endRadius={0}
-            mediaZoom={1.35}
-            scrollDistance={1.2}
-            holdDistance={0.35}
-            smoothing={0.1}
-            overlayScrim={0.65}
-            useWindowScroll={true}
-            enabled={true}
-          >
-            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black text-white tracking-tight mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-              Every credit makes a difference.
+      {/* ─── HOW IT WORKS (VIBRANT EMERALD) ─── */}
+      <section className="bg-[#059669] text-white overflow-hidden py-32 relative">
+        {/* Massive Watermark */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none overflow-hidden select-none">
+          <span className="text-[30vw] font-black leading-none whitespace-nowrap logo-retro">CARBON</span>
+        </div>
+        
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+          <div className="max-w-xl">
+            <h2 className="text-5xl sm:text-7xl font-black tracking-tight mb-8 leading-[1.05] text-[#bef264]">
+              A carbon market<br/>that doesn't<br/>manipulate you.
             </h2>
-            <p className="text-white/90 text-sm sm:text-lg max-w-xl mx-auto font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] leading-relaxed">
-              The carbon market isn't just about numbers. It's about protecting real ecosystems, funding sustainable communities, and restoring the planet.
+            <p className="text-white/90 text-[18px] leading-relaxed mb-6 font-medium">
+              Trade credits directly on-chain. No intermediaries, no hidden fees, and full transparency.
             </p>
-          </ScrollExpand>
+            <p className="text-white/90 text-[16px] leading-relaxed mb-10 font-bold">
+              No brokers. No greenwashing. No BS.
+            </p>
+            <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-[#bef264] text-[#0a0a0a] px-8 py-4 text-[13px] font-black hover:bg-[#a3e635] transition-all hover:scale-105 rounded-full shadow-xl">
+              <span>EXPLORE MARKETPLACE</span>
+              <FaArrowRight className="text-[11px]" />
+            </Link>
+          </div>
+          
+          <div className="relative">
+            <div className="bg-white text-[#0a0a0a] rounded-[2rem] p-8 sm:p-12 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-w-lg ml-auto">
+              <div className="space-y-8">
+                
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                    <span className="text-emerald-700 font-bold text-sm">01</span>
+                  </div>
+                  <div>
+                    <h4 className="font-black text-lg mb-1">Connect Wallet</h4>
+                    <p className="text-[#555] text-sm leading-relaxed">Link your Web3 wallet to authenticate and access the marketplace securely.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                    <span className="text-emerald-700 font-bold text-sm">02</span>
+                  </div>
+                  <div>
+                    <h4 className="font-black text-lg mb-1">Browse & Select</h4>
+                    <p className="text-[#555] text-sm leading-relaxed">Explore audited carbon credit projects filtered by type, region, standard, vintage.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 rounded-full bg-[#bef264] flex items-center justify-center shrink-0 shadow-sm">
+                    <span className="text-[#0a0a0a] font-bold text-sm">03</span>
+                  </div>
+                  <div>
+                    <h4 className="font-black text-lg mb-1">Trade & Retire</h4>
+                    <p className="text-[#555] text-sm leading-relaxed">Purchase credits via smart contract, hold them, or retire them on-chain.</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── GLOBAL IMPACT (BRIGHT LIME TESTIMONIAL) ─── */}
+      <section className="bg-[#bef264] text-[#0a0a0a] overflow-hidden py-32 relative">
+        {/* Massive Watermark */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none overflow-hidden select-none -rotate-6 scale-150">
+          <div className="flex flex-col space-y-4 font-black text-[20vw] leading-[0.8] whitespace-nowrap logo-retro">
+            <span>IMPACT IMPACT</span>
+            <span>IMPACT IMPACT</span>
+            <span>IMPACT IMPACT</span>
+          </div>
+        </div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl sm:text-6xl font-black tracking-tight mb-12 leading-[1.1] text-[#0a0a0a]">
+            Don't take our word for it.<br/>
+            Take theirs. It's pretty impactful.
+          </h2>
+          
+          <div className="flex justify-center -space-x-4 mb-10">
+             {/* Small avatars row */}
+             <div className="w-14 h-14 rounded-full border-4 border-[#bef264] bg-white overflow-hidden z-40 shadow-lg"><img src={img1} className="w-full h-full object-cover grayscale" /></div>
+             <div className="w-14 h-14 rounded-full border-4 border-[#bef264] bg-white overflow-hidden z-30 shadow-lg"><img src={img2} className="w-full h-full object-cover grayscale opacity-70" /></div>
+             <div className="w-14 h-14 rounded-full border-4 border-[#bef264] bg-white overflow-hidden z-20 shadow-lg"><img src={img3} className="w-full h-full object-cover grayscale opacity-50" /></div>
+             <div className="w-14 h-14 rounded-full border-4 border-[#bef264] bg-white overflow-hidden z-10 shadow-lg"><img src={img4} className="w-full h-full object-cover grayscale opacity-30" /></div>
+          </div>
+
+          <p className="text-[22px] sm:text-[28px] font-medium leading-relaxed max-w-3xl mx-auto mb-10 text-[#222]">
+            “The carbon market isn't just about numbers. It's about protecting real ecosystems, funding sustainable communities, and restoring the planet with verifiable proof.”
+          </p>
+
+          <div className="mb-12">
+            <h4 className="font-black text-2xl uppercase tracking-tighter logo-retro text-[#0a0a0a]" style={{ WebkitTextFillColor: '#0a0a0a', background: 'none' }}>SARAH JENKINS</h4>
+            <p className="text-[#444] font-medium text-sm">Head of Sustainability</p>
+            <p className="text-[#444] font-medium text-sm">Global Tech Inc.</p>
+          </div>
+
+          <Link to="/about" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 rounded-full shadow-xl">
+            <span>READ THEIR STORY</span>
+            <FaArrowRight className="text-[11px]" />
+          </Link>
         </div>
       </section>
 
@@ -499,15 +358,15 @@ const Home = () => {
               Whether you're a corporation, fund, or government body — our platform handles compliance-grade carbon credit acquisition at scale.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link 
-                to="/signup" 
+              <Link
+                to="/signup"
                 className="inline-flex items-center space-x-2 bg-white text-[#0c0c0c] px-8 py-3.5 text-[14px] font-semibold hover:bg-[#eee] transition-colors"
               >
                 <span>Start Now</span>
                 <FaArrowRight className="text-[11px]" />
               </Link>
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className="text-[13px] text-[#888] hover:text-white font-medium transition-colors px-6 py-3.5"
               >
                 Contact Sales →
@@ -521,12 +380,11 @@ const Home = () => {
       <footer className="border-t border-[#222]">
         <div className="max-w-5xl mx-auto px-6 py-14">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
-            
+
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/fevicon.png" alt="CarbonXplanet" className="h-6 w-6 object-contain" />
-                <span className="text-white text-sm font-bold tracking-tight">CarbonXplanet</span>
+                <span className="logo-retro text-[16px]">CarbonXplanet</span>
               </div>
               <p className="text-[13px] text-[#666] leading-relaxed max-w-xs">
                 Decentralized carbon credit marketplace built on blockchain technology.
