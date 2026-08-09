@@ -22,6 +22,7 @@ app.get('/api/health', (req, res) => {
 app.use(generalLimiter);
 
 app.use('/api/v1/auth', require('../routes/v1/shared/authRoutes'));
+app.use('/api/upload', require('../routes/v1/shared/uploadRoutes'));
 app.use('/api/v1/admin', require('../routes/v1/adminRoutes'));
 app.use('/api/v1/agent', require('../routes/v1/agentRoutes'));
 app.use('/api/v1/projects', require('../routes/v1/projectRoutes'));

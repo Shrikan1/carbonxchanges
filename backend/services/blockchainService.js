@@ -1,12 +1,6 @@
 const { ethers } = require('ethers');
 const path = require('path');
 
-// Credits are stored off-chain as NUMERIC(12,2) — fractional tonnes are
-// allowed (e.g. 123.45 tCO2e). ERC-1155 balances are uint256 — whole
-// numbers only. SCALE fixes this the same way ETH uses 18-decimal "wei":
-// every on-chain amount is the off-chain amount × 100, so 2 decimal places
-// of precision survive the round trip. This conversion is applied HERE,
-// once, so no other file needs to think about it.
 const CREDIT_DECIMALS = 2;
 const SCALE = 10 ** CREDIT_DECIMALS;
 
@@ -14,10 +8,6 @@ function toOnChainAmount(amount) {
   return BigInt(Math.round(Number(amount) * SCALE));
 }
 
-// Loads the compiled contract artifact (ABI). Assumes this repo's
-// monorepo layout — backend/ and blockchain/ as sibling folders. If they
-// ever get split into separate repos, copy CarbonToken.json's ABI into
-// backend/ directly and adjust this path.
 let cachedContract = null;
 
 function getContract() {
@@ -38,15 +28,11 @@ function getContract() {
   return cachedContract;
 }
 
-// Mints a new batch. tokenId is our own credit_batches.id — see
-// Credit.createPendingBatch/finalizeCreditBatch for why minting happens in
-// two steps (the id has to exist before it can be used as the tokenId here).
 async function mintTokens({ toAddress, amount, tokenId, projectId, vintageYear, tokenMetadataURI }) {
   const contract = getContract();
   const onChainAmount = toOnChainAmount(amount);
 
-  // Falls back to a placeholder URI until ipfsService.js is wired in —
-  // same placeholder-accepting pattern used everywhere else in this project.
+ 
   const uri = tokenMetadataURI || `ipfs://placeholder-metadata-token-${tokenId}`;
 
   const tx = await contract.mintCredits(toAddress, tokenId, onChainAmount, projectId, vintageYear, uri);
@@ -58,10 +44,7 @@ async function mintTokens({ toAddress, amount, tokenId, projectId, vintageYear, 
   };
 }
 
-// Verifies a purchase actually happened on-chain by decoding the
-// transaction's TransferSingle event and checking it matches exactly what
-// the buyer claims — this is what makes buyerPurchaseController trustworthy
-// instead of just trusting a client-submitted tx hash.
+
 async function verifyPurchaseTransaction({ txHash, expectedAmount, expectedBuyer, expectedSeller, tokenId }) {
   const contract = getContract();
   const provider = contract.runner.provider;
@@ -96,9 +79,7 @@ async function verifyPurchaseTransaction({ txHash, expectedAmount, expectedBuyer
   return { valid: false, reason: 'No matching transfer found in this transaction' };
 }
 
-// Same idea as verifyPurchaseTransaction, but confirms the transfer went TO
-// the zero address (the standard ERC-1155/ERC-20 signature for a burn) and
-// came FROM the buyer claiming to have retired it.
+
 async function verifyBurnTransaction({ txHash, expectedAmount, expectedBurner, tokenId }) {
   const contract = getContract();
   const provider = contract.runner.provider;
