@@ -1,9 +1,7 @@
 const hre = require('hardhat');
 
 async function main() {
-  // The deployer wallet (from PRIVATE_KEY in .env) becomes the contract's
-  // owner — this is the same admin wallet that backend/blockchainService.js
-  // will use to sign mintCredits() calls later.
+ 
   const [deployer] = await hre.ethers.getSigners();
   console.log('Deploying CarbonToken with account:', deployer.address);
 
