@@ -27,16 +27,16 @@ const About = () => {
               At CarbonXplanet, we believe in the power of blockchain to achieve outstanding environmental results. With a team of experts and a commitment to transparency, we work hand-in-hand with our partners to bring green ideas to life.
             </p>
           </div>
-          
+
           <div className="relative mt-8 md:mt-0">
             <div className="w-full aspect-[4/3] rounded-[2.5rem] overflow-hidden">
-              <img 
+              <img
                 src={img1}
-                alt="Team working" 
+                alt="Team working"
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             {/* Circular Badge Overlay */}
             <div className="absolute -bottom-10 -left-6 md:-left-12 w-32 h-32 md:w-40 md:h-40 bg-[#0c0c0c] rounded-full flex items-center justify-center p-2">
               <div className="w-full h-full rounded-full border border-white/20 flex items-center justify-center relative">
@@ -54,7 +54,7 @@ const About = () => {
       {/* Intro Quote */}
       <section className="py-20 px-6 max-w-5xl mx-auto text-center mt-12 md:mt-0">
         <h2 className="text-2xl md:text-4xl font-medium leading-relaxed tracking-tight">
-          At CarbonXplanet we are committed to revolutionizing the carbon credit industry with innovative, sustainable, and transparent solutions. With a proven track record of delivering impactful projects, we combine <span className="font-bold">state-of-the-art technology</span>, <span className="text-white/40">expert verification, and community-centric approaches to bring visions to life.</span>
+          At CarbonXplanet, we are reshaping the carbon credit market with practical, sustainable, and transparent solutions. We combine <span className="font-bold">cutting-edge technology</span> <span className="text-white/40">with trusted verification to ensure every project delivers real environmental impact.</span>
         </h2>
       </section>
 
@@ -83,20 +83,20 @@ const About = () => {
       {/* Our Mission */}
       <section className="py-24 px-6 max-w-7xl mx-auto border-t border-white/10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-          
+
           {/* Images */}
           <div className="relative">
             <div className="w-[85%] aspect-[4/5] rounded-[2.5rem] overflow-hidden">
-              <img 
+              <img
                 src={img2}
-                alt="Mission" 
+                alt="Mission"
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="absolute bottom-10 right-0 w-[55%] aspect-square rounded-[2rem] overflow-hidden border-8 border-[#0c0c0c]">
-              <img 
+              <img
                 src={img3}
-                alt="Mission overlap" 
+                alt="Mission overlap"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -106,28 +106,24 @@ const About = () => {
           <div className="space-y-8">
             <h2 className="text-4xl md:text-5xl font-black tracking-tight">Our Mission</h2>
             <p className="text-white/60 leading-relaxed text-lg">
-              To provide exceptional decentralised services that exceed expectations through innovation, quality craftsmanship, and a commitment to sustainability. We aim to build lasting relationships and create a market that enhances communities worldwide.
+              We are here to make environmental action accessible and transparent. Our goal is to build a reliable carbon market that supports global ecosystems and fosters genuine partnerships.
             </p>
             <p className="text-white/60 leading-relaxed text-lg">
-              Through precision, expertise, and a customer-centric approach, we strive to exceed expectations in every transaction. Our dedication to integrity and excellence drives us to build lasting impact and a legacy of trust.
+              By relying on verified data and keeping our clients at the center of what we do, we aim to deliver clear, meaningful results in every transaction. Integrity is at the core of our work.
             </p>
 
             <ul className="space-y-4 pt-4">
               <li className="flex items-center space-x-3 text-lg font-medium">
                 <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
-                <span>Fostering Sustainable Growth and Green Development</span>
+                <span>Supporting Green Development</span>
               </li>
               <li className="flex items-center space-x-3 text-lg font-medium">
                 <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
-                <span>Innovating for a Sustainable Future</span>
+                <span>Fostering Sustainable Growth</span>
               </li>
               <li className="flex items-center space-x-3 text-lg font-medium">
                 <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
-                <span>Customer-Centric Approach</span>
-              </li>
-              <li className="flex items-center space-x-3 text-lg font-medium">
-                <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
-                <span>Building Stronger Communities</span>
+                <span>Prioritizing Our Community</span>
               </li>
             </ul>
           </div>
@@ -138,25 +134,25 @@ const About = () => {
       {/* Our Vision */}
       <section className="py-24 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-          
+
           {/* Text (Left on Desktop) */}
           <div className="space-y-8 order-2 md:order-1">
             <h2 className="text-4xl md:text-5xl font-black tracking-tight">Our Vision</h2>
             <p className="text-white/60 leading-relaxed text-lg">
-              At CarbonXplanet, our vision is to redefine the future of environmental action through innovation, sustainability, and excellence. We aim to create systems that not only inspire but also contribute to the well-being of communities and the environment.
+              We see a future where environmental action is integrated seamlessly into everyday business. We want to build systems that actively benefit both local communities and the broader environment.
             </p>
             <p className="text-white/60 leading-relaxed text-lg">
-              By embracing cutting-edge blockchain technology and eco-friendly practices, we strive to lead the industry toward a greener, smarter future. Our focus is on delivering value, quality, and longevity in every transaction we facilitate.
+              Using blockchain technology, we are paving the way for a smarter, greener industry. We focus on providing genuine value and long-term quality in everything we do.
             </p>
 
             <ul className="space-y-4 pt-4">
               <li className="flex items-center space-x-3 text-lg font-medium">
                 <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
-                <span>Inspiring Modern Architecture</span>
+                <span>Clear & Transparent Tracking</span>
               </li>
               <li className="flex items-center space-x-3 text-lg font-medium">
                 <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
-                <span>Pioneering Sustainable Infrastructure</span>
+                <span>Modern Eco-friendly Solutions</span>
               </li>
             </ul>
           </div>
@@ -164,16 +160,16 @@ const About = () => {
           {/* Images (Right on Desktop) */}
           <div className="relative order-1 md:order-2">
             <div className="w-[85%] aspect-[4/5] rounded-[2.5rem] overflow-hidden ml-auto">
-              <img 
+              <img
                 src={img4}
-                alt="Vision" 
+                alt="Vision"
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="absolute bottom-10 left-0 w-[55%] aspect-square rounded-[2rem] overflow-hidden border-8 border-[#0c0c0c]">
-              <img 
+              <img
                 src={img5}
-                alt="Vision overlap" 
+                alt="Vision overlap"
                 className="w-full h-full object-cover"
               />
             </div>
