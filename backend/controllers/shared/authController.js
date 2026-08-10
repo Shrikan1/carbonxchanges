@@ -15,6 +15,10 @@ async function signup(req, res) {
       return res.status(400).json({ error: 'name, email, and password are required' });
     }
 
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: 'Passwords do not match' });
+    }
+
     const existing = await User.findByEmail(email);
     if (existing) {
       return res.status(409).json({ error: 'An account with this email already exists' });
