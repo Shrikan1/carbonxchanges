@@ -85,7 +85,7 @@ const Home = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/marketplace"
-              className="inline-flex items-center space-x-2 bg-white text-[#0c0c0c] px-8 py-3.5 text-[14px] font-semibold hover:bg-[#eee] transition-colors rounded-full"
+              className="inline-flex items-center space-x-2 bg-white text-[#0c0c0c] px-8 py-3.5 text-[14px] font-semibold hover:bg-[#eee] transition-colors"
             >
               <span>Explore Marketplace</span>
               <FaArrowRight className="text-[11px]" />
@@ -99,13 +99,13 @@ const Home = () => {
                 height="auto"
                 background="transparent"
                 borderColor="rgba(255,255,255,0.2)"
-                borderRadius="9999px"
+                borderRadius="0px"
                 glareColor="#ffffff"
                 glareOpacity={0.3}
                 glareAngle={-30}
                 glareSize={300}
                 transitionDuration={800}
-                className="px-8 py-3.5 hover:border-white/50 transition-colors !border-[rgba(255,255,255,0.2)] hover:!border-[rgba(255,255,255,0.5)] rounded-full"
+                className="px-8 py-3.5 hover:border-white/50 transition-colors !border-[rgba(255,255,255,0.2)] hover:!border-[rgba(255,255,255,0.5)]"
               >
                 <span className="text-white text-[14px] font-semibold">Get Started</span>
               </GlareHover>
@@ -146,7 +146,7 @@ const Home = () => {
             </div>
 
             <div className="flex-1 w-full">
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl h-[500px]">
+              <div className="relative overflow-hidden shadow-2xl h-[500px]">
                 <img
                   src={img4}
                   alt="Sustainable Future"
@@ -178,9 +178,8 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="relative h-[600px] w-full transform lg:translate-x-12">
-            <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_100px_rgba(10,10,10,1)] rounded-[40px]"></div>
-            <div className="w-[120%] h-full overflow-hidden transform -rotate-6 scale-[1.05] -ml-[10%]">
+          <div className="relative h-[600px] w-full">
+            <div className="w-full h-full overflow-hidden transform -rotate-6 scale-[1.05]">
               <DriftWall
                 items={projectGalleryItems}
                 columns={4}
@@ -199,7 +198,7 @@ const Home = () => {
                 fade={0}
                 dim={1}
                 overlayColor="#0a0a0a"
-                radius={16}
+                radius={0}
                 roll={0}
                 pauseOnHover={false}
                 grayscale={false}
@@ -222,7 +221,7 @@ const Home = () => {
             <p className="text-[#555] text-[16px] leading-relaxed mb-10">
               Generate audit-ready ESG reports aligned with Verra VCS and Gold Standard. Every credit is minted as an NFT with an immutable audit trail.
             </p>
-            <Link to="/signup" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 rounded-full shadow-xl">
+            <Link to="/signup" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl">
               <span>CREATE AN ACCOUNT</span>
               <FaArrowRight className="text-[11px]" />
             </Link>
@@ -231,7 +230,7 @@ const Home = () => {
           <div className="relative h-[600px] flex items-center justify-center lg:justify-end lg:-mr-[5vw]">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 transform -rotate-12 scale-110">
               {[FaBolt, FaShieldAlt, FaChartLine, FaFileContract, FaTree, FaWind, FaSolarPanel, FaWallet, FaHandshake].map((Icon, idx) => (
-                <div key={idx} className="bg-white rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.08)] w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center transform transition-transform duration-500 hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
+                <div key={idx} className="bg-white shadow-[0_20px_40px_rgba(0,0,0,0.08)] w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center transform transition-transform duration-500 hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
                   <Icon className={`text-4xl sm:text-6xl ${['text-emerald-500', 'text-blue-500', 'text-indigo-500', 'text-rose-500', 'text-amber-500'][idx % 5]}`} />
                 </div>
               ))}
@@ -258,14 +257,14 @@ const Home = () => {
             <p className="text-white/90 text-[16px] leading-relaxed mb-10 font-bold">
               No brokers. No greenwashing. No BS.
             </p>
-            <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-[#bef264] text-[#0a0a0a] px-8 py-4 text-[13px] font-black hover:bg-[#a3e635] transition-all hover:scale-105 rounded-full shadow-xl">
+            <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-[#bef264] text-[#0a0a0a] px-8 py-4 text-[13px] font-black hover:bg-[#a3e635] transition-all hover:scale-105 shadow-xl">
               <span>EXPLORE MARKETPLACE</span>
               <FaArrowRight className="text-[11px]" />
             </Link>
           </div>
           
           <div className="relative">
-            <div className="bg-white text-[#0a0a0a] rounded-[2rem] p-8 sm:p-12 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-w-lg ml-auto">
+            <div className="bg-white text-[#0a0a0a] p-8 sm:p-12 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-w-lg ml-auto">
               <div className="space-y-8">
                 
                 <div className="flex items-start space-x-4">
@@ -339,7 +338,7 @@ const Home = () => {
             <p className="text-[#444] font-medium text-sm">Global Tech Inc.</p>
           </div>
 
-          <Link to="/about" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 rounded-full shadow-xl">
+          <Link to="/about" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl">
             <span>READ THEIR STORY</span>
             <FaArrowRight className="text-[11px]" />
           </Link>

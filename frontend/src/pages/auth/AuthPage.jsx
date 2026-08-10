@@ -62,8 +62,8 @@ const AuthPage = () => {
             <div className="relative z-10 h-full flex flex-col justify-between p-10">
               {/* Top Logo */}
               <div className="flex items-center space-x-3">
-                <span className="logo-retro text-[20px]">
-                  CarbonXplanet
+                <span className="logo-retro-white text-[20px]">
+                  CARBONXPLANET
                 </span>
               </div>
 
@@ -102,7 +102,7 @@ const AuthPage = () => {
             
             {/* Mobile logo */}
             <div className="flex items-center space-x-2 mb-8 lg:hidden">
-              <span className="logo-retro text-[18px]">CarbonXplanet</span>
+              <span className="logo-retro-white text-[18px]">CARBONXPLANET</span>
             </div>
 
             {/* Tab Navigation */}

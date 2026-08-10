@@ -16,7 +16,7 @@ const Contact = () => {
       <Navbar />
 
       <div className="flex-1 flex items-center justify-center p-4 mt-16 relative z-10">
-        <div className="bg-[#111]/90 backdrop-blur-md border border-[#222] rounded-3xl p-6 md:p-8 shadow-2xl w-full max-w-sm relative group">
+        <div className="bg-[#111]/90 backdrop-blur-md border border-[#222] p-6 md:p-8 shadow-2xl w-full max-w-sm relative group">
           
           <div className="relative z-10 text-center mb-6">
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-1">SAY HELLO!</h1>
@@ -34,7 +34,7 @@ const Contact = () => {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full bg-black/40 border border-[#222] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full bg-black/40 border border-[#222] py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
 
@@ -49,7 +49,7 @@ const Contact = () => {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="w-full bg-black/40 border border-[#222] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full bg-black/40 border border-[#222] py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors"
                 />
               </div>
               <div className="relative w-1/2">
@@ -61,7 +61,7 @@ const Contact = () => {
                   placeholder="Phone"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full bg-black/40 border border-[#222] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full bg-black/40 border border-[#222] py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors"
                 />
               </div>
             </div>
@@ -76,11 +76,11 @@ const Contact = () => {
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 required
                 rows={3}
-                className="w-full bg-black/40 border border-[#222] rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
+                className="w-full bg-black/40 border border-[#222] py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
               />
             </div>
 
-            <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 px-6 rounded-xl transition-colors text-sm mt-2 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+            <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 px-6 transition-colors text-sm mt-2 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               Send Message
             </button>
           </form>

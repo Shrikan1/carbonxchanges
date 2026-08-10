@@ -25,7 +25,7 @@ const Gallery = () => {
           {images.map((img, index) => (
             <div
               key={index}
-              className="w-full aspect-video md:aspect-[4/3] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden bg-[#1a1a1a]"
+              className="w-full aspect-video md:aspect-[4/3] overflow-hidden bg-[#1a1a1a]"
             >
               <img
                 src={img}
