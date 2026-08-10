@@ -9,10 +9,14 @@ const { generateToken, generateRefreshToken, verifyToken } = require('../../util
 // POST /api/auth/signup
 async function signup(req, res) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: 'name, email, and password are required' });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: 'Passwords do not match' });
     }
 
     const existing = await User.findByEmail(email);
