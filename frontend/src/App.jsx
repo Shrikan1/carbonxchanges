@@ -1,4 +1,7 @@
+
 import { useEffect, useState } from 'react';
+
+
 import { createBrowserRouter, RouterProvider, } from 'react-router-dom';
 
 import Home from './pages/shared/Home';
@@ -11,8 +14,10 @@ import Article from './pages/shared/Article';
 import Gallery from './pages/shared/Gallery';
 import Posts from './pages/shared/Posts';
 
+
 import { useAuthStore } from './store/Useauthstore';
 import * as authApi from './api/endpoint/Authapi';
+
 
 
 
@@ -62,6 +67,9 @@ const router = createBrowserRouter([
     path: '/verify-email',
     element: <VerifyEmail />,
   },
+
+
+
 
 
   {
@@ -129,6 +137,7 @@ function App() {
         >
           CarbonXplanet
         </span>
+
       </div>
     );
 
@@ -139,6 +148,7 @@ function App() {
     <div className="min-h-screen w-full">
 
       <RouterProvider router={router} />
+
     </div>
   );
 }
