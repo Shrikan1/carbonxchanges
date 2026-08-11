@@ -12,7 +12,7 @@ async function signup(req, res) {
     const { name, email, password, confirmPassword } = req.body;
 
     if (!name || !email || !password || !confirmPassword) {
-      return res.status(400).json({ error: 'name, email, and password are required' });
+      return res.status(400).json({ error: 'All fields are required' });
     }
 
     if (password !== confirmPassword) {

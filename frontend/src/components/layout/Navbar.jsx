@@ -27,7 +27,7 @@ const Navbar = () => {
           
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="logo-retro text-[18px]">
+            <span data-brand="logo" className="logo-retro text-[18px]">
               CarbonXplanet
             </span>
           </Link>

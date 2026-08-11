@@ -86,7 +86,7 @@ const Signup = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Alex Johnson"
+                  placeholder="Sahil Yadav"
                   className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
                 />
               </div>

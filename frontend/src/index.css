@@ -10,9 +10,18 @@
     /* Removed text-shadow to prevent duplicate font rendering bug with background-clip */
     letter-spacing: 0.05em;
   }
+  .logo-retro-white {
+    font-family: 'Bungee', cursive;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+  }
 }
 
 @layer base {
+
+  body {
+    font-family: 'JetBrains Mono', monospace;
+  }
 
   input,
   textarea,

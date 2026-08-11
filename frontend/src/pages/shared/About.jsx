@@ -29,7 +29,7 @@ const About = () => {
           </div>
 
           <div className="relative mt-8 md:mt-0">
-            <div className="w-full aspect-[4/3] rounded-[2.5rem] overflow-hidden">
+            <div className="w-full aspect-[4/3] overflow-hidden">
               <img
                 src={img1}
                 alt="Team working"
@@ -38,11 +38,11 @@ const About = () => {
             </div>
 
             {/* Circular Badge Overlay */}
-            <div className="absolute -bottom-10 -left-6 md:-left-12 w-32 h-32 md:w-40 md:h-40 bg-[#0c0c0c] rounded-full flex items-center justify-center p-2">
-              <div className="w-full h-full rounded-full border border-white/20 flex items-center justify-center relative">
+            <div className="absolute -bottom-10 -left-6 md:-left-12 w-32 h-32 md:w-40 md:h-40 bg-[#0c0c0c] flex items-center justify-center p-2">
+              <div className="w-full h-full border border-white/20 flex items-center justify-center relative">
                 {/* Simplified rotating text effect */}
-                <div className="absolute inset-0 rounded-full border border-dashed border-white/30 animate-[spin_20s_linear_infinite]" />
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-emerald-500 rounded-full flex items-center justify-center text-black">
+                <div className="absolute inset-0 border border-dashed border-white/30 animate-[spin_20s_linear_infinite]" />
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-emerald-500 flex items-center justify-center text-black">
                   <FaArrowRight className="-rotate-45 text-xl" />
                 </div>
               </div>
@@ -86,14 +86,14 @@ const About = () => {
 
           {/* Images */}
           <div className="relative">
-            <div className="w-[85%] aspect-[4/5] rounded-[2.5rem] overflow-hidden">
+            <div className="w-[85%] aspect-[4/5] overflow-hidden">
               <img
                 src={img2}
                 alt="Mission"
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute bottom-10 right-0 w-[55%] aspect-square rounded-[2rem] overflow-hidden border-8 border-[#0c0c0c]">
+            <div className="absolute bottom-10 right-0 w-[55%] aspect-square overflow-hidden border-8 border-[#0c0c0c]">
               <img
                 src={img3}
                 alt="Mission overlap"
@@ -159,14 +159,14 @@ const About = () => {
 
           {/* Images (Right on Desktop) */}
           <div className="relative order-1 md:order-2">
-            <div className="w-[85%] aspect-[4/5] rounded-[2.5rem] overflow-hidden ml-auto">
+            <div className="w-[85%] aspect-[4/5] overflow-hidden ml-auto">
               <img
                 src={img4}
                 alt="Vision"
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute bottom-10 left-0 w-[55%] aspect-square rounded-[2rem] overflow-hidden border-8 border-[#0c0c0c]">
+            <div className="absolute bottom-10 left-0 w-[55%] aspect-square overflow-hidden border-8 border-[#0c0c0c]">
               <img
                 src={img5}
                 alt="Vision overlap"
