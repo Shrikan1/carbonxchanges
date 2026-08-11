@@ -14,18 +14,10 @@ import Article from './pages/shared/Article';
 import Gallery from './pages/shared/Gallery';
 import Posts from './pages/shared/Posts';
 
-<<<<<<< Updated upstream
 
-import { useAuthStore } from './store/Useauthstore';
-import * as authApi from './api/endpoint/Authapi';
-
-=======
 import { useAuthStore } from './store/useAuthStore';
 import * as authApi from './api/endpoint/Authapi';
 import BecomeMemberModal from './components/Becomemembermodal';
->>>>>>> Stashed changes
-
-
 
 
 const router = createBrowserRouter([
