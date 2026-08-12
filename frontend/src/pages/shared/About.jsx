@@ -17,9 +17,6 @@ const About = () => {
       <section className="pt-32 pb-16 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <div className="text-sm font-bold tracking-widest text-[#888] uppercase">
-              [<Link to="/" className="hover:text-white transition-colors">Home</Link> / <span className="text-emerald-500">About</span>]
-            </div>
             <h1 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tight">
               Building a Sustainable Future
             </h1>
@@ -58,27 +55,6 @@ const About = () => {
         </h2>
       </section>
 
-      {/* Stats Section */}
-      <section className="pb-24 px-6 max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center md:divide-x divide-white/10">
-          <div className="flex flex-col space-y-2">
-            <span className="text-5xl md:text-6xl font-black">150+</span>
-            <span className="text-white/50 text-sm font-medium uppercase tracking-wider">Verified Projects</span>
-          </div>
-          <div className="flex flex-col space-y-2">
-            <span className="text-5xl md:text-6xl font-black">100+</span>
-            <span className="text-white/50 text-sm font-medium uppercase tracking-wider">Global Partners</span>
-          </div>
-          <div className="flex flex-col space-y-2">
-            <span className="text-5xl md:text-6xl font-black">2M+</span>
-            <span className="text-white/50 text-sm font-medium uppercase tracking-wider">Credits Retired</span>
-          </div>
-          <div className="flex flex-col space-y-2">
-            <span className="text-5xl md:text-6xl font-black">30</span>
-            <span className="text-white/50 text-sm font-medium uppercase tracking-wider">Winning Awards</span>
-          </div>
-        </div>
-      </section>
 
       {/* Our Mission */}
       <section className="py-24 px-6 max-w-7xl mx-auto border-t border-white/10">

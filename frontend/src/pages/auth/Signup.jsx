@@ -6,7 +6,7 @@ import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
 import { signup } from "../../api/endpoint/Authapi";
 import Loader from '../../components/Loader';
 
-const Signup = () => {
+const Signup = ({ isEmbedded }) => {
 
   const navigate = useNavigate();
 
@@ -111,17 +111,13 @@ const Signup = () => {
         change response.data.userId accordingly.
       */
 
-      const userId = response.data.userId;
-
+      const userId = response.data.userId || response.data.user?._id || response.data.user?.id || response.data.id;
 
       // Make sure backend returned userId
-
       if (!userId) {
-
         setError(
-          'Signup succeeded, but user ID was not returned by the server.'
+          'Signup succeeded, but user ID was not returned by the server. Please check your email for the OTP, or try logging in.'
         );
-
         return;
       }
 
@@ -144,10 +140,8 @@ const Signup = () => {
       );
 
 
-      setError(
-        error.response?.data?.message ||
-        'Something went wrong. Please try again.'
-      );
+      const defaultError = error.request ? 'Network error. Is the backend server running?' : 'Something went wrong. Please try again.';
+      setError(error.response?.data?.message || defaultError);
 
 
     } finally {
@@ -159,147 +153,39 @@ const Signup = () => {
   };
 
 
-  return (
+  const formContent = (
+    <div className="w-full h-full flex flex-col">
+      {!isEmbedded && (
+        <>
+          {/* Mobile logo removed */}
+          <div className="flex items-center space-x-6 mb-8">
+            <span className="text-[#0c0c0c] text-xl tracking-tight border-b-2 border-[#0c0c0c] pb-2" style={{ fontFamily: "'Bungee', cursive" }}>
+              Sign Up
+            </span>
+            <Link
+              to="/login"
+              className="text-[#999] text-xl tracking-tight pb-2 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors"
+              style={{ fontFamily: "'Bungee', cursive" }}
+            >
+              Sign In
+            </Link>
+          </div>
+        </>
+      )}
 
-    <>
-      {loading ? (
-
-        <Loader />
-
-      ) : (
-
-        <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
-
-          {/* Full-screen background */}
-
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${authBg})`,
-            }}
-          />
-
-          <div className="absolute inset-0 bg-black/70" />
-
-
-          {/* Main container */}
-
-          <div className="relative z-10 w-full max-w-[1060px] mx-4 md:mx-8">
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#0c0c0c] border border-[#222] overflow-hidden">
-
-
-              {/* LEFT PANEL */}
-
-              <div className="relative hidden lg:block min-h-[640px]">
-
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{
-                    backgroundImage: `url(${authBg})`,
-                  }}
-                />
-
-                <div className="absolute inset-0 bg-black/40" />
-
-
-                <div className="relative z-10 h-full flex flex-col justify-between p-10">
-
-                  {/* Logo */}
-
-                  <div className="flex items-center space-x-3">
-
-                    <span className="text-white text-lg font-bold tracking-tight">
-                      CarbonXplanet
-                    </span>
-
-                  </div>
-
-
-                  {/* Bottom content */}
-
-                  <div>
-
-                    <h2 className="text-white text-4xl font-black leading-[1.05] tracking-tight mb-4">
-
-                      Join the Green
-                      <br />
-                      Revolution.
-
-                    </h2>
-
-                    <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-
-                      Build a sustainable future with blockchain-powered carbon credits.
-
-                    </p>
-
-                    <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">
-
-                      © 2026 CarbonXplanet. All rights reserved.
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              {/* RIGHT PANEL */}
-
-              <div className="bg-white p-8 sm:p-12 lg:p-14 flex flex-col justify-center min-h-[640px]">
-
-
-                {/* Mobile logo */}
-
-                <div className="flex items-center space-x-2 mb-8 lg:hidden">
-
-                  <span className="text-[#0c0c0c] text-base font-bold tracking-tight">
-
-                    CarbonXplanet
-
-                  </span>
-
-                </div>
-
-
-                {/* Tabs */}
-
-                <div className="flex items-center space-x-6 mb-8">
-
-                  <span className="text-[#0c0c0c] text-xl font-black tracking-tight border-b-2 border-[#0c0c0c] pb-2">
-
-                    Sign Up
-
-                  </span>
-
-                  <Link
-                    to="/login"
-                    className="text-[#999] text-xl font-medium tracking-tight pb-2 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors"
-                  >
-
-                    Sign In
-
-                  </Link>
-
-                </div>
-
-
-                {/* FORM */}
-
-                <form
-                  className="space-y-5"
-                  onSubmit={handleSubmit}
-                >
+      <div className="flex-1 flex flex-col justify-center">
+      {/* FORM */}
+      <form
+        className="space-y-4"
+        onSubmit={handleSubmit}
+      >
 
 
                   {/* Name */}
 
                   <div>
 
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
 
                       Full Name
 
@@ -308,10 +194,10 @@ const Signup = () => {
                     <input
                       type="text"
                       name="name"
-                      placeholder="Alex Johnson"
+                      placeholder="Aarav Sharma"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+                      className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
                     />
 
                   </div>
@@ -321,7 +207,7 @@ const Signup = () => {
 
                   <div>
 
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
 
                       Email
 
@@ -330,10 +216,10 @@ const Signup = () => {
                     <input
                       type="email"
                       name="email"
-                      placeholder="name@example.com"
+                      placeholder="aarav@example.com"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+                      className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
                     />
 
                   </div>
@@ -343,7 +229,7 @@ const Signup = () => {
 
                   <div>
 
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
 
                       Password
 
@@ -361,7 +247,7 @@ const Signup = () => {
                         placeholder="••••••••••"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+                        className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
                       />
 
                       <button
@@ -391,7 +277,7 @@ const Signup = () => {
 
                   <div>
 
-                    <label className="block text-[11px] font-mono font-medium text-[#999] uppercase tracking-[0.12em] mb-2">
+                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
 
                       Confirm Password
 
@@ -409,7 +295,7 @@ const Signup = () => {
                         placeholder="••••••••••"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[15px] placeholder:text-[#bbb] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+                        className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
                       />
 
                       <button
@@ -476,10 +362,20 @@ const Signup = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2 disabled:opacity-60"
+                    className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2 disabled:opacity-60 flex items-center justify-center"
                   >
 
-                    Create Account
+                    {loading ? (
+                      <div className="flex items-center space-x-2">
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      'Create Account'
+                    )}
 
                   </button>
 
@@ -488,30 +384,53 @@ const Signup = () => {
 
                 {/* Bottom link */}
 
-                <p className="mt-8 text-center text-[13px] text-[#999]">
-
-                  Already have an account?{' '}
-
-                  <Link
-                    to="/login"
-                    className="text-[#0c0c0c] font-semibold hover:underline"
-                  >
-                    Sign In
-                  </Link>
-
-                </p>
-
-              </div>
-
-            </div>
-
+          <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] text-[#999]">
+            Already have an account?{' '}
+            <Link to="/login" className="text-[#0c0c0c] font-semibold hover:underline">
+              Sign In
+            </Link>
           </div>
+      </div>
+    </div>
+  );
 
+  if (isEmbedded) {
+    return formContent;
+  }
+
+  return (
+    <>
+        <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
+          <div className="absolute inset-0 bg-black/70" />
+          <div className="relative z-10 w-full max-w-[1060px] mx-4 md:mx-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#0c0c0c] border border-[#222] overflow-hidden">
+              <div className="relative hidden lg:block min-h-[680px]">
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="relative z-10 h-full flex flex-col justify-end p-10">
+                  {/* Top Logo removed */}
+                  <div>
+                    <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 logo-retro-white">
+                      Join the Green<br />Revolution.
+                    </h2>
+                    <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                      Build a sustainable future with blockchain-powered carbon credits.
+                    </p>
+                    <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">
+                      © 2026 CarbonXplanet. All rights reserved.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start min-h-[680px]">
+                {formContent}
+              </div>
+            </div>
+          </div>
         </div>
-
-      )}
-
     </>
+
 
   );
 };
