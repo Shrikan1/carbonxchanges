@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence, useReducedMotion, LayoutGroup } from 'motion/react';
 import {
   FaArrowRight,
   FaTree,
@@ -22,6 +24,7 @@ import heroBg from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524
 import GlareHover from '../../components/ui/GlareHover';
 import DecryptedText from '../../components/ui/DecryptedText';
 import ScrollExpand from '../../components/ui/ScrollExpand';
+import TextLoop from '../../components/ui/TextLoop';
 import img1 from '../../assets/1744ff3b8f6c99355ca2b0eafe081094.webp';
 import img2 from '../../assets/18297.jpg';
 import img3 from '../../assets/4k-wallpaper-clouds-cropland-dawn.jpg';
@@ -56,11 +59,70 @@ const projectGalleryItems = [
 ];
 
 const Home = () => {
+  const shouldReduceMotion = useReducedMotion();
+  const [isFirstVisit] = useState(() => {
+    if (shouldReduceMotion) return false;
+    return !sessionStorage.getItem('playedIntro');
+  });
+  const [showIntro, setShowIntro] = useState(isFirstVisit);
+  const [showCenterLogo, setShowCenterLogo] = useState(isFirstVisit);
+
+  useEffect(() => {
+    if (isFirstVisit) {
+      sessionStorage.setItem('playedIntro', 'true');
+      document.body.style.overflow = 'hidden';
+      const timer = setTimeout(() => {
+        setShowCenterLogo(false);
+        setShowIntro(false);
+        document.body.style.overflow = 'unset';
+      }, 1900);
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isFirstVisit]);
+
   return (
     <div className="bg-[#0c0c0c] text-white min-h-screen font-sans">
-      <Navbar />
+        <AnimatePresence>
+          {showIntro && (
+            <motion.div
+              className="fixed inset-0 z-[9999] bg-[#0c0c0c] flex items-center justify-center pointer-events-none"
+              initial={{ opacity: 0.8 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+            >
+              {showCenterLogo && (
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                  initial={{ opacity: 0, scale: 0.85, filter: 'blur(10px)' }}
+                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                  transition={{ duration: 1, ease: 'easeOut', delay: 0.6 }}
+                >
+                  <motion.span
+                    layoutId="brand-logo"
+                    className="logo-retro text-[clamp(3rem,8vw,6rem)]"
+                    style={{ 
+                      WebkitTextStroke: '2px #bef264', 
+                      WebkitTextFillColor: 'transparent',
+                      color: 'transparent',
+                      background: 'none' 
+                    }}
+                    transition={{ layout: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }}
+                  >
+                    CarbonXplanet
+                  </motion.span>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      {/* ─── HERO SECTION ─── */}
+        <Navbar animateEntrance={isFirstVisit} hideLogo={showCenterLogo} />
+
+        {/* ─── HERO SECTION ─── */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div
@@ -71,18 +133,33 @@ const Home = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-20">
           {/* Headline */}
-          <div className="flex flex-col items-center justify-center space-y-2 mb-10 mt-4">
+          <motion.div 
+            initial={isFirstVisit ? { opacity: 0, y: 30 } : false}
+            animate={isFirstVisit ? { opacity: 1, y: 0 } : false}
+            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.5 } : {}}
+            className="flex flex-col items-center justify-center space-y-2 mb-10 mt-4"
+          >
             <h1 className="logo-retro text-[clamp(2.5rem,6vw,5rem)] text-white uppercase tracking-tight drop-shadow-lg leading-[1.1]" style={{ WebkitTextFillColor: 'white', background: 'none' }}>Offset Emissions.</h1>
             <h1 className="logo-retro text-[clamp(2.5rem,6vw,5rem)] text-[#f3f4f6] uppercase tracking-tight drop-shadow-lg leading-[1.1]" style={{ WebkitTextFillColor: '#f3f4f6', background: 'none' }}>Build the Future.</h1>
-          </div>
+          </motion.div>
 
           {/* Subtext */}
-          <p className="text-white/50 text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-12">
+          <motion.p 
+            initial={isFirstVisit ? { opacity: 0, y: 20 } : false}
+            animate={isFirstVisit ? { opacity: 1, y: 0 } : false}
+            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.8 } : {}}
+            className="text-white/50 text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-12"
+          >
             The decentralized marketplace where verified carbon credits meet transparent blockchain infrastructure.
-          </p>
+          </motion.p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <motion.div 
+            initial={isFirstVisit ? { opacity: 0, y: 20, scale: 0.98 } : false}
+            animate={isFirstVisit ? { opacity: 1, y: 0, scale: 1 } : false}
+            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 3.0 } : {}}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
             <Link
               to="/marketplace"
               className="inline-flex items-center space-x-2 bg-white text-[#0c0c0c] px-8 py-3.5 text-[14px] font-semibold hover:bg-[#eee] transition-colors"
@@ -110,54 +187,52 @@ const Home = () => {
                 <span className="text-white text-[14px] font-semibold">Get Started</span>
               </GlareHover>
             </Link>
-          </div>
+          </motion.div>
         </div>
 
 
       </section>
 
       {/* ─── ABOUT THE PLATFORM ─── */}
-      <section className="border-t border-[#222]">
-        <div className="max-w-5xl mx-auto px-6 py-24">
+      <section className="bg-white text-[#0a0a0a] border-t border-gray-200">
+        <div className="max-w-[1400px] mx-auto px-6 py-24 lg:py-32">
 
-          <div className="flex flex-col md:flex-row items-center gap-16">
-            <div className="flex-1 space-y-6">
-              <p className="text-[11px] font-mono uppercase tracking-[0.15em] text-[#666]">Our Purpose</p>
-              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+          <div className="flex flex-col lg:flex-row items-center gap-16 xl:gap-24">
+            <div className="w-full lg:w-5/12 space-y-6">
+              <p className="text-[22px] font-mono uppercase tracking-[0.15em] text-[#666]">Our Purpose</p>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
                 Empowering Global Climate Action.
               </h2>
-              <p className="text-white/60 text-lg leading-relaxed">
+              <p className="text-[#444] text-lg leading-relaxed">
                 CarbonXplanet is a next-generation decentralized marketplace designed to bridge the gap between verified carbon credit projects and eco-conscious organizations.
               </p>
-              <p className="text-white/60 text-lg leading-relaxed">
+              <p className="text-[#444] text-lg leading-relaxed">
                 By leveraging blockchain infrastructure, we bring unprecedented transparency, security, and efficiency to the trading of environmental assets—ensuring that every transaction directly contributes to a sustainable future.
               </p>
 
-              <div className="pt-6 grid grid-cols-2 gap-8">
+              <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                  <h4 className="text-white font-bold text-lg mb-2">Verified Impact</h4>
-                  <p className="text-[#888] text-sm">Every project is stringently vetted against global standards like Verra and Gold Standard.</p>
+                  <h4 className="font-bold text-lg mb-2">Verified Impact</h4>
+                  <p className="text-[#555] text-sm">Every project is stringently vetted against global standards like Verra and Gold Standard.</p>
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-lg mb-2">Immutable Ledger</h4>
-                  <p className="text-[#888] text-sm">Blockchain technology guarantees that credits cannot be double-counted or manipulated.</p>
+                  <h4 className="font-bold text-lg mb-2">Immutable Ledger</h4>
+                  <p className="text-[#555] text-sm">Blockchain technology guarantees that credits cannot be double-counted or manipulated.</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex-1 w-full">
-              <div className="relative overflow-hidden shadow-2xl h-[500px]">
-                <img
-                  src={img4}
-                  alt="Sustainable Future"
+            <div className="w-full lg:w-7/12">
+              <div className="relative overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] aspect-video ring-1 ring-black/5 transform transition-transform duration-500 hover:scale-[1.02]">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
                   className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-10 left-10 right-10">
-                  <div>
-                    <p className="text-white font-medium text-lg leading-snug drop-shadow-md">"The transition to a net-zero global economy requires radical transparency and verifiable action."</p>
-                  </div>
-                </div>
+                >
+                  <source src="/lv_0_20260812015528.mp4" type="video/mp4" />
+                </video>
               </div>
             </div>
           </div>
@@ -210,7 +285,28 @@ const Home = () => {
 
       {/* ─── PLATFORM FEATURES (WHITE & FLOATING ICONS) ─── */}
       <section className="bg-white text-[#0a0a0a] overflow-hidden py-32 relative">
-        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        {/* Animated Background TextLoop */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.25] pointer-events-none select-none scale-[1.5] sm:scale-[2]">
+          <TextLoop
+            text="CarbonXplanet ✦ Blockchain ✦ Transparent"
+            shape="wave"
+            speed={90}
+            direction="forward"
+            separator="✦"
+            curviness={90}
+            fontSize={46}
+            fontWeight={800}
+            letterSpacing={2}
+            uppercase
+            color="#ffffff"
+            ribbon
+            ribbonColor="#10B981"
+            ribbonWidth={86}
+            pauseOnHover={false}
+          />
+        </div>
+
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="max-w-xl lg:pr-10 z-10">
             <h2 className="text-5xl sm:text-7xl font-black tracking-tight mb-8 leading-[1.05] text-[#0a0a0a]">
               Why CarbonXplanet.
@@ -227,11 +323,22 @@ const Home = () => {
             </Link>
           </div>
           
-          <div className="relative h-[600px] flex items-center justify-center lg:justify-end lg:-mr-[5vw]">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 transform -rotate-12 scale-110">
-              {[FaBolt, FaShieldAlt, FaChartLine, FaFileContract, FaTree, FaWind, FaSolarPanel, FaWallet, FaHandshake].map((Icon, idx) => (
-                <div key={idx} className="bg-white shadow-[0_20px_40px_rgba(0,0,0,0.08)] w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center transform transition-transform duration-500 hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
-                  <Icon className={`text-4xl sm:text-6xl ${['text-emerald-500', 'text-blue-500', 'text-indigo-500', 'text-rose-500', 'text-amber-500'][idx % 5]}`} />
+          <div className="relative h-[600px] flex items-center justify-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              {[
+                { Icon: FaBolt, label: 'Fast Zaps' },
+                { Icon: FaShieldAlt, label: 'Super Safe' },
+                { Icon: FaChartLine, label: 'Grow Big' },
+                { Icon: FaFileContract, label: 'Smart Stuff' },
+                { Icon: FaTree, label: 'Happy Trees' },
+                { Icon: FaWind, label: 'Fresh Breeze' },
+                { Icon: FaSolarPanel, label: 'Sunny Power' },
+                { Icon: FaWallet, label: 'Safe Vault' },
+                { Icon: FaHandshake, label: 'Pinky Promise' }
+              ].map(({ Icon, label }, idx) => (
+                <div key={idx} className="bg-white rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] w-28 h-28 sm:w-36 sm:h-36 flex flex-col items-center justify-center transform transition-transform duration-500 hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
+                  <Icon className={`text-3xl sm:text-5xl mb-2 ${['text-emerald-500', 'text-blue-500', 'text-indigo-500', 'text-rose-500', 'text-amber-500'][idx % 5]}`} />
+                  <span className="text-[10px] sm:text-xs font-bold text-gray-500 tracking-wider uppercase">{label}</span>
                 </div>
               ))}
             </div>
@@ -375,70 +482,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ─── FOOTER ─── */}
-      <footer className="border-t border-[#222]">
-        <div className="max-w-5xl mx-auto px-6 py-14">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
 
-            {/* Brand */}
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center space-x-2 mb-4">
-                <span className="logo-retro text-[16px]">CarbonXplanet</span>
-              </div>
-              <p className="text-[13px] text-[#666] leading-relaxed max-w-xs">
-                Decentralized carbon credit marketplace built on blockchain technology.
-              </p>
-            </div>
-
-            {/* Product */}
-            <div>
-              <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-[#666] mb-4">Product</p>
-              <div className="flex flex-col space-y-2.5">
-                <Link to="/marketplace" className="text-[13px] text-[#888] hover:text-white transition-colors">Marketplace</Link>
-                <Link to="/projects" className="text-[13px] text-[#888] hover:text-white transition-colors">Projects</Link>
-                <Link to="/about" className="text-[13px] text-[#888] hover:text-white transition-colors">About</Link>
-              </div>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-[#666] mb-4">Resources</p>
-              <div className="flex flex-col space-y-2.5">
-                <Link to="/contact" className="text-[13px] text-[#888] hover:text-white transition-colors">Contact</Link>
-                <Link to="/terms" className="text-[13px] text-[#888] hover:text-white transition-colors">Terms</Link>
-                <Link to="/privacy" className="text-[13px] text-[#888] hover:text-white transition-colors">Privacy</Link>
-              </div>
-            </div>
-
-            {/* Social */}
-            <div>
-              <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-[#666] mb-4">Connect</p>
-              <div className="flex items-center space-x-3">
-                <a href="#twitter" className="w-8 h-8 border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-[#555] transition-colors">
-                  <FaTwitter size={12} />
-                </a>
-                <a href="#linkedin" className="w-8 h-8 border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-[#555] transition-colors">
-                  <FaLinkedinIn size={12} />
-                </a>
-                <a href="#github" className="w-8 h-8 border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-[#555] transition-colors">
-                  <FaGithub size={12} />
-                </a>
-                <a href="#discord" className="w-8 h-8 border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-[#555] transition-colors">
-                  <FaDiscord size={12} />
-                </a>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Bottom */}
-          <div className="pt-8 border-t border-[#222] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-[12px] text-[#666]">© 2026 CarbonXplanet. All rights reserved.</p>
-            <p className="text-[12px] text-[#666]">Built with blockchain for a greener planet.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </div>
   );
 };
 

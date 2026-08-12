@@ -91,7 +91,7 @@ const Article = () => {
 
       <main className="max-w-7xl mx-auto px-6 pt-32 pb-24">
         {/* Compact Retro Title */}
-        <h1 className="logo-retro text-4xl md:text-6xl lg:text-[72px] mb-12 text-white uppercase tracking-tight" style={{ WebkitTextFillColor: 'white', background: 'none' }}>
+        <h1 className="logo-retro text-4xl md:text-6xl lg:text-[50px] mb-12 text-white uppercase tracking-tight" style={{ WebkitTextFillColor: 'white', background: 'none' }}>
           ARTICLES
         </h1>
 
