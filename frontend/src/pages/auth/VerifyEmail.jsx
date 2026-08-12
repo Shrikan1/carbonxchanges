@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
@@ -111,9 +112,11 @@ const VerifyEmail = () => {
           <div className="relative hidden lg:block min-h-[600px]">
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
             <div className="absolute inset-0 bg-black/40" />
+
             <div className="relative z-10 h-full flex flex-col justify-end p-10">
               <div>
                 <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 logo-retro-white">
+
                   Verify Your<br />Email.
                 </h2>
                 <p className="text-white/60 text-sm leading-relaxed max-w-xs">
@@ -127,6 +130,7 @@ const VerifyEmail = () => {
           </div>
 
           {/* Right Panel */}
+
           <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start min-h-[600px]">
             <div className="mb-10">
               <h1 className="text-[#0c0c0c] text-2xl font-black tracking-tight mb-2">Check your email</h1>
@@ -163,10 +167,12 @@ const VerifyEmail = () => {
                     />
                   ))}
                 </div>
+
               </div>
 
               <button
                 type="submit"
+
                 disabled={loading}
                 className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-8 disabled:opacity-60"
               >

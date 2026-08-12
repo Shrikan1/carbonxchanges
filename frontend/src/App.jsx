@@ -14,11 +14,9 @@ import Gallery from './pages/shared/Gallery';
 import Posts from './pages/shared/Posts';
 
 
-import { useAuthStore } from './store/Useauthstore';
+import { useAuthStore } from './store/useAuthStore';
 import * as authApi from './api/endpoint/Authapi';
-
-
-
+import BecomeMemberModal from './components/Becomemembermodal';
 
 
 const router = createBrowserRouter([
@@ -148,7 +146,7 @@ function App() {
     <div className="min-h-screen w-full">
 
       <RouterProvider router={router} />
-
+       <BecomeMemberModal />
     </div>
   );
 }
