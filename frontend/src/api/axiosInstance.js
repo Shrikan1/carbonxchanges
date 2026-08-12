@@ -1,5 +1,8 @@
 import axios from 'axios';
+
 import { useAuthStore } from '../store/Useauthstore';
+import { useUIStore } from '../store/Useuistore';
+
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
@@ -28,6 +31,17 @@ api.interceptors.response.use(
   },
   async (error) => {
     const original = error.config;
+
+
+    // Safety-net case: the UI should normally prevent reaching a gated
+    // action before "Become Member" is done, but if it's ever reached
+    // anyway (stale UI state, direct navigation, etc.), open the modal
+    // instead of just showing a raw error.
+    if (error.response?.data?.code === 'ROLE_VERIFICATION_REQUIRED') {
+      useUIStore.getState().openBecomeMemberModal(error.response.data.role_required);
+      return Promise.reject(error);
+    }
+
 
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;

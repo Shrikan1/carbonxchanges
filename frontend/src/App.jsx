@@ -1,4 +1,7 @@
+
 import { useEffect, useState } from 'react';
+
+
 import { createBrowserRouter, RouterProvider, } from 'react-router-dom';
 
 import Home from './pages/shared/Home';
@@ -10,8 +13,10 @@ import Article from './pages/shared/Article';
 import Gallery from './pages/shared/Gallery';
 import Posts from './pages/shared/Posts';
 
+
 import { useAuthStore } from './store/Useauthstore';
 import * as authApi from './api/endpoint/Authapi';
+
 
 
 
@@ -61,6 +66,9 @@ const router = createBrowserRouter([
     path: '/verify-email',
     element: <VerifyEmail />,
   },
+
+
+
 
 
   {
@@ -114,11 +122,33 @@ function App() {
 
 
 
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0c0c0c]">
+        <span
+          className="logo-retro block whitespace-nowrap select-none text-2xl animate-pulse"
+          style={{
+            WebkitTextFillColor: 'transparent',
+            background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            letterSpacing: '0.05em',
+          }}
+        >
+          CarbonXplanet
+        </span>
+
+      </div>
+    );
+
+  }
+
+
 
   return (
     <div className="min-h-screen w-full">
 
       <RouterProvider router={router} />
+
     </div>
   );
 }
