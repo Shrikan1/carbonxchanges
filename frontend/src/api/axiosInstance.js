@@ -32,7 +32,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
       try {
-        const { data } = await api.post('/auth/refresh');
+        const { data } = await api.post('/v1/auth/refresh');
         useAuthStore.getState().setToken(data.token);
         original.headers.Authorization = `Bearer ${data.token}`;
         return api(original);

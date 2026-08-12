@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider, } from 'react-router-dom';
 
 import Home from './pages/shared/Home';
-import Login from './pages/auth/Login';
-import Signup from './pages/auth/Signup';
+import AuthPage from './pages/auth/AuthPage';
 import VerifyEmail from './pages/auth/VerifyEmail';
 import About from './pages/shared/About';
 import Contact from './pages/shared/Contact';
@@ -50,12 +49,12 @@ const router = createBrowserRouter([
 
   {
     path: '/signup',
-    element: <Signup />,
+    element: <AuthPage />,
   },
 
   {
     path: '/login',
-    element: <Login />,
+    element: <AuthPage />,
   },
 
   {
@@ -113,26 +112,7 @@ function App() {
 
 
 
-  if (isInitializing) {
 
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0c0c0c]">
-        <span
-          className="logo-retro block whitespace-nowrap select-none text-2xl animate-pulse"
-          style={{
-            WebkitTextFillColor: 'transparent',
-            background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            letterSpacing: '0.05em',
-          }}
-        >
-          CarbonXplanet
-        </span>
-      </div>
-    );
-
-  }
 
 
   return (
