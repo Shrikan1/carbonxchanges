@@ -122,6 +122,8 @@ function App() {
 
 
 
+     if (isInitializing) {
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0c0c0c]">
         <span
@@ -142,6 +144,9 @@ function App() {
 
   }
 
+
+
+  
 
 
   return (
