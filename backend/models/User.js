@@ -22,7 +22,7 @@ async function findByEmail(email) {
 
 async function findById(id) {
   const result = await query(
-    'SELECT id, name, email, role, is_seller, is_buyer, wallet_address, token_version, created_at FROM users WHERE id = $1',
+    'SELECT id, name, email, role, is_seller, is_buyer, wallet_address, token_version, pending_role_request, created_at FROM users WHERE id = $1',
     [id]
   );
   return result.rows[0];

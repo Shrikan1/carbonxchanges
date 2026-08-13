@@ -7,6 +7,7 @@ const projectPostController = require('../../controllers/seller/projectPostContr
 router.use(requireAuth);
 
 router.post('/', projectPostController.createProjectPost);
+router.get('/all', projectPostController.getAllProjectPosts);
 router.get('/project/:projectId', projectPostController.getProjectPosts);
 router.put('/:id', projectPostController.updateProjectPost);
 router.delete('/:id', projectPostController.deleteProjectPost);

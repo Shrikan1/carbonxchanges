@@ -1,8 +1,5 @@
-
-import { useEffect, useState } from 'react';
-
-
-import { createBrowserRouter, RouterProvider, } from 'react-router-dom';
+import { useEffect } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Home from './pages/shared/Home';
 import AuthPage from './pages/auth/AuthPage';
@@ -13,11 +10,22 @@ import Article from './pages/shared/Article';
 import Gallery from './pages/shared/Gallery';
 import Posts from './pages/shared/Posts';
 
+import ProjectListPage from './pages/seller/ProjectListPage';
+import ProjectFormPage from './pages/seller/ProjectFormPage';
+
+import RequireAuth from './components/RequireAuth';
+import ProfilePage from './pages/shared/ProfilePage';
 
 import { useAuthStore } from './store/useAuthStore';
 import * as authApi from './api/endpoint/Authapi';
-import BecomeMemberModal from './components/Becomemembermodal';
 
+
+import PublicProjectShowcasePage from './pages/shared/PublicProjectShowcasePage';
+import ProjectPostEditorPage from './pages/seller/ProjectPostEditorPage';
+import ProjectVerificationPage from './pages/seller/ProjectVerificationPage';
+import CreditsPage from './pages/seller/CreditsPage';
+import ListingsPage from './pages/seller/ListingsPage';
+import SalesPage from './pages/seller/SalesPage';
 
 const router = createBrowserRouter([
   {
@@ -65,10 +73,95 @@ const router = createBrowserRouter([
     element: <VerifyEmail />,
   },
 
+  // Profile
+  {
+    path: '/profile',
+    element: (
+      <RequireAuth>
+        <ProfilePage />
+      </RequireAuth>
+    ),
+  },
 
+  // Seller Projects
+  {
+    path: '/seller/projects',
+    element: (
+      <RequireAuth>
+        <ProjectListPage />
+      </RequireAuth>
+    ),
+  },
 
+  // Create New Project
+  {
+    path: '/seller/projects/new',
+    element: (
+      <RequireAuth>
+        <ProjectFormPage />
+      </RequireAuth>
+    ),
+  },
 
+  {
+    path: '/projects/:projectId',
+    element: <PublicProjectShowcasePage />,
+  },
 
+  // Seller project editor
+  {
+    path: '/seller/projects/:projectId/post',
+    element: (
+      <RequireAuth>
+        <ProjectPostEditorPage />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: '/seller/post/new',
+    element: (
+      <RequireAuth>
+        <ProjectPostEditorPage />
+      </RequireAuth>
+    ),
+  },
+  {
+  path: '/seller/projects/:projectId/verification',
+  element: (
+    <RequireAuth>
+      <ProjectVerificationPage />
+    </RequireAuth>
+  ),
+},
+
+{
+  path: '/seller/credits',
+  element: (
+    <RequireAuth>
+      <CreditsPage />
+    </RequireAuth>
+  ),
+},
+
+{
+  path: '/seller/listings',
+  element: (
+    <RequireAuth>
+      <ListingsPage />
+    </RequireAuth>
+  ),
+},
+
+{
+  path: '/seller/sales',
+  element: (
+    <RequireAuth>
+      <SalesPage />
+    </RequireAuth>
+  ),
+},
+
+  // 404
   {
     path: '*',
     element: (
@@ -83,17 +176,16 @@ const router = createBrowserRouter([
 
 
 function App() {
-
-  const { setSession, finishInitializing, isInitializing, } = useAuthStore();
-
+  const {
+    setSession,
+    finishInitializing,
+    isInitializing,
+  } = useAuthStore();
 
 
   useEffect(() => {
-
     async function restoreSession() {
-
       try {
-
         const { data } = await authApi.refreshToken();
 
         const { data: profileData } =
@@ -105,28 +197,23 @@ function App() {
         );
 
       } catch {
-
         finishInitializing();
-
       }
-
     }
 
     restoreSession();
-
   }, [setSession, finishInitializing]);
 
 
-
-
-
+  if (isInitializing) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0c0c0c]">
         <span
           className="logo-retro block whitespace-nowrap select-none text-2xl animate-pulse"
           style={{
             WebkitTextFillColor: 'transparent',
-            background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+            background:
+              'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
             letterSpacing: '0.05em',
@@ -134,19 +221,14 @@ function App() {
         >
           CarbonXplanet
         </span>
-
       </div>
     );
-
   }
-
 
 
   return (
     <div className="min-h-screen w-full">
-
       <RouterProvider router={router} />
-       <BecomeMemberModal />
     </div>
   );
 }

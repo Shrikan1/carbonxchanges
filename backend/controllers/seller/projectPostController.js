@@ -75,6 +75,17 @@ async function getProjectPosts(req, res) {
   }
 }
 
+// GET /api/project-posts/all — public, get all global posts
+async function getAllProjectPosts(req, res) {
+  try {
+    const posts = await ProjectPost.findAllPosts();
+    res.json({ posts });
+  } catch (err) {
+    console.error('Get all project posts error:', err);
+    res.status(500).json({ error: 'Failed to fetch global posts' });
+  }
+}
+
 // POST /api/project-posts/:id/like  — any authenticated user (typically a buyer)
 async function likeProjectPost(req, res) {
   try {
@@ -108,6 +119,7 @@ module.exports = {
   updateProjectPost,
   deleteProjectPost,
   getProjectPosts,
+  getAllProjectPosts,
   likeProjectPost,
   shareProjectPost,
 };

@@ -4,6 +4,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'motion/react';
 import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
 
+import { useAuthStore } from '../../store/useAuthStore';
 import Login from './Login';
 import Signup from './Signup';
 
@@ -11,6 +12,23 @@ const AuthPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [mode, setMode] = useState(location.pathname === '/signup' ? 'signup' : 'login');
+
+  const { isAuthenticated, isInitializing } = useAuthStore();
+
+  // If the user is already logged in, send them home.
+  // isInitializing guard prevents a flash redirect before the session
+  // restore attempt in App.jsx has finished.
+
+  const params = new URLSearchParams(location.search);
+  const isMemberSignUp = params.get('intent') === 'member';
+
+
+
+  useEffect(() => {
+    if (!isInitializing && isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, isInitializing, navigate]);
 
   // Sync mode with URL on external navigation
   useEffect(() => {
@@ -135,7 +153,7 @@ const AuthPage = () => {
                   exit={{ opacity: 0, x: mode === 'login' ? 20 : -20 }}
                   transition={{ duration: 0.3, ease: 'easeOut' }}
                 >
-                  {mode === 'login' ? <Login isEmbedded={true} /> : <Signup isEmbedded={true} />}
+                  {mode === 'login' ? <Login isEmbedded={true} /> : <Signup isMemberSignUp={isMemberSignUp} isEmbedded={true} />}
                 </motion.div>
               </AnimatePresence>
             </div>

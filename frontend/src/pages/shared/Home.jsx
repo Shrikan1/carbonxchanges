@@ -168,8 +168,8 @@ const Home = () => {
               <FaArrowRight className="text-[11px]" />
             </Link>
             <Link
-              to="/signup"
-              className="inline-block"
+              to="/signup?intent=member"
+              className="inline-flex items-center space-x-2"
             >
               <GlareHover
                 width="auto"
@@ -184,7 +184,7 @@ const Home = () => {
                 transitionDuration={800}
                 className="px-8 py-3.5 hover:border-white/50 transition-colors !border-[rgba(255,255,255,0.2)] hover:!border-[rgba(255,255,255,0.5)]"
               >
-                <span className="text-white text-[14px] font-semibold">Get Started</span>
+                <span className="text-white text-[14px] font-semibold">Become a Member →</span>
               </GlareHover>
             </Link>
           </motion.div>
@@ -223,7 +223,7 @@ const Home = () => {
             </div>
 
             <div className="w-full lg:w-7/12">
-              <div className="relative overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] aspect-video ring-1 ring-black/5 transform transition-transform duration-500 hover:scale-[1.02]">
+              <div className="relative overflow-hidden  shadow-[0_20px_50px_rgba(0,0,0,0.15)] aspect-video ring-1 ring-black/5 transform transition-transform duration-500 ">
                 <video
                   autoPlay
                   loop

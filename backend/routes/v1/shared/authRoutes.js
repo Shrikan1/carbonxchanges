@@ -12,8 +12,8 @@ router.post('/login', loginLimiter, authController.login);
 router.get('/me', requireAuth, authController.getProfile);
 
 // Token management
-router.post('/refresh', authController.refreshToken);     // uses httpOnly refresh cookie
-router.post('/logout', requireAuth, authController.logout); // revokes all tokens for user
+router.post('/refresh', authController.refreshToken);     
+router.post('/logout', requireAuth, authController.logout); 
 
 module.exports = router;
 

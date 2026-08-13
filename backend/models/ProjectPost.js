@@ -54,8 +54,25 @@ async function deletePost(postId) {
 // Public showcase listing — all posts for a project, most recent first
 async function findPostsByProject(projectId) {
   const result = await query(
-    `SELECT * FROM project_posts WHERE project_id = $1 ORDER BY created_at DESC`,
+    `SELECT pp.*, p.title as project_title, u.name as seller_name
+     FROM project_posts pp
+     JOIN projects p ON p.id = pp.project_id
+     JOIN users u ON u.id = p.seller_id
+     WHERE pp.project_id = $1 
+     ORDER BY pp.created_at DESC`,
     [projectId]
+  );
+  return result.rows;
+}
+
+// Global feed — all posts across all projects, most recent first
+async function findAllPosts() {
+  const result = await query(
+    `SELECT pp.*, p.title as project_title, u.name as seller_name
+     FROM project_posts pp
+     JOIN projects p ON p.id = pp.project_id
+     JOIN users u ON u.id = p.seller_id
+     ORDER BY pp.created_at DESC`
   );
   return result.rows;
 }
@@ -126,6 +143,7 @@ module.exports = {
   updatePost,
   deletePost,
   findPostsByProject,
+  findAllPosts,
   addProgressUpdate,
   findUpdatesByPost,
   toggleLike,
