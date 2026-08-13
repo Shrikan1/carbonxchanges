@@ -4,7 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
 import { login } from "../../api/endpoint/Authapi";
 import Loader from '../../components/Loader';
-import { useAuthStore } from '../../store/Useauthstore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const Login = ({ isEmbedded }) => {
   const navigate = useNavigate();

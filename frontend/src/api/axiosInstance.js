@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { useAuthStore } from '../store/Useauthstore';
-import { useUIStore } from '../store/Useuistore';
+import { useAuthStore } from '../store/useAuthStore';
+import { useUIStore } from '../store/useUIStore';
 
 
 const api = axios.create({
@@ -43,7 +43,11 @@ api.interceptors.response.use(
     }
 
 
-    if (error.response?.status === 401 && !original._retry) {
+    if (
+  error.response?.status === 401 &&
+  !original._retry &&
+  !original.url?.includes('/auth/refresh')
+)  {
       original._retry = true;
       try {
         const { data } = await api.post('/v1/auth/refresh');

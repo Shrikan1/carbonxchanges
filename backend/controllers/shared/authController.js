@@ -9,7 +9,7 @@ const { generateToken, generateRefreshToken, verifyToken } = require('../../util
 // POST /api/auth/signup
 async function signup(req, res) {
   try {
-    const { name, email, password, confirmPassword } = req.body;
+    const { name, email, password, confirmPassword, role_type } = req.body;
 
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -19,14 +19,23 @@ async function signup(req, res) {
       return res.status(400).json({ error: 'Passwords do not match' });
     }
 
+    // Validate role_type if provided
+    const VALID_ROLES = ['seller', 'buyer'];
+    if (role_type && !VALID_ROLES.includes(role_type)) {
+      return res.status(400).json({ error: `role_type must be 'seller' or 'buyer'` });
+    }
+
     const existing = await User.findByEmail(email);
     if (existing) {
       return res.status(409).json({ error: 'An account with this email already exists' });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    // No role passed — every account starts as base 'user' with no seller/buyer capability
+    // Every account starts as base 'user'. If role_type was provided at signup,
+    // we immediately set the corresponding flag after account creation.
     const user = await User.createUser({ name, email, passwordHash });
+    if (role_type === 'seller') await User.setSellerFlag(user.id);
+    else if (role_type === 'buyer') await User.setBuyerFlag(user.id);
 
     const otpCode = await Otp.createOtp(user.id, 'signup');
     await sendOtpEmail(email, otpCode);

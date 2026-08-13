@@ -3,12 +3,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
-import { signup } from "../../api/endpoint/Authapi";
-import Loader from '../../components/Loader';
+import { signup } from '../../api/endpoint/Authapi';
 
-const Signup = ({ isEmbedded }) => {
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+const Signup = ({ isEmbedded, isMemberSignUp }) => {
 
   const navigate = useNavigate();
+
+  // Always show the toggle; default to 'seller' when coming from member intent,
+  // otherwise 'buyer' as the right-side default — user can switch either way.
+  const [roleType, setRoleType] = useState(isMemberSignUp ? 'seller' : 'seller');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -18,41 +24,20 @@ const Signup = ({ isEmbedded }) => {
   });
 
   const [loading, setLoading] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
-
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
-
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
 
 
-
-
   const handleChange = (e) => {
-
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
 
-  // -----------------------------
-  // Handle signup
-  // -----------------------------
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
     setError('');
-
-
-    // Validate fields
 
     if (
       !formData.name.trim() ||
@@ -64,332 +49,265 @@ const Signup = ({ isEmbedded }) => {
       return;
     }
 
-
-    // Validate password
-
-    if (
-      formData.password !==
-      formData.confirmPassword
-    ) {
+    if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
 
-
     try {
-
       setLoading(true);
-
-
-      // Call signup API
 
       const response = await signup(
         formData.name,
         formData.email,
         formData.password,
-        formData.confirmPassword
+        formData.confirmPassword,
+        roleType  // always send the selected role
       );
 
+      const userId =
+        response.data.userId ||
+        response.data.user?._id ||
+        response.data.user?.id ||
+        response.data.id;
 
-      console.log(
-        'Signup successful:',
-        response.data
-      );
-
-
-      /*
-        IMPORTANT:
-
-        This assumes your backend returns:
-
-        {
-          userId: "...",
-          message: "..."
-        }
-
-        If your backend returns a different structure,
-        change response.data.userId accordingly.
-      */
-
-      const userId = response.data.userId || response.data.user?._id || response.data.user?.id || response.data.id;
-
-      // Make sure backend returned userId
       if (!userId) {
         setError(
-          'Signup succeeded, but user ID was not returned by the server. Please check your email for the OTP, or try logging in.'
+          'Signup succeeded, but user ID was not returned. Check your email for the OTP, or try logging in.'
         );
         return;
       }
 
-
-      // Go to OTP verification
-
       navigate('/verify-email', {
-        state: {
-          userId: userId,
-          email: formData.email,
-        },
+        state: { userId, email: formData.email },
       });
 
-
-    } catch (error) {
-
-      console.error(
-        'Signup failed:',
-        error
-      );
-
-
-      const defaultError = error.request ? 'Network error. Is the backend server running?' : 'Something went wrong. Please try again.';
-      setError(error.response?.data?.message || defaultError);
-
-
+    } catch (err) {
+      const defaultError = err.request
+        ? 'Network error. Is the backend server running?'
+        : 'Something went wrong. Please try again.';
+      setError(err.response?.data?.error || err.response?.data?.message || defaultError);
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
+
+  // ─── Role Toggle ─────────────────────────────────────────────────────────────
+
+  const roleToggle = (
+    <div className="mb-5">
+      <p className="text-[11px] font-mono font-bold text-[#999] uppercase tracking-[0.15em] mb-2">
+        Join as
+      </p>
+
+      {/* Pill toggle container */}
+      <div className="relative flex items-center bg-[#f5f5f5] rounded-full p-[3px] w-full">
+
+        {/* Sliding background */}
+        <span
+          className="absolute top-[3px] bottom-[3px] w-[calc(50%-3px)] rounded-full bg-[#0c0c0c] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          style={{
+            transform: roleType === 'seller' ? 'translateX(3px)' : 'translateX(calc(100% + 3px))',
+          }}
+        />
+
+        {/* Seller option */}
+        <button
+          type="button"
+          onClick={() => setRoleType('seller')}
+          className={`relative z-10 flex-1 flex items-center justify-center gap-1.5 py-2 text-[12px] font-mono font-bold uppercase tracking-wider transition-colors duration-300 rounded-full ${
+            roleType === 'seller' ? 'text-white' : 'text-[#999] hover:text-[#555]'
+          }`}
+        >
+          {/* Leaf icon */}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+          Seller
+        </button>
+
+        {/* Buyer option */}
+        <button
+          type="button"
+          onClick={() => setRoleType('buyer')}
+          className={`relative z-10 flex-1 flex items-center justify-center gap-1.5 py-2 text-[12px] font-mono font-bold uppercase tracking-wider transition-colors duration-300 rounded-full ${
+            roleType === 'buyer' ? 'text-white' : 'text-[#999] hover:text-[#555]'
+          }`}
+        >
+          {/* Cart icon */}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          Buyer
+        </button>
+
+      </div>
+
+      {/* Subtle description */}
+      <p className="text-[11px] text-[#aaa] mt-2 text-center">
+        {roleType === 'seller'
+          ? 'List and sell verified carbon credits'
+          : 'Browse and purchase carbon offsets'}
+      </p>
+    </div>
+  );
+
+
+  // ─── Form content ─────────────────────────────────────────────────────────
 
   const formContent = (
     <div className="w-full h-full flex flex-col">
       {!isEmbedded && (
-        <>
-          {/* Mobile logo removed */}
-          <div className="flex items-center space-x-6 mb-8">
-            <span className="text-[#0c0c0c] text-xl tracking-tight border-b-2 border-[#0c0c0c] pb-2" style={{ fontFamily: "'Bungee', cursive" }}>
-              Sign Up
-            </span>
-            <Link
-              to="/login"
-              className="text-[#999] text-xl tracking-tight pb-2 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors"
-              style={{ fontFamily: "'Bungee', cursive" }}
-            >
-              Sign In
-            </Link>
-          </div>
-        </>
+        <div className="flex items-center space-x-6 mb-8">
+          <span
+            className="text-[#0c0c0c] text-xl tracking-tight border-b-2 border-[#0c0c0c] pb-2"
+            style={{ fontFamily: "'Bungee', cursive" }}
+          >
+            {isMemberSignUp ? 'Become a Member' : 'Sign Up'}
+          </span>
+          <Link
+            to="/login"
+            className="text-[#999] text-xl tracking-tight pb-2 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors"
+            style={{ fontFamily: "'Bungee', cursive" }}
+          >
+            Sign In
+          </Link>
+        </div>
       )}
 
-      <div className="flex-1 flex flex-col justify-center">
-      {/* FORM */}
-      <form
-        className="space-y-4"
-        onSubmit={handleSubmit}
-      >
-
-
-                  {/* Name */}
-
-                  <div>
-
-                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
-
-                      Full Name
-
-                    </label>
-
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Aarav Sharma"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
-                    />
-
-                  </div>
-
-
-                  {/* Email */}
-
-                  <div>
-
-                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
-
-                      Email
-
-                    </label>
-
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="aarav@example.com"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
-                    />
-
-                  </div>
-
-
-                  {/* Password */}
-
-                  <div>
-
-                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
-
-                      Password
-
-                    </label>
-
-                    <div className="relative">
-
-                      <input
-                        type={
-                          showPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        name="password"
-                        placeholder="••••••••••"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowPassword(
-                            !showPassword
-                          )
-                        }
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c]"
-                      >
-
-                        {showPassword ? (
-                          <FaEyeSlash size={16} />
-                        ) : (
-                          <FaEye size={16} />
-                        )}
-
-                      </button>
-
-                    </div>
-
-                  </div>
-
-
-                  {/* Confirm Password */}
-
-                  <div>
-
-                    <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
-
-                      Confirm Password
-
-                    </label>
-
-                    <div className="relative">
-
-                      <input
-                        type={
-                          showConfirmPassword
-                            ? 'text'
-                            : 'password'
-                        }
-                        name="confirmPassword"
-                        placeholder="••••••••••"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowConfirmPassword(
-                            !showConfirmPassword
-                          )
-                        }
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c]"
-                      >
-
-                        {showConfirmPassword ? (
-                          <FaEyeSlash size={16} />
-                        ) : (
-                          <FaEye size={16} />
-                        )}
-
-                      </button>
-
-                    </div>
-
-                  </div>
-
-
-                  {/* Error */}
-
-                  {error && (
-
-                    <p className="text-sm text-red-500">
-                      {error}
-                    </p>
-
-                  )}
-
-
-                  {/* Terms */}
-
-                  <div className="flex items-start space-x-2 pt-1">
-
-                    <input
-                      type="checkbox"
-                      className="w-[14px] h-[14px] mt-0.5 border-[#ccc] rounded-none accent-[#0c0c0c]"
-                    />
-
-                    <span className="text-[13px] text-[#666] leading-snug">
-
-                      I agree to the{' '}
-
-                      <Link
-                        to="/terms"
-                        className="text-[#0c0c0c] font-semibold hover:underline"
-                      >
-                        Terms & Conditions
-                      </Link>
-
-                    </span>
-
-                  </div>
-
-
-                  {/* Submit */}
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2 disabled:opacity-60 flex items-center justify-center"
-                  >
-
-                    {loading ? (
-                      <div className="flex items-center space-x-2">
-                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span>Processing...</span>
-                      </div>
-                    ) : (
-                      'Create Account'
-                    )}
-
-                  </button>
-
-                </form>
-
-
-                {/* Bottom link */}
-
-          <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] text-[#999]">
-            Already have an account?{' '}
-            <Link to="/login" className="text-[#0c0c0c] font-semibold hover:underline">
-              Sign In
-            </Link>
+      <div className="flex-1 flex flex-col justify-center overflow-y-auto">
+        <form className="space-y-4" onSubmit={handleSubmit}>
+
+          {/* Role Toggle — always visible */}
+          {roleToggle}
+
+          {/* Name */}
+          <div>
+            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Aarav Sharma"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+            />
           </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="aarav@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="••••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c]"
+              >
+                {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                placeholder="••••••••••"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c]"
+              >
+                {showConfirmPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <p className="text-sm text-red-500">{error}</p>
+          )}
+
+          {/* Terms */}
+          <div className="flex items-start space-x-2 pt-1">
+            <input
+              type="checkbox"
+              className="w-[14px] h-[14px] mt-0.5 border-[#ccc] rounded-none accent-[#0c0c0c]"
+            />
+            <span className="text-[13px] text-[#666] leading-snug">
+              I agree to the{' '}
+              <Link to="/terms" className="text-[#0c0c0c] font-semibold hover:underline">
+                Terms &amp; Conditions
+              </Link>
+            </span>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2 disabled:opacity-60 flex items-center justify-center"
+          >
+            {loading ? (
+              <div className="flex items-center space-x-2">
+                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+                <span>Processing...</span>
+              </div>
+            ) : (
+              `Create ${roleType === 'seller' ? 'Seller' : 'Buyer'} Account →`
+            )}
+          </button>
+
+        </form>
+
+        <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] text-[#999]">
+          Already have an account?{' '}
+          <Link to="/login" className="text-[#0c0c0c] font-semibold hover:underline">
+            Sign In
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -399,39 +317,34 @@ const Signup = ({ isEmbedded }) => {
   }
 
   return (
-    <>
-        <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
-          <div className="absolute inset-0 bg-black/70" />
-          <div className="relative z-10 w-full max-w-[1060px] mx-4 md:mx-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#0c0c0c] border border-[#222] overflow-hidden">
-              <div className="relative hidden lg:block min-h-[680px]">
-                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
-                <div className="absolute inset-0 bg-black/40" />
-                <div className="relative z-10 h-full flex flex-col justify-end p-10">
-                  {/* Top Logo removed */}
-                  <div>
-                    <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 logo-retro-white">
-                      Join the Green<br />Revolution.
-                    </h2>
-                    <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-                      Build a sustainable future with blockchain-powered carbon credits.
-                    </p>
-                    <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">
-                      © 2026 CarbonXplanet. All rights reserved.
-                    </div>
-                  </div>
+    <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
+      <div className="absolute inset-0 bg-black/70" />
+      <div className="relative z-10 w-full max-w-[1060px] mx-4 md:mx-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#0c0c0c] border border-[#222] overflow-hidden">
+          <div className="relative hidden lg:block min-h-[680px]">
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="relative z-10 h-full flex flex-col justify-end p-10">
+              <div>
+                <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 logo-retro-white">
+                  Join the Green<br />Revolution.
+                </h2>
+                <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                  Build a sustainable future with blockchain-powered carbon credits.
+                </p>
+                <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">
+                  © 2026 CarbonXplanet. All rights reserved.
                 </div>
-              </div>
-              <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start min-h-[680px]">
-                {formContent}
               </div>
             </div>
           </div>
+          <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start min-h-[680px]">
+            {formContent}
+          </div>
         </div>
-    </>
-
-
+      </div>
+    </div>
   );
 };
 
