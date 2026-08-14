@@ -15,6 +15,22 @@
     color: #ffffff;
     letter-spacing: 0.05em;
   }
+  
+  .admin-theme {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    background-color: #f3f4f6;
+    color: #111827;
+  }
+  .admin-theme h1, .admin-theme h2, .admin-theme h3, .admin-theme h4, .admin-theme h5, .admin-theme h6 {
+    font-family: inherit !important;
+    text-transform: none !important;
+    font-weight: inherit !important;
+    letter-spacing: normal !important;
+    line-height: normal !important;
+  }
+  .admin-theme p, .admin-theme span, .admin-theme div {
+    font-family: inherit;
+  }
 }
 
 @layer base {

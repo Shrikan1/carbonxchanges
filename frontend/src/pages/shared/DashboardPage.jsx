@@ -5,6 +5,7 @@ import * as dashboardApi from '../../api/endpoint/dashboardApi';
 import PriceTicker from '../../components/PriceTicker';
 import { Link } from 'react-router-dom';
 import { FiUsers, FiFileText, FiCheckCircle, FiClock, FiDollarSign, FiAlertCircle, FiShield, FiList, FiRefreshCw } from 'react-icons/fi';
+import AdminDashboard from '../admin/AdminDashboard';
 
 const StatCard = ({ title, value, icon, subtitle }) => (
   <div className="bg-[#111] border border-[#222] p-5 rounded-xl flex flex-col justify-between hover:border-[#444] transition-colors">
@@ -19,58 +20,6 @@ const StatCard = ({ title, value, icon, subtitle }) => (
   </div>
 );
 
-const AdminDashboard = ({ data }) => {
-  const { users, projects, credits, pending_review_count, overdue_completions_count } = data;
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Users" value={users?.total_users || 0} icon={<FiUsers size={20} />} subtitle={`${users?.total_sellers || 0} Sellers, ${users?.total_buyers || 0} Buyers`} />
-        <StatCard title="Total Projects" value={projects?.total || 0} icon={<FiFileText size={20} />} subtitle={`${projects?.minted || 0} Minted`} />
-        <StatCard title="Pending Reviews" value={pending_review_count || 0} icon={<FiClock size={20} />} subtitle="Requires Admin Attention" />
-        <StatCard title="Overdue Completions" value={overdue_completions_count || 0} icon={<FiAlertCircle size={20} />} subtitle="Agent Follow-up Needed" />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard title="Platform Revenue" value={`$${(credits?.total_platform_revenue || 0).toLocaleString()}`} icon={<FiDollarSign size={20} />} />
-        <StatCard title="Credits Minted" value={(credits?.total_credits_minted || 0).toLocaleString()} icon={<FiCheckCircle size={20} />} />
-        <StatCard title="Credits Sold" value={(credits?.total_credits_sold || 0).toLocaleString()} icon={<FiCheckCircle size={20} />} />
-      </div>
-
-      <div className="mt-8 pt-6 border-t border-[#222]">
-        <h2 className="text-xl font-bold font-['JetBrains_Mono'] mb-4 text-[#bef264]">Admin Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link to="/admin/projects" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
-            <FiList className="text-[#bef264]" size={20} />
-            <span className="text-sm font-medium">Review Queue</span>
-          </Link>
-          <Link to="/admin/mint-queue" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
-            <FiCheckCircle className="text-[#bef264]" size={20} />
-            <span className="text-sm font-medium">Mint Queue</span>
-          </Link>
-          <Link to="/admin/agents" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
-            <FiShield className="text-[#bef264]" size={20} />
-            <span className="text-sm font-medium">Manage Agents</span>
-          </Link>
-          <Link to="/admin/reversals" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
-            <FiRefreshCw className="text-[#bef264]" size={20} />
-            <span className="text-sm font-medium">Reversals</span>
-          </Link>
-          <Link to="/admin/oversight/users" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
-            <FiUsers className="text-[#bef264]" size={20} />
-            <span className="text-sm font-medium">Oversight: Users</span>
-          </Link>
-          <Link to="/admin/oversight/projects" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
-            <FiFileText className="text-[#bef264]" size={20} />
-            <span className="text-sm font-medium">Oversight: Projects</span>
-          </Link>
-          <Link to="/admin/oversight/transactions" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
-            <FiDollarSign className="text-[#bef264]" size={20} />
-            <span className="text-sm font-medium">Oversight: Transactions</span>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const SellerDashboard = ({ data }) => {
   return (
@@ -143,6 +92,23 @@ export default function DashboardPage() {
     );
   }
 
+  // Admin Dashboard renders entirely independently to maintain its white theme
+  if (user?.role === 'admin') {
+    return isLoading ? (
+      <div className="min-h-screen flex items-center justify-center text-center admin-theme bg-[#f3f4f6]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    ) : data ? (
+      <AdminDashboard data={data} />
+    ) : (
+      <div className="min-h-screen flex items-center justify-center text-center admin-theme bg-[#f3f4f6]">
+        <div className="p-8 text-center text-gray-500 bg-white rounded-xl border border-gray-200">
+          Unable to load dashboard data.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pt-24 pb-12 bg-[#0c0c0c] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -166,7 +132,6 @@ export default function DashboardPage() {
           </div>
         ) : data ? (
           <>
-            {user?.role === 'admin' && <AdminDashboard data={data} />}
             {user?.role === 'agent' && <AgentDashboard data={data} />}
             {user?.is_seller && !user?.role && <SellerDashboard data={data} />}
             {user?.is_buyer && !user?.role && !user?.is_seller && <BuyerDashboard data={data} />}
