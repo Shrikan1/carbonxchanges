@@ -205,25 +205,6 @@ function App() {
   }, [setSession, finishInitializing]);
 
 
-  if (isInitializing) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0c0c0c]">
-        <span
-          className="logo-retro block whitespace-nowrap select-none text-2xl animate-pulse"
-          style={{
-            WebkitTextFillColor: 'transparent',
-            background:
-              'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            letterSpacing: '0.05em',
-          }}
-        >
-          CarbonXplanet
-        </span>
-      </div>
-    );
-  }
 
 
   return (

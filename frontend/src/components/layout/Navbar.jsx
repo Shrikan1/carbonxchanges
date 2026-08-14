@@ -479,7 +479,7 @@ const Navbar = ({
                   0.3,
                   1,
                 ],
-                delay: 2.2,
+                delay: 1.6,
               }
             : {}
         }
@@ -523,7 +523,7 @@ const Navbar = ({
                   animateEntrance
                     ? {
                         layout: {
-                          duration: 1.2,
+                          duration: 1.0,
                           ease: [
                             0.16,
                             1,

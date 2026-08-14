@@ -75,7 +75,7 @@ const Home = () => {
         setShowCenterLogo(false);
         setShowIntro(false);
         document.body.style.overflow = 'unset';
-      }, 1900);
+      }, 1600);
       return () => {
         clearTimeout(timer);
         document.body.style.overflow = 'unset';
@@ -89,17 +89,17 @@ const Home = () => {
           {showIntro && (
             <motion.div
               className="fixed inset-0 z-[9999] bg-[#0c0c0c] flex items-center justify-center pointer-events-none"
-              initial={{ opacity: 0.8 }}
+              initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               {showCenterLogo && (
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center pointer-events-none"
                   initial={{ opacity: 0, scale: 0.85, filter: 'blur(10px)' }}
                   animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                  transition={{ duration: 1, ease: 'easeOut', delay: 0.6 }}
+                  transition={{ duration: 1.0, ease: 'easeOut', delay: 0.1 }}
                 >
                   <motion.span
                     layoutId="brand-logo"
@@ -110,7 +110,7 @@ const Home = () => {
                       color: 'transparent',
                       background: 'none' 
                     }}
-                    transition={{ layout: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }}
+                    transition={{ layout: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }}
                   >
                     CarbonXplanet
                   </motion.span>
@@ -136,7 +136,7 @@ const Home = () => {
           <motion.div 
             initial={isFirstVisit ? { opacity: 0, y: 30 } : false}
             animate={isFirstVisit ? { opacity: 1, y: 0 } : false}
-            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.5 } : {}}
+            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 1.8 } : {}}
             className="flex flex-col items-center justify-center space-y-2 mb-10 mt-4"
           >
             <h1 className="logo-retro text-[clamp(2.5rem,6vw,5rem)] text-white uppercase tracking-tight drop-shadow-lg leading-[1.1]" style={{ WebkitTextFillColor: 'white', background: 'none' }}>Offset Emissions.</h1>
@@ -147,7 +147,7 @@ const Home = () => {
           <motion.p 
             initial={isFirstVisit ? { opacity: 0, y: 20 } : false}
             animate={isFirstVisit ? { opacity: 1, y: 0 } : false}
-            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.8 } : {}}
+            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.0 } : {}}
             className="text-white/50 text-base sm:text-lg max-w-xl mx-auto leading-relaxed mb-12"
           >
             The decentralized marketplace where verified carbon credits meet transparent blockchain infrastructure.
@@ -157,7 +157,7 @@ const Home = () => {
           <motion.div 
             initial={isFirstVisit ? { opacity: 0, y: 20, scale: 0.98 } : false}
             animate={isFirstVisit ? { opacity: 1, y: 0, scale: 1 } : false}
-            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 3.0 } : {}}
+            transition={isFirstVisit ? { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 2.2 } : {}}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link

@@ -6,7 +6,8 @@ import { useAuthStore } from '../store/useAuthStore';
 // rendering <Routes> at all, by the time this ever runs we already know
 // for certain whether the user is authenticated — no loading flicker here.
 export default function RequireAuth({ children }) {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const { isAuthenticated, isInitializing } = useAuthStore();
+  if (isInitializing) return <div className="min-h-screen w-full bg-[#0c0c0c]"></div>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return children;
 }
