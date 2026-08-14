@@ -58,6 +58,7 @@ const projectGalleryItems = [
   { image: heroBg, title: 'River Bridge' },
 ];
 
+
 const Home = () => {
   const shouldReduceMotion = useReducedMotion();
   const [isFirstVisit] = useState(() => {

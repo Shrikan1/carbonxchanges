@@ -1,10 +1,9 @@
-// src/components/LocationMap.jsx
+
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Vite doesn't bundle Leaflet's default marker icons correctly out of the
-// box — this explicit fix is required or markers silently fail to render.
+
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -16,9 +15,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// markers: [{ lat, lng, label }] — one marker for the public showcase page
-// (Section 5), two markers (declared vs. agent's actual GPS) for the
-// verification comparison view (Section 13) — same component, either use case.
 export default function LocationMap({ markers = [], zoom = 10, height = '300px' }) {
   const validMarkers = markers.filter((m) => m.lat != null && m.lng != null);
 

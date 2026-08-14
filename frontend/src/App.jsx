@@ -27,6 +27,19 @@ import CreditsPage from './pages/seller/CreditsPage';
 import ListingsPage from './pages/seller/ListingsPage';
 import SalesPage from './pages/seller/SalesPage';
 
+import WalletPage from './pages/shared/WalletPage';
+import DashboardPage from './pages/shared/DashboardPage';
+import MarketplacePage from './pages/shared/MarketplacePage';
+
+import AdminReviewQueuePage from './pages/admin/AdminReviewQueuePage';
+import AdminProjectDetailPage from './pages/admin/AdminProjectDetailPage';
+import AdminAgentsPage from './pages/admin/AdminAgentsPage';
+import AdminMintQueuePage from './pages/admin/AdminMintQueuePage';
+import AdminOversightUsersPage from './pages/admin/AdminOversightUsersPage';
+import AdminOversightProjectsPage from './pages/admin/AdminOversightProjectsPage';
+import AdminOversightTransactionsPage from './pages/admin/AdminOversightTransactionsPage';
+import AdminReversalsPage from './pages/admin/AdminReversalsPage';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -161,6 +174,112 @@ const router = createBrowserRouter([
   ),
 },
 
+  // Wallet
+{
+  path: '/wallet',
+  element: (
+    <RequireAuth>
+      <WalletPage />
+    </RequireAuth>
+  ),
+},
+
+// Marketplace
+{
+  path: '/marketplace',
+  element: <MarketplacePage />,
+},
+
+// Dashboard
+{
+  path: '/dashboard',
+  element: (
+    <RequireAuth>
+      <DashboardPage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Project Review
+{
+  path: '/admin/projects',
+  element: (
+    <RequireAuth>
+      <AdminReviewQueuePage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Project Detail
+{
+  path: '/admin/projects/:id',
+  element: (
+    <RequireAuth>
+      <AdminProjectDetailPage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Agents
+{
+  path: '/admin/agents',
+  element: (
+    <RequireAuth>
+      <AdminAgentsPage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Mint Queue
+{
+  path: '/admin/mint-queue',
+  element: (
+    <RequireAuth>
+      <AdminMintQueuePage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Oversight Users
+{
+  path: '/admin/oversight/users',
+  element: (
+    <RequireAuth>
+      <AdminOversightUsersPage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Oversight Projects
+{
+  path: '/admin/oversight/projects',
+  element: (
+    <RequireAuth>
+      <AdminOversightProjectsPage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Oversight Transactions
+{
+  path: '/admin/oversight/transactions',
+  element: (
+    <RequireAuth>
+      <AdminOversightTransactionsPage />
+    </RequireAuth>
+  ),
+},
+
+// Admin - Reversals
+{
+  path: '/admin/reversals',
+  element: (
+    <RequireAuth>
+      <AdminReversalsPage />
+    </RequireAuth>
+  ),
+},
+
   // 404
   {
     path: '*',
@@ -172,6 +291,8 @@ const router = createBrowserRouter([
       </div>
     ),
   },
+
+
 ]);
 
 
