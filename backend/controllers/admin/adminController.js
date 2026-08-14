@@ -31,6 +31,8 @@ async function createAgent(req, res) {
       createdByAdminId: req.user.id, // set by requireAuth middleware
     });
 
+   // console.log(`\n=== AGENT CREATED ===\nEmail: ${email}\nTemp Password: ${tempPassword}\n=====================\n`);
+
     await sendAgentCredentialsEmail(email, name, tempPassword);
 
     res.status(201).json({

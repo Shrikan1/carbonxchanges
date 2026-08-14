@@ -1,4 +1,4 @@
-// src/pages/seller/ProjectVerificationPage.jsx
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import * as verificationApi from '../../api/endpoint/verificationApi';

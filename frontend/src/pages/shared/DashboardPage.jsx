@@ -1,0 +1,182 @@
+// src/pages/shared/DashboardPage.jsx
+import { useEffect, useState } from 'react';
+import { useAuthStore } from '../../store/useAuthStore';
+import * as dashboardApi from '../../api/endpoint/dashboardApi';
+import PriceTicker from '../../components/PriceTicker';
+import { Link } from 'react-router-dom';
+import { FiUsers, FiFileText, FiCheckCircle, FiClock, FiDollarSign, FiAlertCircle, FiShield, FiList, FiRefreshCw } from 'react-icons/fi';
+
+const StatCard = ({ title, value, icon, subtitle }) => (
+  <div className="bg-[#111] border border-[#222] p-5 rounded-xl flex flex-col justify-between hover:border-[#444] transition-colors">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-[#888] text-sm uppercase tracking-wider font-['JetBrains_Mono']">{title}</h3>
+      <div className="text-[#bef264]">{icon}</div>
+    </div>
+    <div>
+      <div className="text-3xl font-bold text-white">{value}</div>
+      {subtitle && <div className="text-xs text-[#666] mt-1">{subtitle}</div>}
+    </div>
+  </div>
+);
+
+const AdminDashboard = ({ data }) => {
+  const { users, projects, credits, pending_review_count, overdue_completions_count } = data;
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Total Users" value={users?.total_users || 0} icon={<FiUsers size={20} />} subtitle={`${users?.total_sellers || 0} Sellers, ${users?.total_buyers || 0} Buyers`} />
+        <StatCard title="Total Projects" value={projects?.total || 0} icon={<FiFileText size={20} />} subtitle={`${projects?.minted || 0} Minted`} />
+        <StatCard title="Pending Reviews" value={pending_review_count || 0} icon={<FiClock size={20} />} subtitle="Requires Admin Attention" />
+        <StatCard title="Overdue Completions" value={overdue_completions_count || 0} icon={<FiAlertCircle size={20} />} subtitle="Agent Follow-up Needed" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatCard title="Platform Revenue" value={`$${(credits?.total_platform_revenue || 0).toLocaleString()}`} icon={<FiDollarSign size={20} />} />
+        <StatCard title="Credits Minted" value={(credits?.total_credits_minted || 0).toLocaleString()} icon={<FiCheckCircle size={20} />} />
+        <StatCard title="Credits Sold" value={(credits?.total_credits_sold || 0).toLocaleString()} icon={<FiCheckCircle size={20} />} />
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-[#222]">
+        <h2 className="text-xl font-bold font-['JetBrains_Mono'] mb-4 text-[#bef264]">Admin Actions</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Link to="/admin/projects" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
+            <FiList className="text-[#bef264]" size={20} />
+            <span className="text-sm font-medium">Review Queue</span>
+          </Link>
+          <Link to="/admin/mint-queue" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
+            <FiCheckCircle className="text-[#bef264]" size={20} />
+            <span className="text-sm font-medium">Mint Queue</span>
+          </Link>
+          <Link to="/admin/agents" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
+            <FiShield className="text-[#bef264]" size={20} />
+            <span className="text-sm font-medium">Manage Agents</span>
+          </Link>
+          <Link to="/admin/reversals" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
+            <FiRefreshCw className="text-[#bef264]" size={20} />
+            <span className="text-sm font-medium">Reversals</span>
+          </Link>
+          <Link to="/admin/oversight/users" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
+            <FiUsers className="text-[#bef264]" size={20} />
+            <span className="text-sm font-medium">Oversight: Users</span>
+          </Link>
+          <Link to="/admin/oversight/projects" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
+            <FiFileText className="text-[#bef264]" size={20} />
+            <span className="text-sm font-medium">Oversight: Projects</span>
+          </Link>
+          <Link to="/admin/oversight/transactions" className="p-4 bg-[#111] border border-[#222] rounded-lg hover:border-[#bef264] transition-colors flex items-center gap-3">
+            <FiDollarSign className="text-[#bef264]" size={20} />
+            <span className="text-sm font-medium">Oversight: Transactions</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SellerDashboard = ({ data }) => {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatCard title="Total Projects" value={data.total_projects || 0} icon={<FiFileText size={20} />} />
+        <StatCard title="Pending Projects" value={data.pending_projects || 0} icon={<FiClock size={20} />} />
+        <StatCard title="Approved Projects" value={data.approved_projects || 0} icon={<FiCheckCircle size={20} />} />
+        <StatCard title="Credits Issued" value={data.credits_issued || 0} icon={<FiCheckCircle size={20} />} />
+        <StatCard title="Credits Sold" value={data.credits_sold || 0} icon={<FiCheckCircle size={20} />} />
+        <StatCard title="Revenue" value={`$${(data.revenue || 0).toLocaleString()}`} icon={<FiDollarSign size={20} />} />
+      </div>
+    </div>
+  );
+};
+
+const AgentDashboard = ({ data }) => {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatCard title="Total Assigned" value={data.total_assigned || 0} icon={<FiFileText size={20} />} />
+        <StatCard title="Pending Verifications" value={data.pending_verifications || 0} icon={<FiClock size={20} />} />
+        <StatCard title="Completed" value={data.completed_verifications || 0} icon={<FiCheckCircle size={20} />} />
+      </div>
+    </div>
+  );
+};
+
+const BuyerDashboard = ({ data }) => {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatCard title="Total Purchased" value={data.total_purchased || 0} icon={<FiCheckCircle size={20} />} />
+        <StatCard title="Current Holdings" value={data.current_holdings || 0} icon={<FiFileText size={20} />} />
+        <StatCard title="CO2 Offset" value={data.total_co2_offset || 0} icon={<FiCheckCircle size={20} />} subtitle="Tons Retired" />
+      </div>
+    </div>
+  );
+};
+
+export default function DashboardPage() {
+  const user = useAuthStore((s) => s.user);
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      setIsLoading(true);
+      try {
+        let res;
+        if (user?.role === 'admin') res = await dashboardApi.getAdminDashboard();
+        else if (user?.role === 'agent') res = await dashboardApi.getAgentDashboard();
+        else if (user?.is_seller) res = await dashboardApi.getSellerDashboard();
+        else if (user?.is_buyer) res = await dashboardApi.getBuyerDashboard();
+        if (res) setData(res.data.dashboard);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    load();
+  }, [user]);
+
+  if (!user?.is_seller && !user?.is_buyer && !['admin', 'agent'].includes(user?.role)) {
+    return (
+      <div className="min-h-screen pt-24 px-6 flex items-center justify-center text-center text-[#888]">
+        Become a member to see your dashboard.
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen pt-24 pb-12 bg-[#0c0c0c] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold font-['JetBrains_Mono'] tracking-tight">
+              {user?.role === 'admin' && 'Admin '}
+              {user?.role === 'agent' && 'Agent '}
+              {user?.is_seller && !user?.role && 'Seller '}
+              {user?.is_buyer && !user?.role && !user?.is_seller && 'Buyer '}
+              Dashboard
+            </h1>
+            <p className="text-[#888] mt-1 text-sm">Welcome back, {user?.name || 'User'}</p>
+          </div>
+          <PriceTicker />
+        </div>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#bef264]"></div>
+          </div>
+        ) : data ? (
+          <>
+            {user?.role === 'admin' && <AdminDashboard data={data} />}
+            {user?.role === 'agent' && <AgentDashboard data={data} />}
+            {user?.is_seller && !user?.role && <SellerDashboard data={data} />}
+            {user?.is_buyer && !user?.role && !user?.is_seller && <BuyerDashboard data={data} />}
+          </>
+        ) : (
+          <div className="p-8 text-center text-[#888] bg-[#111] rounded-xl border border-[#222]">
+            Unable to load dashboard data.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

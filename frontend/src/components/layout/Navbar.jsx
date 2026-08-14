@@ -13,22 +13,22 @@ import { useAuthStore } from '../../store/useAuthStore';
 const roleConfig = {
   seller: {
     label: 'Seller Dashboard',
-    path: '/seller/dashboard',
+    path: '/dashboard',
   },
 
   buyer: {
     label: 'Buyer Dashboard',
-    path: '/buyer/dashboard',
+    path: '/dashboard',
   },
 
   agent: {
     label: 'Agent Dashboard',
-    path: '/agent/dashboard',
+    path: '/dashboard',
   },
 
   admin: {
     label: 'Admin Dashboard',
-    path: '/admin/dashboard',
+    path: '/dashboard',
   },
 };
 
@@ -115,6 +115,10 @@ const Navbar = ({
       name: 'Contact',
       path: '/contact',
     },
+    {
+      name: 'Marketplace',
+      path: '/marketplace',
+    },
   ];
 
 
@@ -168,7 +172,7 @@ const Navbar = ({
       return (
         <div className="hidden lg:flex items-center space-x-2">
 
-          {/* Dashboard links (only rendered when role exists) */}
+          
 
           {dashboardLinks.map((dash, idx) => (
             <Link
@@ -231,13 +235,13 @@ const Navbar = ({
                     >
                       My Projects
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/seller/projects/new"
                       onClick={closeProfileDropdown}
                       className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                     >
                       Add Project
-                    </Link>
+                    </Link> */}
                     <Link
                       to="/seller/post/new"
                       onClick={closeProfileDropdown}
@@ -270,7 +274,7 @@ const Navbar = ({
                 )}
                 {user?.is_buyer && (
                   <Link
-                    to="/buyer/dashboard"
+                    to="/dashboard"
                     onClick={closeProfileDropdown}
                     className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                   >
@@ -279,7 +283,7 @@ const Navbar = ({
                 )}
                 {user?.role === 'admin' && (
                   <Link
-                    to="/admin/dashboard"
+                    to="/dashboard"
                     onClick={closeProfileDropdown}
                     className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                   >
@@ -288,7 +292,7 @@ const Navbar = ({
                 )}
                 {user?.role === 'agent' && (
                   <Link
-                    to="/agent/dashboard"
+                    to="/dashboard"
                     onClick={closeProfileDropdown}
                     className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                   >

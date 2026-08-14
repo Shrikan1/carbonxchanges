@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSellerStore } from '../../store/useSellerStore';
 import { Button } from '../../components/ui/Button';
 
@@ -15,6 +15,7 @@ const STATUS_COLORS = {
 };
 
 export default function ProjectListPage() {
+  const navigate = useNavigate();
   const { projects, loading, error, fetchProjects, submitForReview, deleteProject } = useSellerStore();
 
   useEffect(() => {
@@ -56,7 +57,11 @@ export default function ProjectListPage() {
 
       <div className="space-y-3">
         {projects.map((project) => (
-          <div key={project.id} className="border border-border rounded-lg p-4 flex items-center justify-between">
+          <div 
+            key={project.id} 
+            className="border border-border rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-muted/50 transition-colors"
+            onClick={() => navigate(`/seller/projects/${project.id}/verification`)}
+          >
             <div>
               <p className="font-medium">{project.title}</p>
               <p className="text-sm text-muted-foreground">{project.project_type}</p>
@@ -69,10 +74,10 @@ export default function ProjectListPage() {
 
               {project.status === 'draft' && (
                 <>
-                  <Button variant="outline" onClick={() => handleSubmit(project.id)}>
+                  <Button variant="outline" onClick={(e) => { e.stopPropagation(); handleSubmit(project.id); }}>
                     Submit for Review
                   </Button>
-                  <Button variant="ghost" onClick={() => handleDelete(project.id)}>
+                  <Button variant="ghost" onClick={(e) => { e.stopPropagation(); handleDelete(project.id); }}>
                     Delete
                   </Button>
                 </>
