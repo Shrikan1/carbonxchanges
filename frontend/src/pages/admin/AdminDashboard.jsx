@@ -1,9 +1,9 @@
 import React from 'react';
-import { FiSearch, FiBell, FiChevronDown, FiPlus, FiMoreHorizontal } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
+import AdminHeader from '../../components/layout/AdminHeader';
 
-const AdminDashboard = ({ data }) => {
+const AdminDashboard = ({ data, isLoading }) => {
   const { user } = useAuthStore();
   const { users, projects, credits, pending_review_count, overdue_completions_count } = data || {};
 
@@ -11,62 +11,31 @@ const AdminDashboard = ({ data }) => {
     <div className="admin-theme min-h-screen w-full flex flex-col items-center">
       <div className="w-full max-w-[1400px] px-4 md:px-8 py-6">
 
-        {/* Unified Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 w-full relative">
-          
-          {/* Left: Heading */}
-          <div className="flex items-center shrink-0">
-            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 logo-retro" style={{ WebkitTextFillColor: '#111', background: 'none' }}>Admin Dashboard</h1>
-          </div>
-
-          {/* Center: Nav (Absolute centered on large screens) */}
-          <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <nav className="flex items-center bg-white rounded-full px-1 py-1 shadow-sm border border-gray-100">
-              <Link to="/dashboard" className="px-5 py-2 text-sm font-medium bg-gray-900 text-white rounded-full">Home</Link>
-              <Link to="/admin/projects" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Projects</Link>
-              <Link to="/admin/oversight/users" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Users</Link>
-              <Link to="/admin/oversight/transactions" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Transactions</Link>
-              <Link to="/admin/mint-queue" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Minting</Link>
-            </nav>
-          </div>
-
-          {/* Center Nav for Mobile (fallback) */}
-          <div className="flex lg:hidden overflow-x-auto pb-2 scrollbar-hide w-full">
-            <nav className="flex items-center bg-white rounded-full px-1 py-1 shadow-sm border border-gray-100 min-w-max">
-              <Link to="/dashboard" className="px-5 py-2 text-sm font-medium bg-gray-900 text-white rounded-full">Home</Link>
-              <Link to="/admin/projects" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Projects</Link>
-              <Link to="/admin/oversight/users" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Users</Link>
-              <Link to="/admin/oversight/transactions" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Transactions</Link>
-              <Link to="/admin/mint-queue" className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Minting</Link>
-            </nav>
-          </div>
-
-          {/* Right: Icons */}
-          <div className="flex items-center gap-3 shrink-0">
-            <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm border border-gray-100 text-gray-600 hover:bg-gray-50 transition-colors">
-              <FiSearch size={18} />
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm border border-gray-100 text-gray-600 hover:bg-gray-50 transition-colors relative">
-              <FiBell size={18} />
-              {pending_review_count > 0 && (
-                <span className="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full"></span>
-              )}
-            </button>
-            <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-gradient-to-tr from-blue-100 to-orange-100 flex items-center justify-center shrink-0">
-              <span className="font-semibold text-gray-700">{user?.name?.charAt(0) || 'A'}</span>
-            </div>
-          </div>
-        </div>
+        <AdminHeader title="Admin Dashboard" pendingReviewCount={pending_review_count} />
 
         {/* Widgets Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col min-h-[200px] animate-pulse">
+                <div className="h-6 bg-gray-200 rounded w-1/2 mb-6"></div>
+                <div className="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
+                <div className="space-y-3 mt-auto">
+                   <div className="h-4 bg-gray-200 rounded w-full"></div>
+                   <div className="h-4 bg-gray-200 rounded w-full"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
           {/* Gross Volume / Credits */}
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
             <div className="flex justify-between items-start mb-2">
               <h3 className="text-xl font-semibold text-gray-900">Gross Volume</h3>
             </div>
-            
+
             <div className="mb-6">
               <span className="text-3xl font-bold text-gray-900 tracking-tight">${(credits?.total_platform_revenue || 0).toLocaleString()}</span>
             </div>
@@ -92,44 +61,86 @@ const AdminDashboard = ({ data }) => {
             <div className="flex justify-between items-start mb-2">
               <h3 className="text-xl font-semibold text-gray-900">Platform Users</h3>
             </div>
-            
-            <div className="mb-6">
-              <span className="text-3xl font-bold text-gray-900 tracking-tight">{(users?.total_users || 0).toLocaleString()}</span>
-            </div>
 
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Sellers</span>
+            {/* Donut Chart */}
+            {(() => {
+              const total = users?.total_users || 1;
+              const sPct = ((users?.total_sellers || 0) / total) * 100;
+              const bPct = ((users?.total_buyers || 0) / total) * 100;
+
+              const gradient = `conic-gradient(
+                #3b82f6 0% ${sPct}%, 
+                #10b981 ${sPct}% ${sPct + bPct}%, 
+                #fb923c ${sPct + bPct}% 100%
+              )`;
+
+              return (
+                <div className="flex justify-center mb-6 mt-2">
+                  <div 
+                    className="relative w-32 h-32 rounded-full flex items-center justify-center shadow-sm transition-all"
+                    style={{ background: total > 1 ? gradient : '#f3f4f6' }}
+                  >
+                    <div className="w-24 h-24 bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
+                      <span className="text-3xl font-bold text-gray-900 tracking-tight">{(users?.total_users || 0).toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="space-y-4 text-sm mt-auto">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                  <span className="text-gray-500 font-medium">Sellers</span>
+                </div>
                 <span className="font-semibold text-gray-900">{users?.total_sellers || 0}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Buyers</span>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                  <span className="text-gray-500 font-medium">Buyers</span>
+                </div>
                 <span className="font-semibold text-gray-900">{users?.total_buyers || 0}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Agents</span>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-orange-400"></div>
+                  <span className="text-gray-500 font-medium">Agents</span>
+                </div>
                 <span className="font-semibold text-gray-900">{users?.total_agents || 0}</span>
               </div>
             </div>
           </div>
 
-          {/* Project Status */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
+          {/* Projects Pipeline */}
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col row-span-1">
             <div className="flex justify-between items-start mb-2">
-              <h3 className="text-xl font-semibold text-gray-900">Projects</h3>
-            </div>
-            
-            <div className="mb-6">
-              <span className="text-3xl font-bold text-gray-900 tracking-tight">{(projects?.total || 0).toLocaleString()}</span>
+              <h3 className="text-xl font-semibold text-gray-900">Projects Pipeline</h3>
             </div>
 
-            <div className="space-y-2 text-sm">
-              {['pending', 'assigned', 'in_progress', 'verified', 'approved', 'rejected', 'minted'].map(status => (
-                <div key={status} className="flex justify-between">
-                  <span className="text-gray-500 capitalize">{status.replace('_', ' ')}</span>
-                  <span className="font-semibold text-gray-900">{projects?.[status] || 0}</span>
-                </div>
-              ))}
+            <div className="mb-6 flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-gray-900 tracking-tight">{(projects?.total || 0).toLocaleString()}</span>
+              <span className="text-sm font-medium text-gray-500">Total</span>
+            </div>
+
+            <div className="space-y-3 text-sm flex-1">
+              {['pending', 'assigned', 'verified', 'approved', 'minted'].map((status) => {
+                const count = projects?.[status] || 0;
+                const max = projects?.total || 1;
+                const percent = (count / max) * 100;
+                return (
+                  <div key={status} className="flex flex-col gap-1.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500 capitalize text-xs font-medium">{status.replace('_', ' ')}</span>
+                      <span className="font-semibold text-gray-900 text-xs">{count}</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-gray-900 rounded-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
 
@@ -140,11 +151,11 @@ const AdminDashboard = ({ data }) => {
                 <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-medium border border-white/20 mb-4">
                   Insights
                 </div>
-                
+
                 <h4 className="text-xl font-semibold leading-tight mb-2">
                   Action Required
                 </h4>
-                
+
                 <div className="space-y-3 mt-4 text-sm text-white/90">
                   <div className="flex justify-between items-center bg-white/10 px-3 py-2 rounded-lg">
                     <span>Pending Review</span>
@@ -158,8 +169,8 @@ const AdminDashboard = ({ data }) => {
               </div>
             </div>
           </div>
-
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

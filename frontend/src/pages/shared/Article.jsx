@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
+import { FiBookOpen } from 'react-icons/fi';
 import img1 from '../../assets/os-x-mavericks-3840x2160-24079.jpg';
 import img2 from '../../assets/pexels-adnan-atasoy-261355608-12644453.jpg';
 import img3 from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
@@ -87,62 +88,72 @@ const Article = () => {
   }, []);
 
   return (
-    <div className="bg-[#0c0c0c] text-white min-h-screen font-sans overflow-x-hidden">
+    <div className="bg-gray-50 text-gray-900 min-h-screen font-sans overflow-x-hidden flex flex-col">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-6 pt-32 pb-24">
-        {/* Compact Retro Title */}
-        <h1 className="logo-retro text-4xl md:text-6xl lg:text-[50px] mb-12 text-white uppercase tracking-tight" style={{ WebkitTextFillColor: 'white', background: 'none' }}>
-          ARTICLES
-        </h1>
+      <main className="flex-grow max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-24">
+        
+        {/* Clean Header */}
+        <div className="mb-12 text-center pt-8">
+          <div role="heading" aria-level="1" className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4 !font-sans !normal-case">
+            Insights & Articles
+          </div>
+          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+            Deep dives into climate tech, Web3 carbon markets, and the future of verifiable sustainability.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {loading ? (
-            // Loading skeletons
+            // Premium Skeleton Loaders
             [...Array(6)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="w-full aspect-[4/3] bg-[#1a1a1a] rounded-3xl mb-6"></div>
-                <div className="h-8 bg-[#1a1a1a] rounded w-3/4 mb-4"></div>
-                <div className="h-8 bg-[#1a1a1a] rounded w-1/2 mb-4"></div>
-                <div className="flex gap-2 mb-4">
-                  <div className="h-6 bg-[#1a1a1a] rounded-full w-16"></div>
-                  <div className="h-6 bg-[#1a1a1a] rounded-full w-20"></div>
+              <div key={i} className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 animate-pulse">
+                <div className="w-full aspect-square bg-gray-200 rounded-2xl mb-5"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+                <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
+                <div className="flex gap-2 mb-4 mt-auto pt-2">
+                  <div className="h-5 bg-gray-100 rounded w-16"></div>
+                  <div className="h-5 bg-gray-100 rounded w-20"></div>
                 </div>
               </div>
             ))
           ) : (
             articles.map((article) => (
-              <a href={article.url} key={article.id} className="group block cursor-pointer">
+              <a href={article.url} key={article.id} className="group flex flex-col bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 hover:-translate-y-1">
                 
-                {/* Rounded Cover Image */}
-                <div className="w-full aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-4 bg-[#1a1a1a]">
+                {/* Square Cover Image */}
+                <div className="w-full aspect-square rounded-2xl overflow-hidden mb-5 bg-gray-100 border border-gray-100 relative">
                   <img 
                     src={article.cover_image} 
                     alt={article.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 
-                {/* Title - Forced to sans-serif to avoid global Sekuya heading font */}
-                <h2 className="font-sans text-lg md:text-xl font-semibold tracking-tight leading-snug mb-3 transition-colors group-hover:text-emerald-400 normal-case">
-                  {article.title}
-                </h2>
-                
-                {/* Tags (Outlined Pills) */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {article.tags.map((tag, index) => (
-                    <span 
-                      key={index} 
-                      className="px-4 py-1.5 rounded-full border border-[#333] text-[10px] md:text-xs text-[#888] uppercase tracking-wider font-mono transition-colors group-hover:border-emerald-500/30 group-hover:text-[#aaa]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                
-                {/* Date & Read Time */}
-                <div className="text-xs md:text-sm text-[#666] font-mono">
-                  {article.date} — {article.read_time}
+                <div className="flex flex-col flex-grow px-1">
+                  {/* Title */}
+                  <h2 className="text-lg font-bold text-gray-900 tracking-tight leading-snug mb-3 group-hover:text-emerald-600 transition-colors line-clamp-2">
+                    {article.title}
+                  </h2>
+                  
+                  {/* Tags (Clean Pills) */}
+                  <div className="flex flex-wrap gap-2 mb-4 mt-auto pt-2">
+                    {article.tags.map((tag, index) => (
+                      <span 
+                        key={index} 
+                        className="px-2 py-1 rounded bg-gray-100 text-[10px] font-bold text-gray-500 tracking-wider transition-colors group-hover:bg-emerald-50 group-hover:text-emerald-700"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  {/* Date & Read Time */}
+                  <div className="flex items-center justify-between text-xs font-medium text-gray-400 pt-3 border-t border-gray-100">
+                    <span>{article.date}</span>
+                    <span>{article.read_time}</span>
+                  </div>
                 </div>
                 
               </a>
@@ -150,6 +161,7 @@ const Article = () => {
           )}
         </div>
       </main>
+      
       <Footer />
     </div>
   );

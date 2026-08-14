@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { motion } from 'motion/react';
@@ -45,7 +45,18 @@ const Navbar = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] =
     useState(false);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const location = useLocation();
+  const isLightPage = ['/posts', '/article', '/seller', '/admin', '/buyer', '/profile', '/marketplace'].some(p => location.pathname.startsWith(p));
 
 
   // ===================================================
@@ -104,10 +115,6 @@ const Navbar = ({
       path: '/article',
     },
     {
-      name: 'Contact',
-      path: '/contact',
-    },
-    {
       name: 'About',
       path: '/about',
     },
@@ -115,11 +122,14 @@ const Navbar = ({
 
   const getNavLinks = () => {
     let links = [...baseNavLinks];
-    
-    if (isAuthenticated) {
-      // Remove 'About' and 'Contact' when logged in
-      links = links.filter(link => link.name !== 'About' && link.name !== 'Contact');
-      
+
+    if (!isAuthenticated) {
+      // Remove 'Posts' for unauthorized users to reduce clutter
+      links = links.filter(link => link.name !== 'Posts');
+    } else {
+      // Remove 'About' when logged in
+      links = links.filter(link => link.name !== 'About');
+
       // Keep Marketplace at second position
       const marketplaceIndex = links.findIndex(link => link.name === 'Marketplace');
       if (marketplaceIndex > -1) {
@@ -127,7 +137,7 @@ const Navbar = ({
         links.splice(1, 0, marketplace);
       }
     }
-    
+
     return links;
   };
 
@@ -193,7 +203,7 @@ const Navbar = ({
             <Link
               key={idx}
               to={dash.path}
-              className="group px-4 py-1.5 text-[#888] hover:text-white text-[13px] font-['JetBrains_Mono'] uppercase font-medium flex items-center justify-center transition-colors"
+              className={`group px-4 py-2 text-[13px] font-['JetBrains_Mono'] uppercase font-bold tracking-wide flex items-center justify-center transition-colors rounded-full shadow-sm ${isScrolled || isLightPage ? 'text-gray-700 hover:text-gray-900' : 'text-gray-200 hover:text-white drop-shadow-md'}`}
             >
               <span className="relative overflow-hidden block leading-tight">
                 <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
@@ -214,23 +224,23 @@ const Navbar = ({
             <button
               type="button"
               onClick={toggleProfileDropdown}
-              className="flex items-center justify-center w-10 h-10 rounded-full border border-[#333] hover:border-[#555] overflow-hidden focus:outline-none transition-colors"
+              className={`flex items-center justify-center w-10 h-10 rounded-full border overflow-hidden focus:outline-none transition-colors shadow-sm ${isScrolled || isLightPage ? 'border-gray-200 hover:border-gray-300 text-gray-700' : 'border-white/30 hover:border-white/60 text-white shadow-black/50'}`}
             >
               {user?.profileImage ? (
                 <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-[#222] text-white flex items-center justify-center text-sm font-semibold uppercase">
+                <div className={`w-full h-full flex items-center justify-center text-sm font-bold uppercase`}>
                   {user?.name ? user.name.charAt(0) : 'U'}
                 </div>
               )}
             </button>
 
             {isProfileDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#0c0c0c] border border-[#222] rounded-lg shadow-xl py-2 z-50 overflow-hidden">
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 z-50 overflow-hidden font-sans">
                 <Link
                   to="/profile"
                   onClick={closeProfileDropdown}
-                  className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                  className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                 >
                   Profile
                 </Link>
@@ -246,7 +256,7 @@ const Navbar = ({
                     <Link
                       to="/seller/projects"
                       onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                     >
                       My Projects
                     </Link>
@@ -260,28 +270,28 @@ const Navbar = ({
                     <Link
                       to="/seller/post/new"
                       onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                     >
                       Create Post
                     </Link>
                     <Link
                       to="/seller/credits"
                       onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                     >
                       Credits
                     </Link>
                     <Link
                       to="/seller/listings"
                       onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                     >
                       Listings
                     </Link>
                     <Link
                       to="/seller/sales"
                       onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                     >
                       Sales
                     </Link>
@@ -291,7 +301,7 @@ const Navbar = ({
                   <Link
                     to="/dashboard"
                     onClick={closeProfileDropdown}
-                    className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                   >
                     Buyer Dashboard
                   </Link>
@@ -300,7 +310,7 @@ const Navbar = ({
                   <Link
                     to="/dashboard"
                     onClick={closeProfileDropdown}
-                    className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                   >
                     Admin Dashboard
                   </Link>
@@ -309,7 +319,7 @@ const Navbar = ({
                   <Link
                     to="/dashboard"
                     onClick={closeProfileDropdown}
-                    className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
+                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
                   >
                     Agent Dashboard
                   </Link>
@@ -320,7 +330,7 @@ const Navbar = ({
                     handleLogout();
                     closeProfileDropdown();
                   }}
-                  className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#222] transition-colors"
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 font-bold transition-colors border-t border-gray-100"
                 >
                   Logout
                 </button>
@@ -338,39 +348,23 @@ const Navbar = ({
     // ================================================
 
     return (
-      <div className="hidden lg:flex items-center space-x-2">
+      <div className="hidden lg:flex items-center space-x-4">
 
         {/* Login */}
-
         <Link
           to="/login"
-          className="group px-4 py-1.5 text-[#888] hover:text-white text-[13px] font-['JetBrains_Mono'] uppercase font-medium flex items-center justify-center transition-colors"
+          className={`text-[14px] font-medium transition-colors ${isScrolled ? 'text-gray-600 hover:text-gray-900' : 'text-white/90 hover:text-white drop-shadow-md'}`}
         >
-
-          <span className="relative overflow-hidden block leading-tight">
-
-            <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
-              Login
-            </span>
-
-            <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
-              Login
-            </span>
-
-          </span>
-
+          Sign In
         </Link>
-
 
         {/* Sign Up — primary CTA for guests */}
-
         <Link
           to="/signup"
-          className="px-5 py-2 bg-white text-[#0c0c0c] text-[13px] font-['JetBrains_Mono'] uppercase font-semibold hover:bg-[#eee] transition-colors flex items-center space-x-1"
+          className="px-6 py-2.5 bg-[#bef264] text-[#0a0a0a] text-[14px] font-bold rounded-full hover:bg-[#a3e635] transition-all shadow-sm hover:shadow-md"
         >
-          <span>Sign Up</span>
+          Get Started
         </Link>
-
       </div>
     );
   };
@@ -464,7 +458,7 @@ const Navbar = ({
 
   return (
 
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 pt-4">
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? 'px-4 sm:px-6 pt-4' : 'px-0 pt-0'}`}>
 
 
       {/* =================================================
@@ -505,7 +499,7 @@ const Navbar = ({
             : {}
         }
 
-        className="max-w-5xl mx-auto bg-[#0c0c0c]/60 backdrop-blur-lg border border-[#222]/60 rounded-full px-5 py-2 shadow-xl shadow-black/20"
+        className={`mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] border ${isScrolled ? 'max-w-5xl bg-white border-gray-200 rounded-full px-6 py-1 shadow-lg' : 'max-w-[1400px] bg-transparent border-transparent rounded-full px-6 sm:px-8 py-6 shadow-none'}`}
       >
 
         <div className="flex items-center justify-between">
@@ -531,15 +525,7 @@ const Navbar = ({
 
                 data-brand="logo"
 
-                className="logo-retro text-[18px]"
-
-                style={{
-                  WebkitTextFillColor:
-                    '#bef264',
-
-                  background: 'none',
-                }}
-
+                className={`logo-retro uppercase tracking-tighter text-xl transition-colors duration-300 text-[#bef264]`}
                 transition={
                   animateEntrance
                     ? {
@@ -570,42 +556,30 @@ const Navbar = ({
               DESKTOP NAVIGATION
           ================================================= */}
 
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-1 bg-gray-100/80 backdrop-blur-sm rounded-full px-1 py-1">
 
             {navLinks.map((link) => {
 
-              const isActive =
-                location.pathname ===
-                link.path;
+              const isActive = location.pathname === link.path;
 
               return (
 
                 <Link
                   key={link.name}
                   to={link.path}
-
-                  className={`group px-3 py-1.5 text-[13px] font-['JetBrains_Mono'] uppercase font-medium tracking-wide flex items-center justify-center transition-colors ${isActive
-                      ? 'text-white'
-                      : 'text-[#888] hover:text-white'
+                  className={`group px-5 py-2 text-[13px] font-['JetBrains_Mono'] uppercase font-medium tracking-wide rounded-full transition-all duration-300 flex items-center justify-center ${isActive
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
                     }`}
                 >
-
                   <span className="relative overflow-hidden block leading-tight">
-
                     <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
-
                       {link.name}
-
                     </span>
-
                     <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
-
                       {link.name}
-
                     </span>
-
                   </span>
-
                 </Link>
 
               );
@@ -629,14 +603,14 @@ const Navbar = ({
           <button
             type="button"
             onClick={toggleMobileMenu}
-            className="lg:hidden p-2 text-white"
+            className={`lg:hidden p-2 transition-colors ${isScrolled ? 'text-gray-900' : 'text-gray-900'}`}
             aria-label="Toggle menu"
           >
 
             {isMobileMenuOpen ? (
-              <FaTimes size={18} />
+              <FaTimes size={20} />
             ) : (
-              <FaBars size={18} />
+              <FaBars size={20} />
             )}
 
           </button>
@@ -652,8 +626,8 @@ const Navbar = ({
 
       <div
         className={`fixed top-0 right-0 h-full w-72 bg-[#0c0c0c]/70 backdrop-blur-xl border-l border-[#222]/50 z-50 transform transition-transform duration-300 lg:hidden ${isMobileMenuOpen
-            ? 'translate-x-0'
-            : 'translate-x-full'
+          ? 'translate-x-0'
+          : 'translate-x-full'
           }`}
       >
 
@@ -704,8 +678,8 @@ const Navbar = ({
                   onClick={closeMobileMenu}
 
                   className={`px-4 py-3 text-sm font-['JetBrains_Mono'] uppercase font-medium transition-colors ${isActive
-                      ? 'text-white'
-                      : 'text-[#888] hover:text-white'
+                    ? 'text-white'
+                    : 'text-[#888] hover:text-white'
                     }`}
                 >
 
