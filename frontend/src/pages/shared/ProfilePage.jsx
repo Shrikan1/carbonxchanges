@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { motion } from 'motion/react';
-import { FiArrowLeft, FiUser, FiMail, FiLock, FiShield } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiMail, FiLock, FiShield, FiCheck, FiX } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProfilePage() {
@@ -53,152 +53,154 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c] text-white pt-24 pb-12 px-4 sm:px-6 font-['JetBrains_Mono'] relative overflow-hidden">
-      {/* Tech Grid Background */}
-      <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-[0.04]" 
-        style={{ 
-          backgroundImage: 'radial-gradient(#bef264 1px, transparent 1px)', 
-          backgroundSize: '32px 32px' 
-        }}
-      />
-      
-      {/* Subtle Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-[300px] bg-[#bef264]/[0.02] blur-[100px] pointer-events-none z-0" />
-
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-lg mx-auto relative z-10"
-      >
-        {/* Header */}
-        <div className="mb-8">
-          <button 
-            onClick={() => navigate(-1)}
-            className="flex items-center space-x-2 text-[#bef264] hover:text-white transition-colors mb-4 text-sm uppercase tracking-wider"
-          >
-            <FiArrowLeft />
-            <span>Back</span>
-          </button>
-          <div className="text-2xl font-bold tracking-tight text-white mb-1">Profile Settings</div>
-          <p className="text-[#888] text-sm">Manage your account details and security preferences.</p>
-        </div>
-
-        <div className="space-y-6">
-          {/* Account Details Card */}
-          <div className="bg-[#111] border border-[#222] border-l-2 border-l-[#bef264] rounded-none p-6 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-5 pb-3 border-b border-[#222]">
-              Account Details
-            </h3>
-
-            <form onSubmit={handleNameSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-[#888] text-xs uppercase tracking-wider font-medium">Email Address</Label>
-                <div className="relative">
-                  <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#555] text-sm" />
-                  <Input 
-                    id="email" 
-                    value={user?.email || ''} 
-                    disabled 
-                    className="pl-9 bg-[#0a0a0a] border-[#222] text-[#666] h-10 rounded-none text-sm cursor-not-allowed"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="name" className="text-[#888] text-xs uppercase tracking-wider font-medium">Full Name</Label>
-                <div className="relative">
-                  <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#888] text-sm" />
-                  <Input 
-                    id="name" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    className="pl-9 bg-[#161616] border-[#333] text-white h-10 rounded-none text-sm focus:border-white focus:ring-1 focus:ring-white transition-all"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-              </div>
-
-              {nameStatus && (
-                <p className={`text-xs flex items-center space-x-1.5 pt-1 ${nameStatus.type === 'error' ? 'text-red-400' : 'text-[#10b981]'}`}>
-                  <span>{nameStatus.type === 'error' ? '✖' : '✔'}</span>
-                  <span>{nameStatus.message}</span>
-                </p>
-              )}
-
-              <div className="pt-2 flex justify-end">
-                <Button 
-                  type="submit" 
-                  disabled={isSubmittingName || name === user?.name}
-                  className="h-9 px-6 bg-white hover:bg-gray-200 text-black text-sm font-semibold rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmittingName ? 'Saving...' : 'Save'}
-                </Button>
-              </div>
-            </form>
+    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pt-24 pb-12 font-sans">
+      <div className="w-full max-w-[900px] px-4 md:px-8">
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="w-full"
+        >
+          {/* Header */}
+          <div className="mb-8">
+            <button 
+              onClick={() => navigate(-1)}
+              className="flex items-center space-x-2 text-gray-500 hover:text-gray-900 transition-colors mb-4 text-sm font-medium"
+            >
+              <FiArrowLeft />
+              <span>Back</span>
+            </button>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">Profile Settings</h1>
+            <p className="text-gray-500 text-sm">Manage your account details and security preferences.</p>
           </div>
 
-          {/* Security Card */}
-          <div className="bg-[#111] border border-[#222] border-l-2 border-l-[#10b981] rounded-none p-6 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-5 pb-3 border-b border-[#222]">
-              Security
-            </h3>
-
-            <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="current_password" className="text-[#888] text-xs uppercase tracking-wider font-medium">Current Password</Label>
-                <div className="relative">
-                  <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#888] text-sm" />
-                  <Input
-                    id="current_password"
-                    type="password"
-                    required
-                    value={passwords.current_password}
-                    onChange={(e) => setPasswords({ ...passwords, current_password: e.target.value })}
-                    className="pl-9 bg-[#161616] border-[#333] text-white h-10 rounded-none text-sm focus:border-white focus:ring-1 focus:ring-white transition-all"
-                    placeholder="••••••••"
-                  />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Account Details Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <FiUser size={18} />
                 </div>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Account Details
+                </h3>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="new_password" className="text-[#888] text-xs uppercase tracking-wider font-medium">New Password</Label>
-                <div className="relative">
-                  <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#888] text-sm" />
-                  <Input
-                    id="new_password"
-                    type="password"
-                    required
-                    minLength={8}
-                    value={passwords.new_password}
-                    onChange={(e) => setPasswords({ ...passwords, new_password: e.target.value })}
-                    className="pl-9 bg-[#161616] border-[#333] text-white h-10 rounded-none text-sm focus:border-white focus:ring-1 focus:ring-white transition-all"
-                    placeholder="••••••••"
-                  />
+              <form onSubmit={handleNameSubmit} className="space-y-5 flex-1 flex flex-col">
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-gray-700 text-sm font-medium">Email Address</Label>
+                  <div className="relative">
+                    <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Input 
+                      id="email" 
+                      value={user?.email || ''} 
+                      disabled 
+                      className="pl-10 bg-gray-50 border-gray-200 text-gray-500 h-11 rounded-xl text-sm cursor-not-allowed shadow-none"
+                    />
+                  </div>
                 </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="name" className="text-gray-700 text-sm font-medium">Full Name</Label>
+                  <div className="relative">
+                    <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Input 
+                      id="name" 
+                      value={name} 
+                      onChange={(e) => setName(e.target.value)} 
+                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-none"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                </div>
+
+                {nameStatus && (
+                  <div className={`p-3 rounded-lg flex items-center space-x-2 text-sm mt-2 ${nameStatus.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                    {nameStatus.type === 'error' ? <FiX /> : <FiCheck />}
+                    <span>{nameStatus.message}</span>
+                  </div>
+                )}
+
+                <div className="pt-4 mt-auto flex justify-end">
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmittingName || name === user?.name}
+                    className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-50 shadow-sm"
+                  >
+                    {isSubmittingName ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                </div>
+              </form>
+            </div>
+
+            {/* Security Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <FiShield size={18} />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Security
+                </h3>
               </div>
 
-              {passwordStatus && (
-                <p className={`text-xs flex items-center space-x-1.5 pt-1 ${passwordStatus.type === 'error' ? 'text-red-400' : 'text-[#10b981]'}`}>
-                  <span>{passwordStatus.type === 'error' ? '✖' : '✔'}</span>
-                  <span>{passwordStatus.message}</span>
-                </p>
-              )}
+              <form onSubmit={handlePasswordSubmit} className="space-y-5 flex-1 flex flex-col">
+                <div className="space-y-1.5">
+                  <Label htmlFor="current_password" className="text-gray-700 text-sm font-medium">Current Password</Label>
+                  <div className="relative">
+                    <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="current_password"
+                      type="password"
+                      required
+                      value={passwords.current_password}
+                      onChange={(e) => setPasswords({ ...passwords, current_password: e.target.value })}
+                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-none"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
 
-              <div className="pt-2 flex justify-end">
-                <Button 
-                  type="submit" 
-                  disabled={isSubmittingPassword || !passwords.current_password || !passwords.new_password}
-                  className="h-9 px-6 bg-transparent border border-[#444] text-white hover:bg-[#222] hover:border-white text-sm font-medium rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmittingPassword ? 'Updating...' : 'Update Password'}
-                </Button>
-              </div>
-            </form>
+                <div className="space-y-1.5">
+                  <Label htmlFor="new_password" className="text-gray-700 text-sm font-medium">New Password</Label>
+                  <div className="relative">
+                    <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="new_password"
+                      type="password"
+                      required
+                      minLength={8}
+                      value={passwords.new_password}
+                      onChange={(e) => setPasswords({ ...passwords, new_password: e.target.value })}
+                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-none"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
+
+                {passwordStatus && (
+                  <div className={`p-3 rounded-lg flex items-center space-x-2 text-sm mt-2 ${passwordStatus.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                    {passwordStatus.type === 'error' ? <FiX /> : <FiCheck />}
+                    <span>{passwordStatus.message}</span>
+                  </div>
+                )}
+
+                <div className="pt-4 mt-auto flex justify-end">
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmittingPassword || !passwords.current_password || !passwords.new_password}
+                    className="h-11 px-6 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-50 shadow-sm"
+                  >
+                    {isSubmittingPassword ? 'Updating...' : 'Update Password'}
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }

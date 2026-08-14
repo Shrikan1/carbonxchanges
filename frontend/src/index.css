@@ -3,11 +3,6 @@
 @layer utilities {
   .logo-retro {
     font-family: 'Bungee', cursive;
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    /* Removed text-shadow to prevent duplicate font rendering bug with background-clip */
     letter-spacing: 0.05em;
   }
   .logo-retro-white {

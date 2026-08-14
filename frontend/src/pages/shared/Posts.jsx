@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
-import { FiThumbsUp, FiShare2, FiClock } from 'react-icons/fi';
+import Footer from '../../components/layout/Footer';
+import { FiThumbsUp, FiShare2, FiClock, FiActivity } from 'react-icons/fi';
 import * as projectPostApi from '../../api/endpoint/projectPostApi';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -58,79 +59,97 @@ const Posts = () => {
   };
 
   return (
-    <div className="bg-[#0c0c0c] text-white min-h-screen font-sans overflow-x-hidden">
+    <div className="bg-gray-50 text-gray-900 min-h-screen font-sans overflow-x-hidden flex flex-col">
       <Navbar />
 
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-32 pb-24">
+      <main className="flex-grow max-w-3xl mx-auto w-full px-4 sm:px-6 pt-24 pb-24">
+        
+        {/* Page Header */}
+        <div className="mb-10 text-center pt-8">
+          <div role="heading" aria-level="1" className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 mb-4 flex items-center justify-center gap-3 !font-sans !normal-case">
+            <FiActivity className="text-emerald-600" size={28} />
+            Community Updates
+          </div>
+          <p className="text-gray-500 text-base md:text-lg max-w-xl mx-auto">
+            Stay up to date with the latest developments, milestones, and stories from verified carbon reduction projects.
+          </p>
+        </div>
         
         {/* Posts Feed */}
         <div className="flex flex-col space-y-8">
           {loading ? (
-            // Loading skeletons
+            // Premium Skeleton Loaders
             [...Array(3)].map((_, i) => (
-              <div key={i} className="bg-[#1a1a1a] rounded-2xl border border-[#333] p-4 sm:p-5 animate-pulse">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-3 items-center">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-[#222]"></div>
-                    <div className="h-4 w-32 bg-[#222] rounded"></div>
+              <div key={i} className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6 animate-pulse">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex gap-4 items-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                      <div className="h-3 w-24 bg-gray-100 rounded"></div>
+                    </div>
                   </div>
-                  <div className="h-8 w-16 bg-[#222] rounded mt-1"></div>
                 </div>
-                <div className="h-4 w-full bg-[#222] rounded mb-2"></div>
-                <div className="h-4 w-5/6 bg-[#222] rounded mb-4"></div>
-                <div className="w-full h-48 sm:h-64 bg-[#222] rounded-xl mb-4"></div>
-                <div className="pt-4 border-t border-[#333] flex gap-8">
-                  <div className="h-4 w-12 bg-[#222] rounded"></div>
-                  <div className="h-4 w-16 bg-[#222] rounded"></div>
+                <div className="space-y-3 mb-6">
+                  <div className="h-5 w-3/4 bg-gray-200 rounded"></div>
+                  <div className="h-4 w-full bg-gray-100 rounded"></div>
+                  <div className="h-4 w-5/6 bg-gray-100 rounded"></div>
                 </div>
+                <div className="w-full h-48 sm:h-72 bg-gray-200 rounded-2xl mb-4"></div>
               </div>
             ))
           ) : posts.length === 0 ? (
-            <div className="text-center text-[#888] mt-20">
-              <p className="text-xl">No posts available yet.</p>
+            <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-3xl shadow-sm border border-gray-100">
+              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-100">
+                <FiActivity className="text-gray-400" size={24} />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">No updates yet</h3>
+              <p className="text-gray-500 max-w-sm">
+                There are currently no posts available. Check back later for news and updates from project developers.
+              </p>
             </div>
           ) : (
             posts.map((post) => (
-              <div key={post.id} className="bg-[#1a1a1a] rounded-2xl border border-[#333] p-4 sm:p-5">
+              <article key={post.id} className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 p-5 sm:p-6">
                 
                 {/* Header */}
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-3">
+                <div className="flex justify-between items-start mb-5">
+                  <div className="flex gap-4 items-center">
                     {/* Avatar */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden shrink-0 bg-[#222]">
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-gray-100 shadow-sm border border-gray-200 flex items-center justify-center text-xl font-bold text-gray-400">
                       {post.seller_avatar ? (
                         <img src={post.seller_avatar} alt={post.seller_name} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xl font-bold text-[#555]">
-                          {post.seller_name?.charAt(0).toUpperCase()}
-                        </div>
+                        post.seller_name?.charAt(0).toUpperCase()
                       )}
                     </div>
                     
                     {/* Author Info & Project Title */}
-                    <div className="flex flex-col justify-center">
-                      <span className="font-bold text-[15px]">{post.seller_name}</span>
-                      <span className="text-xs text-emerald-400 mt-0.5">Project: {post.project_title}</span>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-gray-900 text-[15px]">{post.seller_name}</span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 mt-1 max-w-[200px] sm:max-w-xs truncate">
+                        {post.project_title}
+                      </span>
                     </div>
                   </div>
                   
                   {/* Time */}
-                  <div className="flex items-center gap-1 text-[#666] text-[11px] sm:text-xs shrink-0 ml-4 mt-1">
+                  <div className="flex items-center gap-1.5 text-gray-400 text-[11px] sm:text-xs shrink-0 ml-4 font-medium">
                     <FiClock />
                     {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                   </div>
                 </div>
 
                 {/* Content text */}
-                <div className="mb-4">
-                  <h3 className="font-bold text-lg mb-2">{post.title}</h3>
-                  {post.description && <p className="text-[16px] text-gray-300 mb-3">{post.description}</p>}
-                  {post.story && <p className="text-[15px] text-gray-400 whitespace-pre-wrap">{post.story}</p>}
+                <div className="mb-5">
+                  <h3 className="font-bold text-xl text-gray-900 mb-2 leading-tight">{post.title}</h3>
+                  {post.description && <p className="text-[16px] text-gray-600 mb-3 leading-relaxed">{post.description}</p>}
+                  {post.story && <p className="text-[15px] text-gray-500 whitespace-pre-wrap leading-relaxed">{post.story}</p>}
                 </div>
 
                 {/* Media Attachment (First image if exists) */}
                 {post.images && post.images.length > 0 && (
-                  <div className="w-full rounded-xl overflow-hidden bg-[#222] mb-4 border border-[#333]">
+                  <div className="w-full rounded-2xl overflow-hidden bg-gray-100 mb-5 border border-gray-100 shadow-sm">
                     <img 
                       src={`https://gateway.pinata.cloud/ipfs/${post.images[0]}`} 
                       alt="Post attachment" 
@@ -142,7 +161,7 @@ const Posts = () => {
                 
                 {/* Media Attachment (First video if exists and no images) */}
                 {(!post.images || post.images.length === 0) && post.videos && post.videos.length > 0 && (
-                  <div className="w-full rounded-xl overflow-hidden bg-[#222] mb-4 border border-[#333]">
+                  <div className="w-full rounded-2xl overflow-hidden bg-gray-100 mb-5 border border-gray-100 shadow-sm">
                     <video 
                       src={`https://gateway.pinata.cloud/ipfs/${post.videos[0]}`} 
                       controls 
@@ -152,29 +171,31 @@ const Posts = () => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="mt-4 pt-4 border-t border-[#333] flex gap-8 items-center text-[#888]">
+                <div className="pt-4 border-t border-gray-100 flex gap-6 items-center text-gray-500">
                   <button 
                     onClick={() => handleLike(post.id)}
-                    className="flex items-center gap-2 hover:text-emerald-400 transition-colors group"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-emerald-50 hover:text-emerald-600 transition-colors group"
                   >
-                    <FiThumbsUp className="text-lg group-hover:text-emerald-400" />
-                    <span className="text-sm font-medium">{post.likes_count}</span>
+                    <FiThumbsUp className="text-lg" />
+                    <span className="text-sm font-semibold">{post.likes_count}</span>
                   </button>
                   
                   <button 
                     onClick={() => handleShare(post.id)}
-                    className="flex items-center gap-2 hover:text-white transition-colors group"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors group"
                   >
-                    <FiShare2 className="text-lg group-hover:text-white" />
-                    <span className="text-sm font-medium">{post.shares_count}</span>
+                    <FiShare2 className="text-lg" />
+                    <span className="text-sm font-semibold">{post.shares_count}</span>
                   </button>
                 </div>
 
-              </div>
+              </article>
             ))
           )}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

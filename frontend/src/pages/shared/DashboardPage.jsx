@@ -94,19 +94,7 @@ export default function DashboardPage() {
 
   // Admin Dashboard renders entirely independently to maintain its white theme
   if (user?.role === 'admin') {
-    return isLoading ? (
-      <div className="min-h-screen flex items-center justify-center text-center admin-theme bg-[#f3f4f6]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    ) : data ? (
-      <AdminDashboard data={data} />
-    ) : (
-      <div className="min-h-screen flex items-center justify-center text-center admin-theme bg-[#f3f4f6]">
-        <div className="p-8 text-center text-gray-500 bg-white rounded-xl border border-gray-200">
-          Unable to load dashboard data.
-        </div>
-      </div>
-    );
+    return <AdminDashboard data={data} isLoading={isLoading} />;
   }
 
   return (
