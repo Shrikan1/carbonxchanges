@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 import { FaCheckCircle, FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import img1 from '../../assets/1744ff3b8f6c99355ca2b0eafe081094.webp';
@@ -153,7 +154,7 @@ const About = () => {
 
         </div>
       </section>
-
+      <Footer />
     </div>
   );
 };

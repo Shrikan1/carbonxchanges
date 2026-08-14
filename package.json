@@ -10,6 +10,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "ethers": "^6.17.0",
     "gasp": "^0.0.2"
   }
 }

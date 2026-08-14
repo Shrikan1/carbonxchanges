@@ -19,6 +19,7 @@ import {
   FaDiscord
 } from 'react-icons/fa';
 import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 import DriftWall from '../../components/ui/DriftWall';
 import heroBg from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.jpg';
 import GlareHover from '../../components/ui/GlareHover';
@@ -57,6 +58,7 @@ const projectGalleryItems = [
   { image: img14, title: 'Alpine Peaks' },
   { image: heroBg, title: 'River Bridge' },
 ];
+
 
 const Home = () => {
   const shouldReduceMotion = useReducedMotion();
@@ -482,6 +484,9 @@ const Home = () => {
         </div>
       </section>
 
+
+      {/* ─── FOOTER ─── */}
+      <Footer />
 
       </div>
   );

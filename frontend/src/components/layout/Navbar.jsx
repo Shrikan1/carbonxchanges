@@ -13,22 +13,22 @@ import { useAuthStore } from '../../store/useAuthStore';
 const roleConfig = {
   seller: {
     label: 'Seller Dashboard',
-    path: '/seller/dashboard',
+    path: '/dashboard',
   },
 
   buyer: {
     label: 'Buyer Dashboard',
-    path: '/buyer/dashboard',
+    path: '/dashboard',
   },
 
   agent: {
     label: 'Agent Dashboard',
-    path: '/agent/dashboard',
+    path: '/dashboard',
   },
 
   admin: {
     label: 'Admin Dashboard',
-    path: '/admin/dashboard',
+    path: '/dashboard',
   },
 };
 
@@ -55,6 +55,7 @@ const Navbar = ({
   const {
     user,
     isAuthenticated,
+    isInitializing,
     logout,
   } = useAuthStore();
 
@@ -85,37 +86,52 @@ const Navbar = ({
   // NAVIGATION LINKS
   // ===================================================
 
-  const navLinks = [
+  const baseNavLinks = [
     {
       name: 'Home',
       path: '/',
     },
-
     {
-      name: 'Article',
-      path: '/article',
+      name: 'Marketplace',
+      path: '/marketplace',
     },
-
     {
       name: 'Posts',
       path: '/posts',
     },
-
     {
-      name: 'Gallery',
-      path: '/gallery',
+      name: 'Article',
+      path: '/article',
     },
-
-    {
-      name: 'About',
-      path: '/about',
-    },
-
     {
       name: 'Contact',
       path: '/contact',
     },
+    {
+      name: 'About',
+      path: '/about',
+    },
   ];
+
+  const getNavLinks = () => {
+    let links = [...baseNavLinks];
+    
+    if (isAuthenticated) {
+      // Remove 'About' and 'Contact' when logged in
+      links = links.filter(link => link.name !== 'About' && link.name !== 'Contact');
+      
+      // Keep Marketplace at second position
+      const marketplaceIndex = links.findIndex(link => link.name === 'Marketplace');
+      if (marketplaceIndex > -1) {
+        const [marketplace] = links.splice(marketplaceIndex, 1);
+        links.splice(1, 0, marketplace);
+      }
+    }
+    
+    return links;
+  };
+
+  const navLinks = getNavLinks();
 
 
   // ===================================================
@@ -158,6 +174,9 @@ const Navbar = ({
   // ===================================================
 
   const renderDesktopAuth = () => {
+    if (isInitializing) {
+      return <div className="hidden lg:flex items-center space-x-2 min-w-[120px] h-10"></div>;
+    }
 
     // ================================================
     // AUTHENTICATED USER
@@ -168,7 +187,7 @@ const Navbar = ({
       return (
         <div className="hidden lg:flex items-center space-x-2">
 
-          {/* Dashboard links (only rendered when role exists) */}
+
 
           {dashboardLinks.map((dash, idx) => (
             <Link
@@ -231,13 +250,13 @@ const Navbar = ({
                     >
                       My Projects
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/seller/projects/new"
                       onClick={closeProfileDropdown}
                       className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                     >
                       Add Project
-                    </Link>
+                    </Link> */}
                     <Link
                       to="/seller/post/new"
                       onClick={closeProfileDropdown}
@@ -270,7 +289,7 @@ const Navbar = ({
                 )}
                 {user?.is_buyer && (
                   <Link
-                    to="/buyer/dashboard"
+                    to="/dashboard"
                     onClick={closeProfileDropdown}
                     className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                   >
@@ -279,7 +298,7 @@ const Navbar = ({
                 )}
                 {user?.role === 'admin' && (
                   <Link
-                    to="/admin/dashboard"
+                    to="/dashboard"
                     onClick={closeProfileDropdown}
                     className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                   >
@@ -288,7 +307,7 @@ const Navbar = ({
                 )}
                 {user?.role === 'agent' && (
                   <Link
-                    to="/agent/dashboard"
+                    to="/dashboard"
                     onClick={closeProfileDropdown}
                     className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
                   >
@@ -343,14 +362,13 @@ const Navbar = ({
         </Link>
 
 
-        {/* Become a Member — primary CTA for guests */}
+        {/* Sign Up — primary CTA for guests */}
 
         <Link
-          to="/signup?intent=member"
-          className="px-5 py-2 bg-white text-[#0c0c0c] text-[13px] font-['JetBrains_Mono'] uppercase font-semibold rounded-full hover:bg-[#eee] transition-colors flex items-center space-x-1"
+          to="/signup"
+          className="px-5 py-2 bg-white text-[#0c0c0c] text-[13px] font-['JetBrains_Mono'] uppercase font-semibold hover:bg-[#eee] transition-colors flex items-center space-x-1"
         >
-          <span>Become a Member</span>
-          <span>→</span>
+          <span>Sign Up</span>
         </Link>
 
       </div>
@@ -363,6 +381,9 @@ const Navbar = ({
   // ===================================================
 
   const renderMobileAuth = () => {
+    if (isInitializing) {
+      return null;
+    }
 
     // ================================================
     // AUTHENTICATED
@@ -422,14 +443,14 @@ const Navbar = ({
         </Link>
 
 
-        {/* Become a Member — primary CTA for guests */}
+        {/* Sign Up — primary CTA for guests */}
 
         <Link
-          to="/signup?intent=member"
+          to="/signup"
           onClick={closeMobileMenu}
           className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-sm font-['JetBrains_Mono'] uppercase font-semibold hover:bg-[#eee] transition-colors"
         >
-          Become a Member →
+          Sign Up
         </Link>
 
       </>
@@ -454,33 +475,33 @@ const Navbar = ({
         initial={
           animateEntrance
             ? {
-                opacity: 0,
-                y: -20,
-              }
+              opacity: 0,
+              y: -20,
+            }
             : false
         }
 
         animate={
           animateEntrance
             ? {
-                opacity: 1,
-                y: 0,
-              }
+              opacity: 1,
+              y: 0,
+            }
             : false
         }
 
         transition={
           animateEntrance
             ? {
-                duration: 1.2,
-                ease: [
-                  0.16,
-                  1,
-                  0.3,
-                  1,
-                ],
-                delay: 1.6,
-              }
+              duration: 1.2,
+              ease: [
+                0.16,
+                1,
+                0.3,
+                1,
+              ],
+              delay: 1.6,
+            }
             : {}
         }
 
@@ -522,16 +543,16 @@ const Navbar = ({
                 transition={
                   animateEntrance
                     ? {
-                        layout: {
-                          duration: 1.0,
-                          ease: [
-                            0.16,
-                            1,
-                            0.3,
-                            1,
-                          ],
-                        },
-                      }
+                      layout: {
+                        duration: 1.0,
+                        ease: [
+                          0.16,
+                          1,
+                          0.3,
+                          1,
+                        ],
+                      },
+                    }
                     : {}
                 }
               >
@@ -563,11 +584,10 @@ const Navbar = ({
                   key={link.name}
                   to={link.path}
 
-                  className={`group px-3 py-1.5 text-[13px] font-['JetBrains_Mono'] uppercase font-medium tracking-wide flex items-center justify-center transition-colors ${
-                    isActive
+                  className={`group px-3 py-1.5 text-[13px] font-['JetBrains_Mono'] uppercase font-medium tracking-wide flex items-center justify-center transition-colors ${isActive
                       ? 'text-white'
                       : 'text-[#888] hover:text-white'
-                  }`}
+                    }`}
                 >
 
                   <span className="relative overflow-hidden block leading-tight">
@@ -631,11 +651,10 @@ const Navbar = ({
       ================================================= */}
 
       <div
-        className={`fixed top-0 right-0 h-full w-72 bg-[#0c0c0c]/70 backdrop-blur-xl border-l border-[#222]/50 z-50 transform transition-transform duration-300 lg:hidden ${
-          isMobileMenuOpen
+        className={`fixed top-0 right-0 h-full w-72 bg-[#0c0c0c]/70 backdrop-blur-xl border-l border-[#222]/50 z-50 transform transition-transform duration-300 lg:hidden ${isMobileMenuOpen
             ? 'translate-x-0'
             : 'translate-x-full'
-        }`}
+          }`}
       >
 
         <div className="flex flex-col h-full p-6">
@@ -684,11 +703,10 @@ const Navbar = ({
                   to={link.path}
                   onClick={closeMobileMenu}
 
-                  className={`px-4 py-3 text-sm font-['JetBrains_Mono'] uppercase font-medium transition-colors ${
-                    isActive
+                  className={`px-4 py-3 text-sm font-['JetBrains_Mono'] uppercase font-medium transition-colors ${isActive
                       ? 'text-white'
                       : 'text-[#888] hover:text-white'
-                  }`}
+                    }`}
                 >
 
                   {link.name}

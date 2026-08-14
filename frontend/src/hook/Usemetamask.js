@@ -26,3 +26,11 @@ export function getMetaMaskProvider() {
   if (!window.ethereum) return null;
   return new ethers.BrowserProvider(window.ethereum);
 }
+
+// src/hooks/useMetaMask.js — ADD this function to the existing file
+export async function getPolBalance(address) {
+  const provider = getMetaMaskProvider();
+  if (!provider) return null;
+  const balanceWei = await provider.getBalance(address);
+  return ethers.formatEther(balanceWei); // wei -> POL, human-readable
+}

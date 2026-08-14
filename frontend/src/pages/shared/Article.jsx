@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 import img1 from '../../assets/os-x-mavericks-3840x2160-24079.jpg';
 import img2 from '../../assets/pexels-adnan-atasoy-261355608-12644453.jpg';
 import img3 from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
@@ -149,6 +150,7 @@ const Article = () => {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

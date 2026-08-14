@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 import { FaUser, FaPhoneAlt, FaEnvelope, FaPen, FaMapMarkerAlt, FaTwitter, FaLinkedinIn, FaGithub, FaDiscord } from 'react-icons/fa';
 
 const Contact = () => {
@@ -149,6 +150,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
