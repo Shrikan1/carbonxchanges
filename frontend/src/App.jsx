@@ -39,6 +39,10 @@ import AdminOversightProjectsPage from './pages/admin/AdminOversightProjectsPage
 import AdminOversightTransactionsPage from './pages/admin/AdminOversightTransactionsPage';
 import AdminReversalsPage from './pages/admin/AdminReversalsPage';
 
+import AgentAssignedProjectsPage from './pages/agent/AgentAssignedProjectsPage';
+import AgentProjectDetailPage from './pages/agent/AgentProjectDetailPage';
+import AgentHistoryPage from './pages/agent/AgentHistoryPage';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -274,7 +278,35 @@ const router = createBrowserRouter([
     </RequireAuth>
   ),
 },
+// Agent - Assigned Projects
+{
+  path: '/agent/projects',
+  element: (
+    <RequireAuth>
+      <AgentAssignedProjectsPage />
+    </RequireAuth>
+  ),
+},
 
+// Agent - Project Detail
+{
+  path: '/agent/projects/:id',
+  element: (
+    <RequireAuth>
+      <AgentProjectDetailPage />
+    </RequireAuth>
+  ),
+},
+
+// Agent - History
+{
+  path: '/agent/history',
+  element: (
+    <RequireAuth>
+      <AgentHistoryPage />
+    </RequireAuth>
+  ),
+},
   // 404
   {
     path: '*',

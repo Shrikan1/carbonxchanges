@@ -195,8 +195,96 @@ async function purchaseFromListing(listingId, amountToBuy) {
   }
 }
 
+
+
+
+// ADD these functions to your existing Listing.js (uses the same pool/query
+// already imported at the top of that file). Update the module.exports at
+// the bottom to include them.
+
+// Step 1 of a sale: locks the row, checks TRUE availability
+// (listed - sold - already reserved), and moves the requested amount into
+// amount_reserved. This is what actually prevents overselling during the
+// gap between "buyer expresses intent" and "seller completes the transfer."
+async function reserveStock(listingId, amount) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const result = await client.query('SELECT * FROM credit_listings WHERE id = $1 FOR UPDATE', [listingId]);
+    const listing = result.rows[0];
+    if (!listing) {
+      await client.query('ROLLBACK');
+      const err = new Error('Listing not found'); err.code = 'LISTING_NOT_FOUND'; throw err;
+    }
+    if (listing.status !== 'active') {
+      await client.query('ROLLBACK');
+      const err = new Error(`Listing is ${listing.status}, not active`); err.code = 'LISTING_NOT_ACTIVE'; throw err;
+    }
+
+    const available = Number(listing.amount_listed) - Number(listing.amount_sold) - Number(listing.amount_reserved);
+    if (Number(amount) > available) {
+      await client.query('ROLLBACK');
+      const err = new Error(`Only ${available} credits available, requested ${amount}`); err.code = 'INSUFFICIENT_STOCK'; throw err;
+    }
+
+    await client.query(
+      'UPDATE credit_listings SET amount_reserved = amount_reserved + $1, updated_at = NOW() WHERE id = $2',
+      [amount, listingId]
+    );
+
+    await client.query('COMMIT');
+    return listing;
+  } catch (err) {
+    if (!err.code) { try { await client.query('ROLLBACK'); } catch (_) {} }
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+// Step 2a (success path): seller completed the on-chain transfer — moves
+// the amount from reserved into sold (permanently), flips to sold_out if
+// that was the last of the stock.
+async function confirmReservedSale(listingId, amount) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const result = await client.query('SELECT * FROM credit_listings WHERE id = $1 FOR UPDATE', [listingId]);
+    const listing = result.rows[0];
+
+    const newSold = Number(listing.amount_sold) + Number(amount);
+    const newReserved = Math.max(0, Number(listing.amount_reserved) - Number(amount));
+    const newStatus = newSold >= Number(listing.amount_listed) ? 'sold_out' : listing.status;
+
+    await client.query(
+      'UPDATE credit_listings SET amount_sold = $1, amount_reserved = $2, status = $3, updated_at = NOW() WHERE id = $4',
+      [newSold, newReserved, newStatus, listingId]
+    );
+
+    await client.query('COMMIT');
+  } catch (err) {
+    try { await client.query('ROLLBACK'); } catch (_) {}
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+// Step 2b (rejection/cancellation path): releases the hold, stock becomes
+// available to other buyers again — no sale happened, nothing else changes.
+async function releaseReservedStock(listingId, amount) {
+  await query(
+    'UPDATE credit_listings SET amount_reserved = GREATEST(0, amount_reserved - $1), updated_at = NOW() WHERE id = $2',
+    [amount, listingId]
+  );
+}
+
+
 module.exports = {
   createListing, findListingById, updateListing, deleteListing,
   findSellerListings, getReservedAmountBySeller,
   findActiveListings, findListingPublicById, purchaseFromListing,
+  reserveStock, confirmReservedSale, releaseReservedStock,
 };
