@@ -70,15 +70,18 @@ async function findReportById(reportId) {
 // verified_co2_amount should only ever be non-null when report_type is
 // 'completion' — enforced by the controller, not here (this model stays a
 // pure data layer), but documented clearly since it's the critical rule.
+// photo_url is now a Supabase Storage URL (uploaded via /api/upload/kyc)
+// rather than an IPFS CID — agent photos are private until the final
+// verification PDF is generated and pinned to IPFS.
 async function createVerificationReport(projectId, agentId, reportType, data) {
   const result = await query(
     `INSERT INTO verification_reports
-       (project_id, agent_id, report_type, gps_lat, gps_lng, photo_ipfs_cid, notes, verified_co2_amount)
+       (project_id, agent_id, report_type, gps_lat, gps_lng, photo_url, notes, verified_co2_amount)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
      RETURNING *`,
     [
       projectId, agentId, reportType,
-      data.gps_lat, data.gps_lng, data.photo_ipfs_cid, data.notes || null,
+      data.gps_lat, data.gps_lng, data.photo_url, data.notes || null,
       data.verified_co2_amount || null,
     ]
   );

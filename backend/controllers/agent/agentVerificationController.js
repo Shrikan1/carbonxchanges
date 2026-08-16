@@ -2,16 +2,21 @@ const Project = require('../../models/Project');
 const Verification = require('../../models/Verification');
 
 // POST /api/agent/projects/:id/verify/initial
-// body: { gps_lat, gps_lng, photo_ipfs_cid, notes }
+// body: { gps_lat, gps_lng, photo_url, notes }
+// photo_url is obtained by the agent calling POST /api/upload/kyc
+// with purpose='verification_photo' first, then using the returned storagePath
+// (or the frontend may send the full signed URL — both are accepted here).
 async function submitInitialVerification(req, res) {
   try {
-    const { gps_lat, gps_lng, photo_ipfs_cid, notes } = req.body;
+    const { gps_lat, gps_lng, photo_url, notes } = req.body;
 
     if (gps_lat === undefined || gps_lng === undefined) {
       return res.status(400).json({ error: 'gps_lat and gps_lng are required' });
     }
-    if (!photo_ipfs_cid) {
-      return res.status(400).json({ error: 'photo_ipfs_cid is required — a field photo is mandatory evidence' });
+    if (!photo_url) {
+      return res.status(400).json({
+        error: 'photo_url is required — upload a field photo via POST /api/upload/kyc first, then include the returned storagePath as photo_url.',
+      });
     }
 
     const project = await Project.findProjectById(req.params.id);
@@ -27,7 +32,7 @@ async function submitInitialVerification(req, res) {
     }
 
     const report = await Verification.createVerificationReport(project.id, req.user.id, 'initial', {
-      gps_lat, gps_lng, photo_ipfs_cid, notes,
+      gps_lat, gps_lng, photo_url, notes,
     });
 
     await Project.setExpectedCompletionDate(project.id);
@@ -45,16 +50,18 @@ async function submitInitialVerification(req, res) {
 }
 
 // POST /api/agent/projects/:id/verify/completion
-// body: { gps_lat, gps_lng, photo_ipfs_cid, notes, verified_co2_amount }
+// body: { gps_lat, gps_lng, photo_url, notes, verified_co2_amount }
 async function submitCompletionVerification(req, res) {
   try {
-    const { gps_lat, gps_lng, photo_ipfs_cid, notes, verified_co2_amount } = req.body;
+    const { gps_lat, gps_lng, photo_url, notes, verified_co2_amount } = req.body;
 
     if (gps_lat === undefined || gps_lng === undefined) {
       return res.status(400).json({ error: 'gps_lat and gps_lng are required' });
     }
-    if (!photo_ipfs_cid) {
-      return res.status(400).json({ error: 'photo_ipfs_cid is required — a field photo is mandatory evidence' });
+    if (!photo_url) {
+      return res.status(400).json({
+        error: 'photo_url is required — upload a field photo via POST /api/upload/kyc first, then include the returned storagePath as photo_url.',
+      });
     }
     if (!verified_co2_amount || verified_co2_amount <= 0) {
       return res.status(400).json({ error: 'A valid verified_co2_amount is required' });
@@ -80,7 +87,7 @@ async function submitCompletionVerification(req, res) {
     }
 
     const report = await Verification.createVerificationReport(project.id, req.user.id, 'completion', {
-      gps_lat, gps_lng, photo_ipfs_cid, notes, verified_co2_amount,
+      gps_lat, gps_lng, photo_url, notes, verified_co2_amount,
     });
 
     // Moves to 'verified' — the exact status admin's approveProject requires

@@ -4,10 +4,13 @@ const Credit = require('../../models/Credit');
 const Verification = require('../../models/Verification');
 const BufferCredit = require('../../models/BufferCredit');
 const blockchainService = require('../../services/blockchainService');
-const Paginate = require('../../utils/paginate')
-const ipfs = require("../../services/ipfsService")
+const Paginate = require('../../utils/paginate');
+const ipfsService = require('../../services/ipfsService');
 
-async function attemptMint(project) {
+// verificationPdfCid — optional. When the admin calls approveProject,
+// the verification PDF has already been pinned and its CID passed in here
+// so the token metadata can reference it as the canonical evidence document.
+async function attemptMint(project, verificationPdfCid) {
   const completionReport = await Verification.findLatestCompletionReport(project.id);
   const verifiedAmount = completionReport?.verified_co2_amount;
 
@@ -27,10 +30,18 @@ async function attemptMint(project) {
 
   const pendingBatch = await Credit.createPendingBatch(project.id, tradeableAmount, vintageYear);
 
+  // Use the verification PDF as the token image when available — this links
+  // every on-chain credit token directly to the full immutable evidence package.
+  const pdfCid = verificationPdfCid || project.verification_pdf_ipfs_cid;
   const metadata = {
     name: `${project.title} — Vintage ${vintageYear}`,
     description: `${tradeableAmount} tCO2e verified ${project.project_type} credit`,
-    image: completionReport.photo_ipfs_cid ? `ipfs://${completionReport.photo_ipfs_cid}` : undefined,
+    image: pdfCid
+      ? `ipfs://${pdfCid}`
+      : (completionReport.photo_url ? completionReport.photo_url : undefined),
+    external_url: pdfCid
+      ? `https://gateway.pinata.cloud/ipfs/${pdfCid}`
+      : undefined,
     attributes: [
       { trait_type: 'Project Type', value: project.project_type },
       { trait_type: 'Vintage Year', value: vintageYear },

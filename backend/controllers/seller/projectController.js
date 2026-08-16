@@ -1,8 +1,17 @@
 const Project = require('../../models/Project');
-const { getPagination, paginatedResponse } = require('../../utils/paginate')
+const { getPagination, paginatedResponse } = require('../../utils/paginate');
+
+const VALID_PROJECT_TYPES = [
+  'reforestation', 'afforestation', 'mangrove_restoration', 'redd+',
+  'soil_carbon', 'renewable_energy', 'methane_capture', 'other',
+];
+const VALID_SCALES = ['small-scale', 'large-scale'];
 
 const REQUIRED_ON_CREATE = ['title', 'project_type', 'project_scale'];
 
+// Fields that must be present before a project can be submitted for review.
+// These are the shared minimum — the methodology_specific_data is validated
+// separately per project_type inside submitProjectForReview.
 const REQUIRED_ON_SUBMIT = [
   'title', 'project_type', 'project_scale',
   'country', 'total_project_area_hectares', 'project_start_date', 'duration_years',
@@ -10,12 +19,52 @@ const REQUIRED_ON_SUBMIT = [
   'owner_full_name', 'owner_id_type', 'owner_id_number', 'land_ownership_type',
 ];
 
+// Numeric range constraints — enforced on both create and update.
+const NUMERIC_CONSTRAINTS = {
+  latitude:  { min: -90,  max: 90  },
+  longitude: { min: -180, max: 180 },
+  duration_years: { min: 1, max: 100 },
+  crediting_period_years: { min: 1, max: 100 },
+  total_project_area_hectares: { min: 0.01 },
+  total_co2_claimed: { min: 1 },
+  uncertainty_percentage: { min: 0, max: 100 },
+  set_aside_conservation_percent: { min: 0, max: 100 },
+};
+
+function validateNumericConstraints(data) {
+  const errors = [];
+  for (const [field, { min, max }] of Object.entries(NUMERIC_CONSTRAINTS)) {
+    if (data[field] === undefined || data[field] === '') continue;
+    const val = Number(data[field]);
+    if (isNaN(val)) { errors.push(`${field} must be a number`); continue; }
+    if (min !== undefined && val < min) errors.push(`${field} must be ≥ ${min}`);
+    if (max !== undefined && val > max) errors.push(`${field} must be ≤ ${max}`);
+  }
+  return errors;
+}
+
 // POST /api/projects
 async function createProject(req, res) {
   try {
     const missing = REQUIRED_ON_CREATE.filter((f) => !req.body[f]);
     if (missing.length > 0) {
       return res.status(400).json({ error: `Missing required fields: ${missing.join(', ')}` });
+    }
+
+    if (!VALID_PROJECT_TYPES.includes(req.body.project_type)) {
+      return res.status(400).json({
+        error: `Invalid project_type. Must be one of: ${VALID_PROJECT_TYPES.join(', ')}`,
+      });
+    }
+    if (!VALID_SCALES.includes(req.body.project_scale)) {
+      return res.status(400).json({
+        error: `Invalid project_scale. Must be 'small-scale' or 'large-scale'`,
+      });
+    }
+
+    const numericErrors = validateNumericConstraints(req.body);
+    if (numericErrors.length > 0) {
+      return res.status(400).json({ error: numericErrors.join('; ') });
     }
 
     const project = await Project.createProject(req.user.id, req.body);
@@ -68,6 +117,30 @@ async function getProjectById(req, res) {
   } catch (err) {
     console.error('Get project error:', err);
     res.status(500).json({ error: 'Failed to fetch project' });
+  }
+}
+
+// GET /api/projects/public/:id
+async function getPublicProjectById(req, res) {
+  try {
+    const project = await Project.findProjectById(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+
+    // Explicitly delete sensitive fields before returning to unauthenticated public clients
+    const sensitiveFields = [
+      'owner_full_name', 'owner_id_type', 'owner_id_number',
+      'aadhaar_doc_path', 'land_deed_path', 'live_verification_photo_path',
+      'seller_id', 'agent_id'
+    ];
+    
+    for (const field of sensitiveFields) {
+      delete project[field];
+    }
+
+    res.json({ project });
+  } catch (err) {
+    console.error('Get public project error:', err);
+    res.status(500).json({ error: 'Failed to fetch public project details' });
   }
 }
 
@@ -179,7 +252,7 @@ async function deleteProject(req , res){
 
 
 
-module.exports = { createProject, submitProjectForReview, getProjectById, getMyProjects,getAllProject ,deleteProject};
+module.exports = { createProject, submitProjectForReview, getProjectById, getPublicProjectById, getMyProjects,getAllProject ,deleteProject};
 
 
 
