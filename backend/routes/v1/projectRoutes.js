@@ -8,6 +8,10 @@ const { requireAuth } = require('../../middleware/auth');
 const { ensureSeller } = require('../../middleware/capabilityGate');
 const projectController = require('../../controllers/seller/projectController');
 
+// Public routes
+router.get('/public/:id', projectController.getPublicProjectById);
+
+// Authenticated routes
 router.use(requireAuth);
 
 router.get('/mine', ensureSeller, projectController.getMyProjects);

@@ -54,11 +54,19 @@ async function deletePost(postId) {
 // Public showcase listing — all posts for a project, most recent first
 async function findPostsByProject(projectId) {
   const result = await query(
-    `SELECT pp.*, p.title as project_title, u.name as seller_name
+    `SELECT pp.*,
+            p.title        AS project_title,
+            p.project_type,
+            u.name         AS seller_name,
+            pd.latitude,
+            pd.longitude,
+            pd.country,
+            pd.state_region
      FROM project_posts pp
-     JOIN projects p ON p.id = pp.project_id
-     JOIN users u ON u.id = p.seller_id
-     WHERE pp.project_id = $1 
+     JOIN projects p      ON p.id  = pp.project_id
+     JOIN users u         ON u.id  = p.seller_id
+     LEFT JOIN project_details pd ON pd.project_id = pp.project_id
+     WHERE pp.project_id = $1
      ORDER BY pp.created_at DESC`,
     [projectId]
   );
@@ -68,20 +76,29 @@ async function findPostsByProject(projectId) {
 // Global feed — all posts across all projects, most recent first
 async function findAllPosts() {
   const result = await query(
-    `SELECT pp.*, p.title as project_title, u.name as seller_name
+    `SELECT pp.*,
+            p.title        AS project_title,
+            p.project_type,
+            u.name         AS seller_name,
+            pd.latitude,
+            pd.longitude,
+            pd.country,
+            pd.state_region
      FROM project_posts pp
-     JOIN projects p ON p.id = pp.project_id
-     JOIN users u ON u.id = p.seller_id
+     JOIN projects p      ON p.id  = pp.project_id
+     JOIN users u         ON u.id  = p.seller_id
+     LEFT JOIN project_details pd ON pd.project_id = pp.project_id
      ORDER BY pp.created_at DESC`
   );
   return result.rows;
 }
 
-async function addProgressUpdate(postId, updateText, imageIpfsCid) {
+// image_url is now a Supabase public URL (uploaded via /api/upload/media)
+async function addProgressUpdate(postId, updateText, imageUrl) {
   const result = await query(
-    `INSERT INTO project_post_updates (post_id, update_text, image_ipfs_cid)
+    `INSERT INTO project_post_updates (post_id, update_text, image_url)
      VALUES ($1, $2, $3) RETURNING *`,
-    [postId, updateText, imageIpfsCid || null]
+    [postId, updateText, imageUrl || null]
   );
   return result.rows[0];
 }

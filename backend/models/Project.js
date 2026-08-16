@@ -3,22 +3,24 @@ const { pool, query } = require('../config/db');
 // All project_details columns that come from the registration form.
 // Centralized here so insert/update stay in sync and we never trust
 // arbitrary keys from req.body directly into SQL.
+// Shared fields common to ALL project types.
+// Type-specific ecological/energy/methane fields are stored in methodology_specific_data (JSONB).
 const DETAIL_FIELDS = [
   'duration_years', 'crediting_period_years', 'project_start_date', 'project_summary',
   'funding_sources', 'publicly_funded',
   'country', 'state_region', 'latitude', 'longitude', 'total_project_area_hectares',
   'eligible_area_hectares', 'set_aside_conservation_percent', 'climate_zone', 'soil_type',
   'hydrology_status', 'land_title_status',
-  'dominant_species', 'species_type', 'measurement_season', 'above_ground_biomass',
-  'below_ground_biomass', 'soil_organic_carbon_0_30cm', 'soil_organic_carbon_30_100cm',
-  'dead_wood_carbon', 'litter_carbon', 'sampling_plots', 'biodiversity_index',
-  'uncertainty_percentage',
   'technologies_measures_description', 'methodology_applied', 'ghg_sources_included',
   'baseline_scenario', 'additionality_demonstration', 'sdg_targets', 'total_co2_claimed',
   'estimated_vers', 'monitoring_frequency', 'responsible_person',
   'stakeholder_consultation_summary', 'grievance_mechanism',
+  // Owner & legal
   'owner_full_name', 'owner_id_type', 'owner_id_number', 'land_ownership_type',
-  'live_verification_photo_ipfs_cid',
+  // KYC document storage paths (private Supabase bucket paths, NOT public URLs)
+  'aadhaar_doc_path', 'land_deed_path', 'live_verification_photo_path',
+  // Type-specific data stored as JSON (e.g. biomass for forestry, capacity_mw for energy)
+  'methodology_specific_data',
 ];
 
 // Creates the core project row + its details row in a single transaction —
@@ -60,7 +62,14 @@ function buildDetailInsert(projectId, data) {
   for (const field of DETAIL_FIELDS) {
     if (data[field] !== undefined) {
       columns.push(field);
-      values.push(data[field]);
+      // Serialize JSONB field so pg driver stores it correctly
+      if (field === 'methodology_specific_data') {
+        values.push(
+          typeof data[field] === 'string' ? data[field] : JSON.stringify(data[field])
+        );
+      } else {
+        values.push(data[field]);
+      }
     }
   }
 
@@ -91,9 +100,15 @@ async function updateProject(projectId, data) {
     const detailUpdates = DETAIL_FIELDS.filter((f) => data[f] !== undefined);
     if (detailUpdates.length > 0) {
       const setClause = detailUpdates.map((f, i) => `${f} = $${i + 2}`).join(', ');
+      const detailValues = detailUpdates.map((f) => {
+        if (f === 'methodology_specific_data') {
+          return typeof data[f] === 'string' ? data[f] : JSON.stringify(data[f]);
+        }
+        return data[f];
+      });
       await client.query(
         `UPDATE project_details SET ${setClause}, updated_at = NOW() WHERE project_id = $1`,
-        [projectId, ...detailUpdates.map((f) => data[f])]
+        [projectId, ...detailValues]
       );
     }
 

@@ -4,8 +4,10 @@ import Footer from '../../components/layout/Footer';
 import { FiThumbsUp, FiShare2, FiClock, FiActivity } from 'react-icons/fi';
 import * as projectPostApi from '../../api/endpoint/projectPostApi';
 import { formatDistanceToNow } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 const Posts = () => {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,19 +44,29 @@ const Posts = () => {
     }
   };
 
-  const handleShare = async (postId) => {
+  const handleShare = async (post) => {
     try {
-      const res = await projectPostApi.shareProjectPost(postId);
-      setPosts(currentPosts => 
-        currentPosts.map(post => {
-          if (post.id === postId) {
-            return { ...post, shares_count: res.data.shares_count };
-          }
-          return post;
-        })
-      );
+      // Track share in backend silently
+      projectPostApi.shareProjectPost(post.id).catch(console.error);
+
+      // The showcase URL for this specific project
+      const shareUrl = `${window.location.origin}/projects/${post.project_id}`;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: post.title || 'Project Update',
+          text: `Check out this update from ${post.seller_name} on CarbonXchanges!`,
+          url: shareUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        alert('Link copied to clipboard!');
+      }
     } catch (err) {
-      console.error("Failed to share post", err);
+      // AbortError is thrown if the user cancels the share dialog, which is fine
+      if (err.name !== 'AbortError') {
+        console.error("Failed to share post", err);
+      }
     }
   };
 
@@ -110,7 +122,11 @@ const Posts = () => {
             </div>
           ) : (
             posts.map((post) => (
-              <article key={post.id} className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 p-5 sm:p-6">
+              <article 
+                key={post.id} 
+                onClick={() => navigate(`/projects/${post.project_id}`)}
+                className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 p-5 sm:p-6 cursor-pointer"
+              >
                 
                 {/* Header */}
                 <div className="flex justify-between items-start mb-5">
@@ -127,9 +143,16 @@ const Posts = () => {
                     {/* Author Info & Project Title */}
                     <div className="flex flex-col">
                       <span className="font-bold text-gray-900 text-[15px]">{post.seller_name}</span>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 mt-1 max-w-[200px] sm:max-w-xs truncate">
-                        {post.project_title}
-                      </span>
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 max-w-[200px] sm:max-w-xs truncate">
+                          {post.project_title}
+                        </span>
+                        {post.country && (
+                          <span className="text-xs text-gray-500 font-medium">
+                            • {post.state_region ? `${post.state_region}, ` : ''}{post.country}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
@@ -143,37 +166,13 @@ const Posts = () => {
                 {/* Content text */}
                 <div className="mb-5">
                   <h3 className="font-bold text-xl text-gray-900 mb-2 leading-tight">{post.title}</h3>
-                  {post.description && <p className="text-[16px] text-gray-600 mb-3 leading-relaxed">{post.description}</p>}
-                  {post.story && <p className="text-[15px] text-gray-500 whitespace-pre-wrap leading-relaxed">{post.story}</p>}
+                  {post.description && <p className="text-[16px] text-gray-600 leading-relaxed line-clamp-3">{post.description}</p>}
                 </div>
-
-                {/* Media Attachment (First image if exists) */}
-                {post.images && post.images.length > 0 && (
-                  <div className="w-full rounded-2xl overflow-hidden bg-gray-100 mb-5 border border-gray-100 shadow-sm">
-                    <img 
-                      src={`https://gateway.pinata.cloud/ipfs/${post.images[0]}`} 
-                      alt="Post attachment" 
-                      className="w-full h-auto object-cover max-h-[500px]" 
-                      onError={(e) => { e.target.style.display = 'none'; }}
-                    />
-                  </div>
-                )}
-                
-                {/* Media Attachment (First video if exists and no images) */}
-                {(!post.images || post.images.length === 0) && post.videos && post.videos.length > 0 && (
-                  <div className="w-full rounded-2xl overflow-hidden bg-gray-100 mb-5 border border-gray-100 shadow-sm">
-                    <video 
-                      src={`https://gateway.pinata.cloud/ipfs/${post.videos[0]}`} 
-                      controls 
-                      className="w-full h-auto max-h-[500px]" 
-                    />
-                  </div>
-                )}
 
                 {/* Footer Actions */}
                 <div className="pt-4 border-t border-gray-100 flex gap-6 items-center text-gray-500">
                   <button 
-                    onClick={() => handleLike(post.id)}
+                    onClick={(e) => { e.stopPropagation(); handleLike(post.id); }}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-emerald-50 hover:text-emerald-600 transition-colors group"
                   >
                     <FiThumbsUp className="text-lg" />
@@ -181,11 +180,11 @@ const Posts = () => {
                   </button>
                   
                   <button 
-                    onClick={() => handleShare(post.id)}
+                    onClick={(e) => { e.stopPropagation(); handleShare(post); }}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors group"
                   >
                     <FiShare2 className="text-lg" />
-                    <span className="text-sm font-semibold">{post.shares_count}</span>
+                    <span className="text-sm font-semibold">Share</span>
                   </button>
                 </div>
 
