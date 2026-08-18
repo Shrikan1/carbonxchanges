@@ -21,6 +21,10 @@ app.get('/api/health', (req, res) => {
 // --- Routes ---
 app.use(generalLimiter);
 
+// Serve static files (used for fallback local media uploads)
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, '../../public/uploads')));
+
 app.use('/api/v1/auth', require('../routes/v1/shared/authRoutes'));
 app.use('/api/upload', require('../routes/v1/shared/uploadRoutes'));
 app.use('/api/v1/admin', require('../routes/v1/adminRoutes'));

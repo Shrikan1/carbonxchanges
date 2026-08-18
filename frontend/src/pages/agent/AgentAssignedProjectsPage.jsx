@@ -26,7 +26,7 @@ export default function AgentAssignedProjectsPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Assigned Projects</h1>
+      <h1 className="text-2xl uppercase logo-retro tracking-tighter">Assigned Projects</h1>
 
       <div className="flex gap-2">
         <Button variant={tab === 'active' ? 'default' : 'outline'} onClick={() => setTab('active')}>Active Queue</Button>

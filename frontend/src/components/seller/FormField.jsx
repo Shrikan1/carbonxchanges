@@ -3,7 +3,9 @@ import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
 import { Select } from '../ui/Select';
 import { Label } from '../ui/Label';
-import { FiUpload, FiCheckCircle, FiAlertCircle, FiLoader, FiX } from 'react-icons/fi';
+import { DatePicker } from '../ui/DatePicker';
+import { NumberPicker } from '../ui/NumberPicker';
+import { FiUpload, FiCheckCircle, FiCheck, FiAlertCircle, FiLoader, FiX } from 'react-icons/fi';
 import api from '../../api/axiosInstance';
 
 /**
@@ -16,7 +18,7 @@ import api from '../../api/axiosInstance';
  *   error    — optional per-field error string
  */
 export default function FormField({ field, value, onChange, error }) {
-  const { name, label, type, options, required, description, hint, min, max, accept, kycPurpose } = field;
+  const { name, label, type, options, required, description, hint, min, max, step, accept, kycPurpose } = field;
 
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
@@ -131,21 +133,32 @@ export default function FormField({ field, value, onChange, error }) {
   if (type === 'checkbox') {
     return (
       <div>
-        <label className="flex items-center gap-2.5 text-sm cursor-pointer group">
-          <input
-            id={name}
-            type="checkbox"
-            checked={!!value}
-            onChange={(e) => onChange(name, e.target.checked)}
-            className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-          />
-          <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">
-            {label}
-          </span>
+        <label className="flex items-start gap-3 text-[15px] cursor-pointer group">
+          <div className="relative flex items-center justify-center mt-0.5">
+            <input
+              id={name}
+              type="checkbox"
+              checked={!!value}
+              onChange={(e) => onChange(name, e.target.checked)}
+              className="peer sr-only"
+            />
+            <div className={`w-5 h-5 rounded-[6px] border transition-all duration-200 flex items-center justify-center ${
+              !!value 
+                ? 'bg-gray-900 border-gray-900 text-white shadow-sm' 
+                : 'bg-white border-gray-300 group-hover:border-gray-400'
+            } peer-focus-visible:ring-2 peer-focus-visible:ring-gray-900/20`}>
+              {!!value && <FiCheck size={14} strokeWidth={3.5} />}
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-gray-900 font-medium group-hover:text-black transition-colors select-none">
+              {label}
+            </span>
+            {description && (
+              <p className="text-[13px] text-gray-500 mt-0.5 leading-relaxed">{description}</p>
+            )}
+          </div>
         </label>
-        {description && (
-          <p className="text-xs text-gray-500 mt-1 ml-6 leading-relaxed">{description}</p>
-        )}
       </div>
     );
   }
@@ -196,7 +209,7 @@ export default function FormField({ field, value, onChange, error }) {
           </Select>
         )}
 
-        {(type === 'text' || type === 'date') && (
+        {type === 'text' && (
           <Input
             id={name}
             type={type}
@@ -206,15 +219,23 @@ export default function FormField({ field, value, onChange, error }) {
           />
         )}
 
+        {type === 'date' && (
+          <DatePicker
+            value={value || ''}
+            onChange={(val) => onChange(name, val)}
+            className={borderClass}
+          />
+        )}
+
         {type === 'number' && (
-          <Input
+          <NumberPicker
             id={name}
-            type="number"
             value={value ?? ''}
-            onChange={(e) => onChange(name, e.target.value)}
+            onChange={(val) => onChange(name, val)}
             min={min}
             max={max}
-            step="any"
+            step={step || 'any'}
+            maxDecimals={name.includes('years') ? 1 : undefined}
             className={borderClass}
           />
         )}

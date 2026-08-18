@@ -1,6 +1,7 @@
 // src/pages/seller/CreditsPage.jsx
 import { useEffect, useState } from 'react';
 import * as creditApi from '../../api/endpoint/creditApi';
+import SellerHeader from '../../components/layout/SellerHeader';
 
 export default function CreditsPage() {
   const [issued, setIssued] = useState([]);
@@ -14,8 +15,15 @@ export default function CreditsPage() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-8">
-      <h1 className="text-2xl font-bold">Credits</h1>
+    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 py-8 font-sans">
+      <SellerHeader 
+        title="Credits" 
+        description="View your minted credits and transaction history."
+        contentMaxWidth="900px"
+      />
+      <div className="w-full max-w-[900px] px-4 md:px-8">
+        
+        <div className="space-y-8 mt-4">
 
       {balance && (
         <div className="grid grid-cols-3 gap-4">
@@ -52,6 +60,8 @@ export default function CreditsPage() {
             <span>{tx.amount} @ {tx.price_per_credit}</span>
           </div>
         ))}
+      </div>
+        </div>
       </div>
     </div>
   );

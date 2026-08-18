@@ -9,9 +9,10 @@ import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
 import { Label } from '../../components/ui/Label';
 import { Select } from '../../components/ui/Select';
+import FileUploadZone from '../../components/ui/FileUploadZone';
 import { FiUpload, FiX, FiImage, FiVideo, FiAlertCircle, FiLoader, FiCheckCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import Navbar from '../../components/layout/Navbar';
+import SellerHeader from '../../components/layout/SellerHeader';
 
 export default function ProjectPostEditorPage() {
   const { projectId: urlProjectId } = useParams();
@@ -107,25 +108,19 @@ export default function ProjectPostEditorPage() {
   const uploading = uploadingImage || uploadingVideo;
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pt-24 pb-12 font-sans">
-      <Navbar />
+    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 py-8 font-sans">
+      <SellerHeader 
+        title="Create Post" 
+        description="Create a public post to showcase your carbon reduction project to the community."
+        contentMaxWidth="800px"
+      />
       <div className="w-full max-w-[800px] px-4 md:px-8">
-
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="w-full"
         >
-          {/* Header */}
-          <div className="mb-8">
-            <div role="heading" aria-level="1" className="text-3xl font-bold tracking-tight text-gray-900 mb-2 !font-sans !normal-case">
-              Public Showcase
-            </div>
-            <p className="text-gray-500 text-sm">
-              Create a public post to showcase your carbon reduction project to the community.
-            </p>
-          </div>
 
           {error && (
             <motion.div
@@ -212,121 +207,52 @@ export default function ProjectPostEditorPage() {
 
               {/* ── Media Upload ─────────────────────────────────────────── */}
               <div className="pt-6 border-t border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Media Files</h3>
-                <p className="text-xs text-gray-500 mb-5">
-                  Files are stored on Supabase Storage and served via fast CDN. Images: max 10 MB · Videos: max 100 MB.
+                <h3 className="text-lg font-bold text-gray-900 mb-1" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif', textTransform: 'none', letterSpacing: 'normal' }}>Media Files</h3>
+                <p className="text-xs text-gray-500 mb-5" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif', textTransform: 'none', letterSpacing: 'normal' }}>
+                  Upload images and videos to showcase your project. Images: max 10 MB · Videos: max 100 MB.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Images */}
                   <div className="space-y-3">
-                    <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                      <FiImage className="text-emerald-600" /> Images
+                    <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif', textTransform: 'none', letterSpacing: 'normal' }}>
+                      <FiImage className="text-brand" /> Images
                     </Label>
-
-                    <div className="space-y-2">
-                      <AnimatePresence>
-                        {form.images.map((item, i) => (
-                          <motion.div
-                            key={item.url}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-50"
-                          >
-                            <img
-                              src={item.url}
-                              alt={item.name}
-                              className="w-full h-32 object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors flex items-start justify-end p-2">
-                              <button
-                                type="button"
-                                onClick={() => removeFile(i, 'images')}
-                                className="bg-white/90 hover:bg-white text-gray-600 hover:text-red-500 rounded-lg p-1 shadow transition-colors"
-                              >
-                                <FiX size={14} />
-                              </button>
-                            </div>
-                            <div className="px-3 py-1.5 flex items-center gap-1.5">
-                              <FiCheckCircle className="text-emerald-500" size={12} />
-                              <span className="text-xs text-gray-500 truncate">{item.name}</span>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
-
-                      <div className="relative">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleFileUpload(e, 'images')}
-                          disabled={uploadingImage || saving}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        />
-                        <div className={`flex items-center justify-center gap-2 rounded-xl p-4 text-sm font-medium transition-colors border-2 border-dashed
-                          ${uploadingImage ? 'bg-emerald-50 border-emerald-300 text-emerald-600' : 'bg-gray-50 hover:bg-gray-100 border-gray-300 text-gray-600'}`}>
-                          {uploadingImage ? <FiLoader className="animate-spin" /> : <FiUpload />}
-                          <span>{uploadingImage ? 'Uploading...' : 'Upload Image'}</span>
-                        </div>
-                      </div>
-                    </div>
+                    <FileUploadZone
+                      accept="image/*"
+                      maxSizeMB={10}
+                      formats=".jpg, .png, .webp and .gif files"
+                      mediaType="image"
+                      uploading={uploadingImage}
+                      disabled={saving}
+                      uploadedFiles={form.images}
+                      onRemoveFile={(i) => removeFile(i, 'images')}
+                      onFileSelect={(file) => {
+                        const fakeEvent = { target: { files: [file], value: file.name } };
+                        handleFileUpload(fakeEvent, 'images');
+                      }}
+                    />
                   </div>
 
                   {/* Videos */}
                   <div className="space-y-3">
-                    <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                      <FiVideo className="text-emerald-600" /> Videos
+                    <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif', textTransform: 'none', letterSpacing: 'normal' }}>
+                      <FiVideo className="text-brand" /> Videos
                     </Label>
-
-                    <div className="space-y-2">
-                      <AnimatePresence>
-                        {form.videos.map((item, i) => (
-                          <motion.div
-                            key={item.url}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-50"
-                          >
-                            <video
-                              src={item.url}
-                              className="w-full h-32 object-cover bg-black"
-                              controls={false}
-                              muted
-                            />
-                            <div className="absolute inset-0 bg-black/10 hover:bg-black/20 transition-colors flex items-start justify-end p-2">
-                              <button
-                                type="button"
-                                onClick={() => removeFile(i, 'videos')}
-                                className="bg-white/90 hover:bg-white text-gray-600 hover:text-red-500 rounded-lg p-1 shadow transition-colors"
-                              >
-                                <FiX size={14} />
-                              </button>
-                            </div>
-                            <div className="px-3 py-1.5 flex items-center gap-1.5">
-                              <FiCheckCircle className="text-emerald-500" size={12} />
-                              <span className="text-xs text-gray-500 truncate">{item.name}</span>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
-
-                      <div className="relative">
-                        <Input
-                          type="file"
-                          accept="video/*"
-                          onChange={(e) => handleFileUpload(e, 'videos')}
-                          disabled={uploadingVideo || saving}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        />
-                        <div className={`flex items-center justify-center gap-2 rounded-xl p-4 text-sm font-medium transition-colors border-2 border-dashed
-                          ${uploadingVideo ? 'bg-emerald-50 border-emerald-300 text-emerald-600' : 'bg-gray-50 hover:bg-gray-100 border-gray-300 text-gray-600'}`}>
-                          {uploadingVideo ? <FiLoader className="animate-spin" /> : <FiUpload />}
-                          <span>{uploadingVideo ? 'Uploading...' : 'Upload Video'}</span>
-                        </div>
-                      </div>
-                    </div>
+                    <FileUploadZone
+                      accept="video/*"
+                      maxSizeMB={100}
+                      formats=".mp4, .webm, .ogg and .mov files"
+                      mediaType="video"
+                      uploading={uploadingVideo}
+                      disabled={saving}
+                      uploadedFiles={form.videos}
+                      onRemoveFile={(i) => removeFile(i, 'videos')}
+                      onFileSelect={(file) => {
+                        const fakeEvent = { target: { files: [file], value: file.name } };
+                        handleFileUpload(fakeEvent, 'videos');
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -335,7 +261,7 @@ export default function ProjectPostEditorPage() {
                 <Button
                   type="submit"
                   disabled={saving || uploading}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 px-8 rounded-xl shadow-sm"
+                  className="bg-brand hover:bg-brand-hover text-gray-900 font-bold h-11 px-8 rounded-xl shadow-sm"
                 >
                   {saving ? 'Publishing...' : 'Publish Showcase'}
                 </Button>

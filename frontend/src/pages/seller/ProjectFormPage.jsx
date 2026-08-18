@@ -11,7 +11,7 @@ import { useSellerStore } from '../../store/useSellerStore';
 import { Button } from '../../components/ui/Button';
 import { FiArrowLeft, FiArrowRight, FiSave, FiAlertCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import Navbar from '../../components/layout/Navbar';
+import SellerHeader from '../../components/layout/SellerHeader';
 
 export default function ProjectFormPage() {
   const navigate = useNavigate();
@@ -93,67 +93,72 @@ export default function ProjectFormPage() {
   const progressPercent = Math.round((currentStep / steps.length) * 100);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pt-24 pb-12 font-sans">
-      <Navbar />
-      <div className="w-full max-w-[800px] px-4 md:px-8">
+    <div className="min-h-[101vh] w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pb-8 font-sans">
+      
+      {/* Normal Scrolling Header */}
+      <div className="w-full pt-8">
+        <SellerHeader 
+          title="Register Project" 
+          description="Provide details about your carbon reduction project to get verified."
+          contentMaxWidth="800px"
+          action={
+            <Button
+              variant="outline"
+              onClick={() => navigate('/seller/projects')}
+              className="h-10 px-5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-medium shadow-sm transition-all flex items-center space-x-2"
+            >
+              <FiArrowLeft />
+              <span>Back to Projects</span>
+            </Button>
+          }
+        />
+      </div>
 
+      {/* Sticky Progress Section */}
+      <div className="sticky top-0 z-40 w-full flex flex-col items-center bg-[#f4f7f5]/95 backdrop-blur-md shadow-sm border-b border-gray-200/50 py-4 mb-8">
+        <div className="w-full max-w-[800px] px-4 md:px-8 mx-auto">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+              Step {currentStep} of {steps.length}
+            </span>
+            <div className="flex items-center gap-2">
+              {stepConfig.typeSpecific && (
+                <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">
+                  {formData.project_type ? formData.project_type.replace(/_/g, ' ') : 'type-specific'}
+                </span>
+              )}
+              <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
+                {stepConfig.title}
+              </span>
+            </div>
+          </div>
+          {/* Segmented progress bar */}
+          <div className="flex gap-1.5">
+            {steps.map((s) => (
+              <div
+                key={s.step}
+                className={`h-2 flex-1 rounded-full transition-all duration-500 ${
+                  s.step < currentStep
+                    ? 'bg-emerald-500'
+                    : s.step === currentStep
+                    ? 'bg-emerald-400'
+                    : 'bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+          <div className="mt-1.5 text-xs text-gray-400 text-right">{progressPercent}% complete</div>
+        </div>
+      </div>
+
+      {/* Main Form Content */}
+      <div className="w-full max-w-[800px] px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="w-full"
         >
-          {/* Header */}
-          <div className="mb-8">
-            <button
-              onClick={() => navigate('/seller/projects')}
-              className="flex items-center space-x-2 text-gray-500 hover:text-gray-900 transition-colors mb-4 text-sm font-medium"
-            >
-              <FiArrowLeft />
-              <span>Back to Projects</span>
-            </button>
-            <div role="heading" aria-level="1" className="text-3xl font-bold tracking-tight text-gray-900 mb-2 !font-sans !normal-case">
-              Register a Project
-            </div>
-            <p className="text-gray-500 text-sm">
-              Provide details about your carbon reduction project to get verified.
-            </p>
-          </div>
-
-          {/* Progress Indicator */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                Step {currentStep} of {steps.length}
-              </span>
-              <div className="flex items-center gap-2">
-                {stepConfig.typeSpecific && (
-                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">
-                    {formData.project_type ? formData.project_type.replace(/_/g, ' ') : 'type-specific'}
-                  </span>
-                )}
-                <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
-                  {stepConfig.title}
-                </span>
-              </div>
-            </div>
-            {/* Segmented progress bar */}
-            <div className="flex gap-1.5">
-              {steps.map((s) => (
-                <div
-                  key={s.step}
-                  className={`h-2 flex-1 rounded-full transition-all duration-500 ${
-                    s.step < currentStep
-                      ? 'bg-emerald-500'
-                      : s.step === currentStep
-                      ? 'bg-emerald-400'
-                      : 'bg-gray-200'
-                  }`}
-                />
-              ))}
-            </div>
-            <div className="mt-1.5 text-xs text-gray-400 text-right">{progressPercent}% complete</div>
-          </div>
 
           {/* Form Card */}
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-6">
@@ -218,7 +223,7 @@ export default function ProjectFormPage() {
               <Button
                 onClick={handleSaveDraft}
                 disabled={saving}
-                className="h-11 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-sm"
+                className="h-11 px-8 rounded-xl bg-brand hover:bg-brand-hover text-gray-900 font-bold shadow-sm"
               >
                 {saving ? 'Saving...' : 'Save Draft'}
                 <FiSave className="ml-2" />

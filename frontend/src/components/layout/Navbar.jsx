@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { motion } from 'motion/react';
 
 import { useAuthStore } from '../../store/useAuthStore';
+import * as authApi from '../../api/endpoint/Authapi';
 
 
 // =====================================================
@@ -56,7 +57,8 @@ const Navbar = ({
   }, []);
 
   const location = useLocation();
-  const isLightPage = ['/posts', '/article', '/seller', '/admin', '/buyer', '/profile', '/marketplace'].some(p => location.pathname.startsWith(p));
+  const navigate = useNavigate();
+  const isLightPage = ['/posts', '/article', '/seller', '/admin', '/buyer', '/profile', '/marketplace', '/about'].some(p => location.pathname.startsWith(p));
 
 
   // ===================================================
@@ -84,8 +86,9 @@ const Navbar = ({
     } else if (user.role === 'agent') {
       links.push(roleConfig.agent);
     } else {
-      if (user.is_seller) links.push(roleConfig.seller);
-      if (user.is_buyer) links.push(roleConfig.buyer);
+      if (user.is_seller || user.is_buyer) {
+        links.push({ label: 'Dashboard', path: '/dashboard' });
+      }
     }
     return links;
   };
@@ -107,7 +110,7 @@ const Navbar = ({
       path: '/marketplace',
     },
     {
-      name: 'Posts',
+      name: 'Social',
       path: '/posts',
     },
     {
@@ -124,8 +127,8 @@ const Navbar = ({
     let links = [...baseNavLinks];
 
     if (!isAuthenticated) {
-      // Remove 'Posts' for unauthorized users to reduce clutter
-      links = links.filter(link => link.name !== 'Posts');
+      // Remove 'Social' for unauthorized users to reduce clutter
+      links = links.filter(link => link.name !== 'Social');
     } else {
       // Remove 'About' when logged in
       links = links.filter(link => link.name !== 'About');
@@ -164,12 +167,39 @@ const Navbar = ({
   // LOGOUT
   // ===================================================
 
-  const handleLogout = () => {
-    logout();
-    closeMobileMenu();
+  const handleLogout = async () => {
+    try {
+      // 1. Tell backend to invalidate the session tokens completely
+      await authApi.logout();
+    } catch (err) {
+      console.error("Failed to invalidate session on server", err);
+    } finally {
+      // 2. Clear local storage and UI state
+      logout();
+      closeMobileMenu();
+      
+      // 3. Force hard redirect to clear protected views from memory
+      navigate('/login', { replace: true });
+    }
   };
 
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+
+    if (isProfileDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileDropdownOpen]);
 
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen((prev) => !prev);
@@ -195,7 +225,7 @@ const Navbar = ({
     if (isAuthenticated) {
 
       return (
-        <div className="hidden lg:flex items-center space-x-2">
+        <div className={`hidden lg:flex items-center space-x-1 p-1 rounded-full transition-all duration-300 ${isScrolled || isLightPage ? 'bg-white shadow-sm border border-gray-200' : 'bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30'}`}>
 
 
 
@@ -203,7 +233,7 @@ const Navbar = ({
             <Link
               key={idx}
               to={dash.path}
-              className={`group px-4 py-2 text-[13px] font-['JetBrains_Mono'] uppercase font-bold tracking-wide flex items-center justify-center transition-colors rounded-full shadow-sm ${isScrolled || isLightPage ? 'text-gray-700 hover:text-gray-900' : 'text-gray-200 hover:text-white drop-shadow-md'}`}
+              className={`group px-4 py-2 text-xs font-bold uppercase tracking-wider flex items-center justify-center transition-colors rounded-full ${isScrolled || isLightPage ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100' : 'text-gray-200 hover:text-white hover:bg-white/10'}`}
             >
               <span className="relative overflow-hidden block leading-tight">
                 <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
@@ -217,6 +247,8 @@ const Navbar = ({
           ))}
 
 
+          <div className={`w-px h-6 mx-1 ${isScrolled || isLightPage ? 'bg-gray-200' : 'bg-white/20'}`}></div>
+
           {/* ------------------------------------------
               PROFILE DROPDOWN
           ------------------------------------------ */}
@@ -224,7 +256,7 @@ const Navbar = ({
             <button
               type="button"
               onClick={toggleProfileDropdown}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border overflow-hidden focus:outline-none transition-colors shadow-sm ${isScrolled || isLightPage ? 'border-gray-200 hover:border-gray-300 text-gray-700' : 'border-white/30 hover:border-white/60 text-white shadow-black/50'}`}
+              className={`flex items-center justify-center w-9 h-9 rounded-full border overflow-hidden focus:outline-none transition-all duration-300 ${isScrolled || isLightPage ? 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50' : 'border-white/20 hover:border-white/40 text-white bg-white/5'}`}
             >
               {user?.profileImage ? (
                 <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
@@ -236,104 +268,108 @@ const Navbar = ({
             </button>
 
             {isProfileDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 z-50 overflow-hidden font-sans">
-                <Link
-                  to="/profile"
-                  onClick={closeProfileDropdown}
-                  className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
-                >
-                  Profile
-                </Link>
-                {user?.is_seller && (
-                  <>
-                    {/* <Link
-                      to="/seller/dashboard"
-                      onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
-                    >
-                      Dashboard
-                    </Link> */}
-                    <Link
-                      to="/seller/projects"
-                      onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
-                    >
-                      My Projects
-                    </Link>
-                    {/* <Link
-                      to="/seller/projects/new"
-                      onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-[#888] hover:text-white hover:bg-[#222] transition-colors"
-                    >
-                      Add Project
-                    </Link> */}
-                    <Link
-                      to="/seller/post/new"
-                      onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
-                    >
-                      Create Post
-                    </Link>
-                    <Link
-                      to="/seller/credits"
-                      onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
-                    >
-                      Credits
-                    </Link>
-                    <Link
-                      to="/seller/listings"
-                      onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
-                    >
-                      Listings
-                    </Link>
-                    <Link
-                      to="/seller/sales"
-                      onClick={closeProfileDropdown}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
-                    >
-                      Sales
-                    </Link>
-                  </>
-                )}
-                {user?.is_buyer && (
+              <div ref={dropdownRef} className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 rounded-[20px] shadow-2xl py-2 z-50 overflow-hidden font-sans ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-200">
+                
+                <div className="px-4 py-3 border-b border-gray-100 mb-1 bg-gray-50/50">
+                  <p className="text-sm font-bold text-gray-900 truncate">
+                    {user?.name || 'User'}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate mt-0.5">
+                    {user?.email || 'Logged in'}
+                  </p>
+                </div>
+
+                <div className="px-2 py-1 space-y-0.5">
                   <Link
-                    to="/dashboard"
+                    to="/profile"
                     onClick={closeProfileDropdown}
-                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
+                    className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
                   >
-                    Buyer Dashboard
+                    Profile Settings
                   </Link>
-                )}
-                {user?.role === 'admin' && (
-                  <Link
-                    to="/dashboard"
-                    onClick={closeProfileDropdown}
-                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
+
+                  {user?.is_seller && (
+                    <>
+                      <Link
+                        to="/seller/projects"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        My Projects
+                      </Link>
+                      <Link
+                        to="/seller/post/new"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Create Post
+                      </Link>
+                      <Link
+                        to="/seller/credits"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Credits
+                      </Link>
+                      <Link
+                        to="/seller/listings"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Listings
+                      </Link>
+                      <Link
+                        to="/seller/sales"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Sales
+                      </Link>
+                    </>
+                  )}
+
+                  {user?.is_buyer && (
+                    <Link
+                      to="/dashboard"
+                      onClick={closeProfileDropdown}
+                      className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                    >
+                      Buyer Dashboard
+                    </Link>
+                  )}
+                  {user?.role === 'admin' && (
+                    <Link
+                      to="/dashboard"
+                      onClick={closeProfileDropdown}
+                      className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  {user?.role === 'agent' && (
+                    <Link
+                      to="/dashboard"
+                      onClick={closeProfileDropdown}
+                      className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                    >
+                      Agent Dashboard
+                    </Link>
+                  )}
+                </div>
+
+                <div className="px-2 mt-1 pt-2 border-t border-gray-100">
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      closeProfileDropdown();
+                    }}
+                    className="w-full text-left px-3 py-2.5 text-sm text-red-600 font-bold hover:bg-red-50 rounded-xl transition-colors flex items-center justify-between"
                   >
-                    Admin Dashboard
-                  </Link>
-                )}
-                {user?.role === 'agent' && (
-                  <Link
-                    to="/dashboard"
-                    onClick={closeProfileDropdown}
-                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium transition-colors"
-                  >
-                    Agent Dashboard
-                  </Link>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleLogout();
-                    closeProfileDropdown();
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 font-bold transition-colors border-t border-gray-100"
-                >
-                  Logout
-                </button>
+                    <span>Sign out</span>
+                    <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                  </button>
+                </div>
+
               </div>
             )}
           </div>
@@ -353,7 +389,7 @@ const Navbar = ({
         {/* Login */}
         <Link
           to="/login"
-          className={`text-[14px] font-medium transition-colors ${isScrolled ? 'text-gray-600 hover:text-gray-900' : 'text-white/90 hover:text-white drop-shadow-md'}`}
+          className={`text-[14px] font-medium transition-colors ${isScrolled || isLightPage ? 'text-gray-600 hover:text-gray-900' : 'text-white/90 hover:text-white drop-shadow-md'}`}
         >
           Sign In
         </Link>
@@ -395,7 +431,7 @@ const Navbar = ({
               key={idx}
               to={dash.path}
               onClick={closeMobileMenu}
-              className="block w-full px-4 py-3 text-center text-[#888] text-sm font-['JetBrains_Mono'] uppercase font-medium border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+              className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
             >
               {dash.label}
             </Link>
@@ -409,7 +445,7 @@ const Navbar = ({
           <button
             type="button"
             onClick={handleLogout}
-            className="block w-full px-4 py-3 text-center bg-[#222] text-white text-sm font-['JetBrains_Mono'] uppercase font-semibold hover:bg-[#333] transition-colors"
+            className="block w-full px-4 py-3 text-center bg-[#222] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333] transition-colors"
           >
             Logout
           </button>
@@ -431,7 +467,7 @@ const Navbar = ({
         <Link
           to="/login"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center text-[#888] text-sm font-['JetBrains_Mono'] uppercase font-medium border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+          className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
         >
           Login
         </Link>
@@ -442,7 +478,7 @@ const Navbar = ({
         <Link
           to="/signup"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-sm font-['JetBrains_Mono'] uppercase font-semibold hover:bg-[#eee] transition-colors"
+          className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-xs font-bold uppercase tracking-wider hover:bg-[#eee] transition-colors"
         >
           Sign Up
         </Link>
@@ -511,7 +547,7 @@ const Navbar = ({
 
           <Link
             to="/"
-            className="flex items-center"
+            className={`flex items-center px-4 py-1.5 rounded-full transition-all duration-300 ${isScrolled || isLightPage ? 'bg-white shadow-sm border border-gray-200' : 'bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30'}`}
           >
 
             {!hideLogo && (
@@ -525,7 +561,7 @@ const Navbar = ({
 
                 data-brand="logo"
 
-                className={`logo-retro uppercase tracking-tighter text-xl transition-colors duration-300 text-[#bef264]`}
+                className={`logo-retro uppercase tracking-tighter text-xl transition-colors duration-300 ${isScrolled || isLightPage ? 'text-gray-900' : 'text-[#bef264]'}`}
                 transition={
                   animateEntrance
                     ? {
@@ -567,7 +603,7 @@ const Navbar = ({
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`group px-5 py-2 text-[13px] font-['JetBrains_Mono'] uppercase font-medium tracking-wide rounded-full transition-all duration-300 flex items-center justify-center ${isActive
+                  className={`group px-5 py-2 text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 flex items-center justify-center ${isActive
                     ? 'bg-white text-gray-900 shadow-sm'
                     : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
                     }`}
@@ -677,7 +713,7 @@ const Navbar = ({
                   to={link.path}
                   onClick={closeMobileMenu}
 
-                  className={`px-4 py-3 text-sm font-['JetBrains_Mono'] uppercase font-medium transition-colors ${isActive
+                  className={`px-4 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${isActive
                     ? 'text-white'
                     : 'text-[#888] hover:text-white'
                     }`}

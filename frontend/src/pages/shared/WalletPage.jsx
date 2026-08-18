@@ -17,7 +17,7 @@ export default function WalletPage() {
 
   return (
     <div className="max-w-lg mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Wallet</h1>
+      <h1 className="text-2xl uppercase logo-retro tracking-tighter">Wallet</h1>
 
       <div className="border border-border rounded-lg p-4 space-y-4">
         <WalletConnectButton />

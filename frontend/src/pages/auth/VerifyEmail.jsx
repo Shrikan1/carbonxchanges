@@ -133,7 +133,7 @@ const VerifyEmail = () => {
 
           <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start min-h-[600px]">
             <div className="mb-10">
-              <h1 className="text-[#0c0c0c] text-2xl font-black tracking-tight mb-2">Check your email</h1>
+              <h1 className="text-[#0c0c0c] text-2xl mb-2 uppercase logo-retro tracking-tighter">Check your email</h1>
               <p className="text-[#666] text-[15px]">
                 We sent a 6-digit verification code to <span className="font-semibold text-[#111]">{email}</span>.
               </p>

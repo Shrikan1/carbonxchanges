@@ -2,6 +2,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useRef, useEffect } from 'react';
 
 
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -16,6 +17,7 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function LocationMap({ markers = [], zoom = 10, height = '300px' }) {
+  const mapRef = useRef(null);
   const validMarkers = markers.filter((m) => m.lat != null && m.lng != null);
 
   if (validMarkers.length === 0) {
@@ -29,7 +31,19 @@ export default function LocationMap({ markers = [], zoom = 10, height = '300px' 
   const center = [validMarkers[0].lat, validMarkers[0].lng];
 
   return (
-    <MapContainer center={center} zoom={zoom} style={{ height, width: '100%', borderRadius: '0.5rem' }}>
+    <MapContainer
+      key={`${center[0]}-${center[1]}`}
+      center={center}
+      zoom={zoom}
+      style={{ height, width: '100%', borderRadius: '0.5rem' }}
+      ref={mapRef}
+      whenReady={() => {
+        // Invalidate size after mount to prevent grey tile issues
+        setTimeout(() => {
+          mapRef.current?.invalidateSize();
+        }, 100);
+      }}
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

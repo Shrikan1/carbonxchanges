@@ -7,6 +7,7 @@ const projectPostController = require('../../controllers/seller/projectPostContr
 // Public routes
 router.get('/all', projectPostController.getAllProjectPosts);
 router.get('/project/:projectId', projectPostController.getProjectPosts);
+router.get('/:id', projectPostController.getProjectPostById);
 
 // Authenticated routes
 router.use(requireAuth);

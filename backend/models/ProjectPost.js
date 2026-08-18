@@ -21,9 +21,18 @@ async function createPost(projectId, data) {
 
 async function findPostById(postId) {
   const result = await query(
-    `SELECT pp.*, p.seller_id, p.title AS project_title
+    `SELECT pp.*,
+            p.title        AS project_title,
+            p.project_type,
+            u.name         AS seller_name,
+            pd.latitude,
+            pd.longitude,
+            pd.country,
+            pd.state_region
      FROM project_posts pp
-     JOIN projects p ON p.id = pp.project_id
+     JOIN projects p      ON p.id  = pp.project_id
+     JOIN users u         ON u.id  = p.seller_id
+     LEFT JOIN project_details pd ON pd.project_id = pp.project_id
      WHERE pp.id = $1`,
     [postId]
   );
@@ -127,7 +136,7 @@ async function toggleLike(postId, userId) {
     let liked;
     if (existing.rows.length > 0) {
       await client.query('DELETE FROM project_post_likes WHERE id = $1', [existing.rows[0].id]);
-      await client.query('UPDATE project_posts SET likes_count = likes_count - 1 WHERE id = $1', [postId]);
+      await client.query('UPDATE project_posts SET likes_count = GREATEST(0, likes_count - 1) WHERE id = $1', [postId]);
       liked = false;
     } else {
       await client.query('INSERT INTO project_post_likes (post_id, user_id) VALUES ($1, $2)', [postId, userId]);
