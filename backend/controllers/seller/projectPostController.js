@@ -45,8 +45,8 @@ async function deleteProjectPost(req, res) {
   try {
     const post = await ProjectPost.findPostById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
-    if (post.seller_id !== req.user.id) {
-      return res.status(403).json({ error: 'You do not own this post' });
+    if (post.seller_id !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'You do not own this post or lack admin privileges' });
     }
 
     await ProjectPost.deletePost(req.params.id);
@@ -54,6 +54,23 @@ async function deleteProjectPost(req, res) {
   } catch (err) {
     console.error('Delete project post error:', err);
     res.status(500).json({ error: 'Failed to delete post' });
+  }
+}
+
+// GET /api/project-posts/:id — public
+async function getProjectPostById(req, res) {
+  try {
+    const post = await ProjectPost.findPostById(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+    
+    // Attach updates if needed, though single post view might not show them or might want them
+    const updates = await ProjectPost.findUpdatesByPost(post.id);
+    post.updates = updates;
+    
+    res.json({ post });
+  } catch (err) {
+    console.error('Get project post by id error:', err);
+    res.status(500).json({ error: 'Failed to fetch project post' });
   }
 }
 
@@ -120,6 +137,7 @@ module.exports = {
   deleteProjectPost,
   getProjectPosts,
   getAllProjectPosts,
+  getProjectPostById,
   likeProjectPost,
   shareProjectPost,
 };

@@ -129,7 +129,7 @@ export default function AdminProjectDetailPage() {
 
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{project.title}</h1>
+              <h1 className="text-2xl sm:text-3xl text-gray-900 mb-2 uppercase logo-retro tracking-tighter">{project.title}</h1>
               <p className="text-sm text-gray-500 flex flex-wrap gap-2 items-center">
                 <span>{project.project_type}</span>
                 <span className="text-gray-300">•</span>

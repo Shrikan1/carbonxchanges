@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, ScrollRestoration } from 'react-router-dom';
 
 import Home from './pages/shared/Home';
 import AuthPage from './pages/auth/AuthPage';
@@ -8,6 +8,7 @@ import About from './pages/shared/About';
 import Contact from './pages/shared/Contact';
 import Article from './pages/shared/Article';
 import Posts from './pages/shared/Posts';
+import PostDetail from './pages/shared/PostDetail';
 
 import ProjectListPage from './pages/seller/ProjectListPage';
 import ProjectFormPage from './pages/seller/ProjectFormPage';
@@ -43,7 +44,17 @@ import AgentAssignedProjectsPage from './pages/agent/AgentAssignedProjectsPage';
 import AgentProjectDetailPage from './pages/agent/AgentProjectDetailPage';
 import AgentHistoryPage from './pages/agent/AgentHistoryPage';
 
+const RootLayout = () => (
+  <>
+    <ScrollRestoration />
+    <Outlet />
+  </>
+);
+
 const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [
   {
     path: '/',
     element: <Home />,
@@ -62,6 +73,11 @@ const router = createBrowserRouter([
   {
     path: '/posts',
     element: <Posts />,
+  },
+
+  {
+    path: '/posts/:postId',
+    element: <PostDetail />,
   },
 
   {
@@ -99,7 +115,7 @@ const router = createBrowserRouter([
   {
     path: '/seller/projects',
     element: (
-      <RequireAuth>
+      <RequireAuth requireSeller={true}>
         <ProjectListPage />
       </RequireAuth>
     ),
@@ -109,7 +125,7 @@ const router = createBrowserRouter([
   {
     path: '/seller/projects/new',
     element: (
-      <RequireAuth>
+      <RequireAuth requireSeller={true}>
         <ProjectFormPage />
       </RequireAuth>
     ),
@@ -124,7 +140,7 @@ const router = createBrowserRouter([
   {
     path: '/seller/projects/:projectId/post',
     element: (
-      <RequireAuth>
+      <RequireAuth requireSeller={true}>
         <ProjectPostEditorPage />
       </RequireAuth>
     ),
@@ -132,7 +148,7 @@ const router = createBrowserRouter([
   {
     path: '/seller/post/new',
     element: (
-      <RequireAuth>
+      <RequireAuth requireSeller={true}>
         <ProjectPostEditorPage />
       </RequireAuth>
     ),
@@ -140,7 +156,7 @@ const router = createBrowserRouter([
   {
   path: '/seller/projects/:projectId/verification',
   element: (
-    <RequireAuth>
+    <RequireAuth requireSeller={true}>
       <ProjectVerificationPage />
     </RequireAuth>
   ),
@@ -149,7 +165,7 @@ const router = createBrowserRouter([
 {
   path: '/seller/credits',
   element: (
-    <RequireAuth>
+    <RequireAuth requireSeller={true}>
       <CreditsPage />
     </RequireAuth>
   ),
@@ -158,7 +174,7 @@ const router = createBrowserRouter([
 {
   path: '/seller/listings',
   element: (
-    <RequireAuth>
+    <RequireAuth requireSeller={true}>
       <ListingsPage />
     </RequireAuth>
   ),
@@ -167,7 +183,7 @@ const router = createBrowserRouter([
 {
   path: '/seller/sales',
   element: (
-    <RequireAuth>
+    <RequireAuth requireSeller={true}>
       <SalesPage />
     </RequireAuth>
   ),
@@ -203,7 +219,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/projects',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminReviewQueuePage />
     </RequireAuth>
   ),
@@ -213,7 +229,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/projects/:id',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminProjectDetailPage />
     </RequireAuth>
   ),
@@ -223,7 +239,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/agents',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminAgentsPage />
     </RequireAuth>
   ),
@@ -233,7 +249,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/mint-queue',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminMintQueuePage />
     </RequireAuth>
   ),
@@ -243,7 +259,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/oversight/users',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminOversightUsersPage />
     </RequireAuth>
   ),
@@ -253,7 +269,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/oversight/projects',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminOversightProjectsPage />
     </RequireAuth>
   ),
@@ -263,7 +279,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/oversight/transactions',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminOversightTransactionsPage />
     </RequireAuth>
   ),
@@ -273,7 +289,7 @@ const router = createBrowserRouter([
 {
   path: '/admin/reversals',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['admin']}>
       <AdminReversalsPage />
     </RequireAuth>
   ),
@@ -282,7 +298,7 @@ const router = createBrowserRouter([
 {
   path: '/agent/projects',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['agent', 'admin']}>
       <AgentAssignedProjectsPage />
     </RequireAuth>
   ),
@@ -292,7 +308,7 @@ const router = createBrowserRouter([
 {
   path: '/agent/projects/:id',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['agent', 'admin']}>
       <AgentProjectDetailPage />
     </RequireAuth>
   ),
@@ -302,7 +318,7 @@ const router = createBrowserRouter([
 {
   path: '/agent/history',
   element: (
-    <RequireAuth>
+    <RequireAuth allowedRoles={['agent', 'admin']}>
       <AgentHistoryPage />
     </RequireAuth>
   ),
@@ -320,6 +336,8 @@ const router = createBrowserRouter([
   },
 
 
+    ]
+  }
 ]);
 
 

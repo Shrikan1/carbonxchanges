@@ -4,9 +4,10 @@ import * as profileApi from "../../api/endpoint/Profileapi";
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
-import { motion } from 'motion/react';
-import { FiArrowLeft, FiUser, FiMail, FiLock, FiShield, FiCheck, FiX } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'motion/react';
+import { FiArrowLeft, FiUser, FiMail, FiLock, FiShield, FiCheck, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/layout/Navbar';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ export default function ProfilePage() {
 
   const [name, setName] = useState(user?.name || '');
   const [nameStatus, setNameStatus] = useState(null);
+
+  const [isAccountOpen, setIsAccountOpen] = useState(true);
+  const [isSecurityOpen, setIsSecurityOpen] = useState(false);
 
   const [passwords, setPasswords] = useState({ current_password: '', new_password: '' });
   const [passwordStatus, setPasswordStatus] = useState(null);
@@ -53,8 +57,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pt-24 pb-12 font-sans">
-      <div className="w-full max-w-[900px] px-4 md:px-8">
+    <>
+      <Navbar />
+      <div className="min-h-screen w-full flex flex-col items-center bg-[#f8f9fa] text-gray-900 pt-24 pb-12 font-sans">
+        <div className="w-full max-w-2xl px-4 md:px-8">
         
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
@@ -62,35 +68,41 @@ export default function ProfilePage() {
           transition={{ duration: 0.4 }}
           className="w-full"
         >
-          {/* Header */}
-          <div className="mb-8">
-            <button 
-              onClick={() => navigate(-1)}
-              className="flex items-center space-x-2 text-gray-500 hover:text-gray-900 transition-colors mb-4 text-sm font-medium"
-            >
-              <FiArrowLeft />
-              <span>Back</span>
-            </button>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">Profile Settings</h1>
+          <div className="mb-10 flex flex-col items-center text-center">
+            <h1 className="text-3xl text-gray-900 mb-2 uppercase logo-retro tracking-tighter">Profile Settings</h1>
             <p className="text-gray-500 text-sm">Manage your account details and security preferences.</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* Account Details Card */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                  <FiUser size={18} />
+          <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
+            <div className="bg-white rounded-2xl p-3 sm:px-5 sm:py-3 shadow-sm border border-gray-100 flex flex-col">
+              <div 
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => setIsAccountOpen(!isAccountOpen)}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-[#bef264]/20 text-[#84cc16] flex items-center justify-center">
+                    <FiUser size={16} />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wider">
+                    Account Details
+                  </h3>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Account Details
-                </h3>
+                <div className="text-gray-400">
+                  {isAccountOpen ? <FiChevronUp size={24} /> : <FiChevronDown size={24} />}
+                </div>
               </div>
 
-              <form onSubmit={handleNameSubmit} className="space-y-5 flex-1 flex flex-col">
+              <AnimatePresence>
+                {isAccountOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-6">
+                      <form onSubmit={handleNameSubmit} className="space-y-5 flex-1 flex flex-col">
                 <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-gray-700 text-sm font-medium">Email Address</Label>
+                  <Label htmlFor="email" className="text-gray-500 text-xs font-bold uppercase tracking-wider">Email Address</Label>
                   <div className="relative">
                     <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input 
@@ -103,23 +115,25 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="name" className="text-gray-700 text-sm font-medium">Full Name</Label>
+                  <Label htmlFor="name" className="text-gray-500 text-xs font-bold uppercase tracking-wider">Full Name</Label>
                   <div className="relative">
                     <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input 
                       id="name" 
                       value={name} 
                       onChange={(e) => setName(e.target.value)} 
-                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-none"
+                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all shadow-none"
                       placeholder="Enter your full name"
                     />
                   </div>
                 </div>
 
                 {nameStatus && (
-                  <div className={`p-3 rounded-lg flex items-center space-x-2 text-sm mt-2 ${nameStatus.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                    {nameStatus.type === 'error' ? <FiX /> : <FiCheck />}
-                    <span>{nameStatus.message}</span>
+                  <div className={`p-4 rounded-xl flex items-center space-x-3 text-sm mt-4 border ${nameStatus.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-[#f7fee7] border-[#bef264] text-gray-900'}`}>
+                    <div className={`flex items-center justify-center w-6 h-6 rounded-full ${nameStatus.type === 'error' ? 'bg-red-100 text-red-600' : 'bg-[#bef264]/30 text-[#65a30d]'}`}>
+                      {nameStatus.type === 'error' ? <FiX size={14} /> : <FiCheck size={14} />}
+                    </div>
+                    <span className="font-medium">{nameStatus.message}</span>
                   </div>
                 )}
 
@@ -127,28 +141,49 @@ export default function ProfilePage() {
                   <Button 
                     type="submit" 
                     disabled={isSubmittingName || name === user?.name}
-                    className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-50 shadow-sm"
+                    className="h-11 px-6 bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] text-sm font-bold uppercase tracking-wider rounded-xl transition-colors disabled:opacity-50 shadow-sm"
                   >
                     {isSubmittingName ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </div>
-              </form>
+                      </form>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Security Card */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <FiShield size={18} />
+            <div className="bg-white rounded-2xl p-3 sm:px-5 sm:py-3 shadow-sm border border-gray-100 flex flex-col">
+              <div 
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => setIsSecurityOpen(!isSecurityOpen)}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-[#bef264]/20 text-[#84cc16] flex items-center justify-center">
+                    <FiShield size={16} />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wider">
+                    Security
+                  </h3>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Security
-                </h3>
+                <div className="text-gray-400">
+                  {isSecurityOpen ? <FiChevronUp size={24} /> : <FiChevronDown size={24} />}
+                </div>
               </div>
 
-              <form onSubmit={handlePasswordSubmit} className="space-y-5 flex-1 flex flex-col">
+              <AnimatePresence>
+                {isSecurityOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-6">
+                      <form onSubmit={handlePasswordSubmit} className="space-y-5 flex-1 flex flex-col">
                 <div className="space-y-1.5">
-                  <Label htmlFor="current_password" className="text-gray-700 text-sm font-medium">Current Password</Label>
+                  <Label htmlFor="current_password" className="text-gray-500 text-xs font-bold uppercase tracking-wider">Current Password</Label>
                   <div className="relative">
                     <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input
@@ -157,14 +192,14 @@ export default function ProfilePage() {
                       required
                       value={passwords.current_password}
                       onChange={(e) => setPasswords({ ...passwords, current_password: e.target.value })}
-                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-none"
+                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all shadow-none"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="new_password" className="text-gray-700 text-sm font-medium">New Password</Label>
+                  <Label htmlFor="new_password" className="text-gray-500 text-xs font-bold uppercase tracking-wider">New Password</Label>
                   <div className="relative">
                     <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input
@@ -174,16 +209,18 @@ export default function ProfilePage() {
                       minLength={8}
                       value={passwords.new_password}
                       onChange={(e) => setPasswords({ ...passwords, new_password: e.target.value })}
-                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-none"
+                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all shadow-none"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
 
                 {passwordStatus && (
-                  <div className={`p-3 rounded-lg flex items-center space-x-2 text-sm mt-2 ${passwordStatus.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                    {passwordStatus.type === 'error' ? <FiX /> : <FiCheck />}
-                    <span>{passwordStatus.message}</span>
+                  <div className={`p-4 rounded-xl flex items-center space-x-3 text-sm mt-4 border ${passwordStatus.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-[#f7fee7] border-[#bef264] text-gray-900'}`}>
+                    <div className={`flex items-center justify-center w-6 h-6 rounded-full ${passwordStatus.type === 'error' ? 'bg-red-100 text-red-600' : 'bg-[#bef264]/30 text-[#65a30d]'}`}>
+                      {passwordStatus.type === 'error' ? <FiX size={14} /> : <FiCheck size={14} />}
+                    </div>
+                    <span className="font-medium">{passwordStatus.message}</span>
                   </div>
                 )}
 
@@ -191,16 +228,21 @@ export default function ProfilePage() {
                   <Button 
                     type="submit" 
                     disabled={isSubmittingPassword || !passwords.current_password || !passwords.new_password}
-                    className="h-11 px-6 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-50 shadow-sm"
+                    className="h-11 px-6 bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] text-sm font-bold uppercase tracking-wider rounded-xl transition-colors disabled:opacity-50 shadow-sm"
                   >
                     {isSubmittingPassword ? 'Updating...' : 'Update Password'}
                   </Button>
                 </div>
-              </form>
+                      </form>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

@@ -63,7 +63,7 @@ export default function AdminReviewQueuePage() {
           {loading ? (
             <div className="flex flex-col gap-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="flex flex-col md:flex-row md:items-center bg-white border border-gray-100 rounded-2xl p-5 gap-4 md:gap-8 animate-pulse">
+                <div key={i} className="flex flex-col md:flex-row md:items-center bg-white border border-gray-100 rounded-2xl p-5 gap-4 md:gap-8 skeleton-glare">
                   <div className="flex flex-col md:w-1/3 shrink-0">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="h-5 w-24 bg-gray-200 rounded"></div>

@@ -16,7 +16,7 @@ export default function AdminOversightProjectsPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">All Projects</h1>
+      <h1 className="text-2xl uppercase logo-retro tracking-tighter">All Projects</h1>
       <div className="space-y-2">
         {projects.map((p) => (
           <Link key={p.id} to={`/admin/projects/${p.id}`} className="block border border-border rounded-lg p-4 hover:bg-muted">

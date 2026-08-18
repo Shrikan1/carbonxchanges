@@ -131,7 +131,7 @@ export default function AgentProjectDetailPage() {
       <button onClick={() => navigate(-1)} className="text-sm text-muted-foreground">&larr; Back</button>
 
       <div>
-        <h1 className="text-2xl font-bold">{project.title}</h1>
+        <h1 className="text-2xl uppercase logo-retro tracking-tighter">{project.title}</h1>
         <p className="text-sm text-muted-foreground">
           {project.project_type} — Status: <span className="font-medium">{project.status}</span>
         </p>

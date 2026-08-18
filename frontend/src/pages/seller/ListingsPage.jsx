@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as marketplaceApi from '../../api/endpoint/marketplaceApi';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { FiPlus, FiTag, FiAlertCircle, FiTrash2 } from 'react-icons/fi';
 import { motion } from 'motion/react';
-import Navbar from '../../components/layout/Navbar';
+import SellerHeader from '../../components/layout/SellerHeader';
 
 export default function ListingsPage() {
   const [listings, setListings] = useState([]);
@@ -42,24 +43,24 @@ export default function ListingsPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pt-24 pb-12 font-sans">
-      <Navbar />
+    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 py-8 font-sans">
+      <SellerHeader 
+        title="My Listings" 
+        description="Manage your active marketplace listings and create new ones."
+        contentMaxWidth="1200px"
+        action={
+          <Link to="/seller/listings/new" className="bg-brand hover:bg-brand-hover text-gray-900 font-bold h-10 px-6 rounded-xl flex items-center justify-center transition-colors shadow-sm">
+            + New Listing
+          </Link>
+        }
+      />
       <div className="w-full max-w-[1200px] px-4 md:px-8">
-        
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="w-full"
         >
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-            <div>
-              <div role="heading" aria-level="1" className="text-3xl font-bold tracking-tight text-gray-900 mb-2 !font-sans !normal-case">My Listings</div>
-              <p className="text-gray-500 text-sm">Manage your active marketplace listings and create new ones.</p>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {/* Create Listing Form */}

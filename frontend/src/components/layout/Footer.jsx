@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="w-full bg-[#0a0a0a] pb-12 pt-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="bg-[#111] border border-[#222] rounded-[2rem] p-10 md:p-16 shadow-2xl relative overflow-hidden">
-          
+
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16 relative z-10">
             {/* Logo and Description (Left Column) */}
             <div className="md:col-span-5">
@@ -34,11 +34,12 @@ const Footer = () => {
                   <FaGithub className="text-xl" />
                 </a>
               </div>
+
             </div>
 
             {/* Links Columns (Right Columns) */}
             <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 pt-2">
-              
+
               <div>
                 <h4 className="text-white font-semibold mb-6 text-[14px]">Platform</h4>
                 <ul className="space-y-4">
@@ -82,7 +83,7 @@ const Footer = () => {
               <a href="#" className="text-[#666] hover:text-[#aaa] transition-colors underline decoration-[#333] underline-offset-4">Cookies Settings</a>
             </div>
           </div>
-          
+
           {/* Subtle large background text like the image (watermark effect) */}
           <div className="absolute -bottom-[20%] left-1/2 transform -translate-x-1/2 text-[15vw] font-black tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
             CarbonXplanet

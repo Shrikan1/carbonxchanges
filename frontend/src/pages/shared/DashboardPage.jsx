@@ -6,6 +6,7 @@ import PriceTicker from '../../components/PriceTicker';
 import { Link } from 'react-router-dom';
 import { FiUsers, FiFileText, FiCheckCircle, FiClock, FiDollarSign, FiAlertCircle, FiShield, FiList, FiRefreshCw } from 'react-icons/fi';
 import AdminDashboard from '../admin/AdminDashboard';
+import SellerDashboard from '../seller/SellerDashboard';
 
 const StatCard = ({ title, value, icon, subtitle }) => (
   <div className="bg-[#111] border border-[#222] p-5 rounded-xl flex flex-col justify-between hover:border-[#444] transition-colors">
@@ -21,20 +22,7 @@ const StatCard = ({ title, value, icon, subtitle }) => (
 );
 
 
-const SellerDashboard = ({ data }) => {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard title="Total Projects" value={data.total_projects || 0} icon={<FiFileText size={20} />} />
-        <StatCard title="Pending Projects" value={data.pending_projects || 0} icon={<FiClock size={20} />} />
-        <StatCard title="Approved Projects" value={data.approved_projects || 0} icon={<FiCheckCircle size={20} />} />
-        <StatCard title="Credits Issued" value={data.credits_issued || 0} icon={<FiCheckCircle size={20} />} />
-        <StatCard title="Credits Sold" value={data.credits_sold || 0} icon={<FiCheckCircle size={20} />} />
-        <StatCard title="Revenue" value={`$${(data.revenue || 0).toLocaleString()}`} icon={<FiDollarSign size={20} />} />
-      </div>
-    </div>
-  );
-};
+
 
 const AgentDashboard = ({ data }) => {
   return (
@@ -97,12 +85,17 @@ export default function DashboardPage() {
     return <AdminDashboard data={data} isLoading={isLoading} />;
   }
 
+  // Seller Dashboard renders entirely independently to maintain its white theme
+  if (user?.is_seller) {
+    return <SellerDashboard data={data} isLoading={isLoading} />;
+  }
+
   return (
     <div className="min-h-screen pt-24 pb-12 bg-[#0c0c0c] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold font-['JetBrains_Mono'] tracking-tight">
+            <h1 className="text-3xl font-bold uppercase logo-retro tracking-tighter text-gray-900 mb-2">
               {user?.role === 'admin' && 'Admin '}
               {user?.role === 'agent' && 'Agent '}
               {user?.is_seller && !user?.role && 'Seller '}
@@ -121,7 +114,6 @@ export default function DashboardPage() {
         ) : data ? (
           <>
             {user?.role === 'agent' && <AgentDashboard data={data} />}
-            {user?.is_seller && !user?.role && <SellerDashboard data={data} />}
             {user?.is_buyer && !user?.role && !user?.is_seller && <BuyerDashboard data={data} />}
           </>
         ) : (

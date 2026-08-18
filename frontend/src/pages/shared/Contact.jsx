@@ -20,7 +20,7 @@ const Contact = () => {
 
         {/* Left Column - Contact Details */}
         <div className="flex flex-col justify-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-gray-900 tracking-tight leading-none">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-6 text-gray-900 leading-none uppercase logo-retro tracking-tighter">
             Get in Touch
           </h1>
           <p className="text-gray-500 text-lg leading-relaxed max-w-md mb-12">

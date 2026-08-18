@@ -41,9 +41,24 @@ async function uploadMedia(req, res) {
     console.error('Media upload error:', err.message);
 
     if (err.message.includes('SUPABASE_URL') || err.message.includes('SUPABASE_SERVICE_ROLE_KEY')) {
-      return res.status(503).json({
-        error: 'Storage system is temporarily unavailable. Please try again later.',
-      });
+      // Fallback: save locally in development if Supabase keys are missing
+      const fs = require('fs');
+      const path = require('path');
+      const uploadDir = path.join(__dirname, '../../../public/uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      const ext = req.file.originalname.split('.').pop() || 'bin';
+      const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const filePath = path.join(uploadDir, filename);
+      
+      fs.writeFileSync(filePath, req.file.buffer);
+      
+      const url = `http://localhost:${process.env.PORT || 5000}/uploads/${filename}`;
+      const mediaType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
+      
+      return res.status(201).json({ message: 'Media uploaded locally (fallback)', url, mediaType });
     }
 
     res.status(500).json({ error: `Failed to upload media: ${err.message}` });

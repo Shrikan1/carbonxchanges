@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import * as projectPostApi from '../../api/endpoint/projectPostApi';
 import * as sellerApi from '../../api/endpoint/Sellerapi';
 import LocationMap from '../../components/LocationMap';
@@ -10,6 +10,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export default function PublicProjectShowcasePage() {
   const { projectId } = useParams();
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -80,7 +81,7 @@ export default function PublicProjectShowcasePage() {
           <Link to="/posts" className="inline-flex items-center text-sm font-medium text-emerald-600 hover:text-emerald-700 mb-6 transition-colors">
             <FiArrowLeft className="mr-2" /> Back to Updates
           </Link>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">{projTitle}</h1>
+          <h1 className="text-3xl md:text-4xl text-gray-900 mb-4 uppercase logo-retro tracking-tighter">{projTitle}</h1>
           <div className="flex items-center text-gray-500 text-sm gap-4">
             {lat && lng && (
               <span className="flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
@@ -170,7 +171,11 @@ export default function PublicProjectShowcasePage() {
                </p>
              </div>
           ) : posts.map((post) => (
-            <article key={post.id} className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8">
+            <article 
+              key={post.id} 
+              onClick={() => navigate(`/posts/${post.id}`, { state: { post } })}
+              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 hover:shadow-md transition-shadow cursor-pointer"
+            >
               <div className="flex justify-between items-start mb-6">
                 <div className="flex gap-4 items-center">
                   <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-gray-100 border border-gray-200 flex items-center justify-center text-xl font-bold text-gray-400">

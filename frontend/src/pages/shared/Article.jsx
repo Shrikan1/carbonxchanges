@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import { FiBookOpen } from 'react-icons/fi';
+import { FiBookOpen, FiCheck } from 'react-icons/fi';
 import img1 from '../../assets/os-x-mavericks-3840x2160-24079.jpg';
 import img2 from '../../assets/pexels-adnan-atasoy-261355608-12644453.jpg';
 import img3 from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
@@ -95,7 +95,7 @@ const Article = () => {
         
         {/* Clean Header */}
         <div className="mb-12 text-center pt-8">
-          <div role="heading" aria-level="1" className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4 !font-sans !normal-case">
+          <div role="heading" aria-level="1" className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4">
             Insights & Articles
           </div>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
@@ -105,57 +105,43 @@ const Article = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {loading ? (
-            // Premium Skeleton Loaders
             [...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 animate-pulse">
-                <div className="w-full aspect-square bg-gray-200 rounded-2xl mb-5"></div>
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
-                <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
-                <div className="flex gap-2 mb-4 mt-auto pt-2">
-                  <div className="h-5 bg-gray-100 rounded w-16"></div>
-                  <div className="h-5 bg-gray-100 rounded w-20"></div>
+              <div key={i} className="bg-white border border-gray-200 border-b-[5px] border-b-gray-300 rounded-3xl skeleton-glare flex flex-col overflow-hidden shadow-sm">
+                <div className="w-full aspect-[4/5] sm:aspect-square bg-gray-200"></div>
+                <div className="p-5 sm:p-6 flex flex-col">
+                  <div className="h-7 bg-gray-200 rounded w-3/4 mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
                 </div>
               </div>
             ))
           ) : (
             articles.map((article) => (
-              <a href={article.url} key={article.id} className="group flex flex-col bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 hover:-translate-y-1">
+              <a href={article.url} key={article.id} className="group flex flex-col bg-white border border-gray-200 border-b-[5px] border-b-gray-300 hover:border-b-gray-400 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 
-                {/* Square Cover Image */}
-                <div className="w-full aspect-square rounded-2xl overflow-hidden mb-5 bg-gray-100 border border-gray-100 relative">
+                {/* Image Section */}
+                <div className="w-full aspect-[4/5] sm:aspect-square overflow-hidden bg-gray-100">
                   <img 
                     src={article.cover_image} 
                     alt={article.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 
-                <div className="flex flex-col flex-grow px-1">
+                {/* Content Section */}
+                <div className="flex flex-col p-5 sm:p-6 bg-white">
+                  
                   {/* Title */}
-                  <h2 className="text-lg font-bold text-gray-900 tracking-tight leading-snug mb-3 group-hover:text-emerald-600 transition-colors line-clamp-2">
+                  <h2 className="text-[22px] font-medium text-gray-900 tracking-tight leading-snug line-clamp-2 mb-2 group-hover:text-emerald-600 transition-colors">
                     {article.title}
                   </h2>
                   
-                  {/* Tags (Clean Pills) */}
-                  <div className="flex flex-wrap gap-2 mb-4 mt-auto pt-2">
-                    {article.tags.map((tag, index) => (
-                      <span 
-                        key={index} 
-                        className="px-2 py-1 rounded bg-gray-100 text-[10px] font-bold text-gray-500 tracking-wider transition-colors group-hover:bg-emerald-50 group-hover:text-emerald-700"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  {/* Description */}
+                  <p className="text-sm text-gray-500 line-clamp-2 font-normal leading-relaxed">
+                    {article.tags?.join(' • ')} — A deep dive into sustainable carbon markets and environmental impact.
+                  </p>
                   
-                  {/* Date & Read Time */}
-                  <div className="flex items-center justify-between text-xs font-medium text-gray-400 pt-3 border-t border-gray-100">
-                    <span>{article.date}</span>
-                    <span>{article.read_time}</span>
-                  </div>
                 </div>
-                
               </a>
             ))
           )}

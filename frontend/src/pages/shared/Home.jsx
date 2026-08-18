@@ -25,6 +25,7 @@ import {
 } from 'react-icons/fa';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
+import { useAuthStore } from '../../store/useAuthStore';
 import DriftWall from '../../components/ui/DriftWall';
 import heroBg from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.jpg';
 import GlareHover from '../../components/ui/GlareHover';
@@ -100,6 +101,7 @@ const testimonials = [
 ];
 
 const Home = () => {
+  const { isAuthenticated } = useAuthStore();
   const shouldReduceMotion = useReducedMotion();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
@@ -108,7 +110,7 @@ const Home = () => {
   useEffect(() => {
     const slider = projectSliderRef.current;
     if (!slider) return;
-    
+
     const interval = setInterval(() => {
       if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 10) {
         slider.scrollTo({ left: 0, behavior: 'smooth' });
@@ -130,7 +132,7 @@ const Home = () => {
         slider.scrollBy({ left: 260, behavior: 'smooth' });
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
@@ -158,7 +160,18 @@ const Home = () => {
 
   const [isFirstVisit] = useState(() => {
     if (shouldReduceMotion) return false;
-    return !sessionStorage.getItem('playedIntro');
+    
+    // If we've already played it this session (so F5 doesn't replay it)
+    if (sessionStorage.getItem('playedIntro')) return false;
+
+    // If the page has been loaded for > 5 seconds, they probably 
+    // navigated here from another page (like /about). Don't play it.
+    if (performance.now() > 5000) {
+      sessionStorage.setItem('playedIntro', 'true');
+      return false;
+    }
+
+    return true;
   });
   const [showIntro, setShowIntro] = useState(isFirstVisit);
   const [showCenterLogo, setShowCenterLogo] = useState(isFirstVisit);
@@ -207,7 +220,10 @@ const Home = () => {
               >
                 <motion.span
                   layoutId="brand-logo"
-                  className="logo-retro uppercase tracking-tighter text-[clamp(3rem,8vw,6rem)] text-[#bef264]"
+                  className="logo-retro uppercase tracking-tighter text-[clamp(3rem,8vw,6rem)] text-transparent"
+                  style={{
+                    WebkitTextStroke: '1.5px #bef264'
+                  }}
                   transition={{ layout: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }}
                 >
                   CarbonXplanet
@@ -231,9 +247,9 @@ const Home = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-8">
           {/* Headline — word-by-word stagger reveal */}
-          <div className="flex flex-col items-center justify-center space-y-2 mb-10 mt-4">
-            {['Offset Emissions.', 'Build the Future.'].map((line, lineIdx) => (
-              <div key={lineIdx} className="flex flex-wrap justify-center gap-x-[0.3em]">
+          <div className="flex flex-col items-center justify-center space-y-4 mb-10 mt-4">
+            {['Pioneering Global', 'Climate Action.'].map((line, lineIdx) => (
+              <div key={lineIdx} className="flex flex-wrap justify-center gap-x-6 md:gap-x-8">
                 {line.split(' ').map((word, wordIdx) => (
                   <motion.span
                     key={wordIdx}
@@ -350,13 +366,13 @@ const Home = () => {
             <div className="flex items-center justify-between mb-4 px-4">
               <span className="text-sm font-bold text-gray-500 tracking-widest uppercase">Slide Projects</span>
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={() => document.getElementById('project-slider-dark').scrollBy({ left: -260, behavior: 'smooth' })}
                   className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-gray-800 transition-colors"
                 >
                   <FaArrowRight className="transform rotate-180 text-xs" />
                 </button>
-                <button 
+                <button
                   onClick={() => document.getElementById('project-slider-dark').scrollBy({ left: 260, behavior: 'smooth' })}
                   className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-gray-800 transition-colors"
                 >
@@ -450,10 +466,17 @@ const Home = () => {
             <p className="text-[#4a5550] text-[16px] leading-relaxed mb-10">
               Generate audit-ready ESG reports aligned with Verra VCS and Gold Standard. Every credit is minted as an NFT with an immutable audit trail.
             </p>
-            <Link to="/signup" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl">
-              <span>CREATE AN ACCOUNT</span>
-              <FaArrowRight className="text-[11px]" />
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/seller/post/new" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl">
+                <span>CREATE NEW PROJECT</span>
+                <FaArrowRight className="text-[11px]" />
+              </Link>
+            ) : (
+              <Link to="/signup" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl">
+                <span>CREATE AN ACCOUNT</span>
+                <FaArrowRight className="text-[11px]" />
+              </Link>
+            )}
           </div>
 
           <div className="relative h-[600px] flex items-center justify-center">
@@ -483,7 +506,7 @@ const Home = () => {
       <section ref={howItWorksRef} className="bg-[#0a0a0a] text-white overflow-hidden py-32 relative">
         {/* Massive Parallax Watermark */}
         <div className="absolute inset-0 flex items-end pb-16 justify-center opacity-[0.08] pointer-events-none overflow-hidden select-none">
-          <motion.span 
+          <motion.span
             className="text-[20vw] font-black leading-none whitespace-nowrap logo-retro"
             style={{ x: textX }}
           >
@@ -560,7 +583,7 @@ const Home = () => {
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <motion.h2 
+          <motion.h2
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.5 }}
@@ -569,7 +592,7 @@ const Home = () => {
                 transition: { staggerChildren: 0.15 }
               }
             }}
-            className="text-4xl sm:text-5xl lg:text-7xl uppercase tracking-tighter mb-12 leading-[1.05] text-[#0a0a0a] logo-retro flex flex-col items-center text-center" 
+            className="text-4xl sm:text-5xl lg:text-7xl uppercase tracking-tighter mb-12 leading-[1.05] text-[#0a0a0a] logo-retro flex flex-col items-center text-center"
             style={{ WebkitTextFillColor: '#0a0a0a', background: 'none' }}
           >
             <span className="overflow-hidden block">
@@ -611,15 +634,15 @@ const Home = () => {
             {testimonials.map((t, idx) => {
               const isActive = idx === activeTestimonial;
               return (
-                <div 
+                <div
                   key={t.id}
                   onClick={() => setActiveTestimonial(idx)}
                   className={`w-14 h-14 rounded-full border-4 overflow-hidden shadow-lg cursor-pointer transition-all duration-300 relative ${isActive ? 'z-50 border-white scale-110' : 'z-30 border-[#bef264] hover:z-40'}`}
                   style={{ zIndex: isActive ? 50 : 40 - idx }}
                 >
-                  <img 
-                    src={t.image} 
-                    className={`w-full h-full object-cover transition-all duration-300 ${isActive ? 'grayscale-0 opacity-100' : 'grayscale opacity-60 hover:opacity-100'}`} 
+                  <img
+                    src={t.image}
+                    className={`w-full h-full object-cover transition-all duration-300 ${isActive ? 'grayscale-0 opacity-100' : 'grayscale opacity-60 hover:opacity-100'}`}
                   />
                 </div>
               );
@@ -627,37 +650,37 @@ const Home = () => {
           </div>
 
           <div className="relative max-w-4xl mx-auto min-h-[220px]">
-             {/* Left/Right Arrows */}
-             <button onClick={handlePrevTestimonial} className="absolute z-50 left-0 sm:-left-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#0a0a0a]/20 flex items-center justify-center text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#bef264] transition-all">
-                <FaArrowRight className="transform rotate-180 text-sm" />
-             </button>
-             <button onClick={handleNextTestimonial} className="absolute z-50 right-0 sm:-right-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#0a0a0a]/20 flex items-center justify-center text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#bef264] transition-all">
-                <FaArrowRight className="text-sm" />
-             </button>
+            {/* Left/Right Arrows */}
+            <button onClick={handlePrevTestimonial} className="absolute z-50 left-0 sm:-left-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#0a0a0a]/20 flex items-center justify-center text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#bef264] transition-all">
+              <FaArrowRight className="transform rotate-180 text-sm" />
+            </button>
+            <button onClick={handleNextTestimonial} className="absolute z-50 right-0 sm:-right-12 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-[#0a0a0a]/20 flex items-center justify-center text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#bef264] transition-all">
+              <FaArrowRight className="text-sm" />
+            </button>
 
-             <AnimatePresence mode="wait">
-               <motion.div
-                 key={activeTestimonial}
-                 initial={{ opacity: 0, y: 15 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 exit={{ opacity: 0, y: -15 }}
-                 transition={{ duration: 0.4 }}
-                 className="px-10 sm:px-16 flex flex-col items-center"
-               >
-                 <p className="text-[22px] sm:text-[26px] font-medium leading-relaxed max-w-3xl mx-auto mb-10 text-[#222]">
-                   “{testimonials[activeTestimonial].quote}”
-                 </p>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTestimonial}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.4 }}
+                className="px-10 sm:px-16 flex flex-col items-center"
+              >
+                <p className="text-[22px] sm:text-[26px] font-medium leading-relaxed max-w-3xl mx-auto mb-10 text-[#222]">
+                  “{testimonials[activeTestimonial].quote}”
+                </p>
 
-                 <div className="mb-12 flex flex-col items-center justify-center">
-                   <h4 className="font-bold text-xl uppercase tracking-widest text-[#0a0a0a] mb-2 font-['JetBrains_Mono']">{testimonials[activeTestimonial].name}</h4>
-                   <div className="flex items-center space-x-2 text-[#444] text-sm font-medium">
-                     <span>{testimonials[activeTestimonial].role}</span>
-                     <span className="w-1.5 h-1.5 rounded-full bg-[#0a0a0a]/30"></span>
-                     <span className="font-bold text-[#0a0a0a]">{testimonials[activeTestimonial].company}</span>
-                   </div>
-                 </div>
-               </motion.div>
-             </AnimatePresence>
+                <div className="mb-12 flex flex-col items-center justify-center">
+                  <h4 className="font-bold text-xl uppercase tracking-widest text-[#0a0a0a] mb-2 font-['JetBrains_Mono']">{testimonials[activeTestimonial].name}</h4>
+                  <div className="flex items-center space-x-2 text-[#444] text-sm font-medium">
+                    <span>{testimonials[activeTestimonial].role}</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#0a0a0a]/30"></span>
+                    <span className="font-bold text-[#0a0a0a]">{testimonials[activeTestimonial].company}</span>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           <Link to="/about" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-8 py-4 text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl">
@@ -746,7 +769,7 @@ const Home = () => {
           {/* Left Column - Contact Details */}
           <div className="flex flex-col justify-center">
             <h2 className="text-4xl sm:text-5xl lg:text-7xl font-normal mb-6 text-[#bef264] tracking-tighter leading-[1.05] uppercase logo-retro">
-              Get in<br/>Touch.
+              Get in<br />Touch.
             </h2>
             <p className="text-white/70 text-[16px] leading-relaxed max-w-md mb-12 font-medium">
               Whether you have a question about our decentralized carbon credit marketplace, want to partner with us, or just want to say hi, we're here for you.
@@ -794,7 +817,7 @@ const Home = () => {
             <div className="bg-[#111] border border-gray-800 p-8 md:p-10 shadow-2xl rounded-3xl w-full">
               <h3 className="text-3xl md:text-4xl font-normal mb-8 text-white tracking-tighter uppercase logo-retro">Send a Message</h3>
               <form onSubmit={handleContactSubmit} className="space-y-6">
-                
+
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <FaUser className="text-gray-500 text-sm" />

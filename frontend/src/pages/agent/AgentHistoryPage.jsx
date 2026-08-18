@@ -10,7 +10,7 @@ export default function AgentHistoryPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Verification History</h1>
+      <h1 className="text-2xl uppercase logo-retro tracking-tighter">Verification History</h1>
       <div className="space-y-2">
         {reports.map((r) => (
           <div key={r.id} className="border border-border rounded-lg p-4 flex justify-between text-sm">
