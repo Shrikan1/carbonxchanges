@@ -170,7 +170,57 @@ async function logout(req, res) {
     .json({ message: 'Logged out successfully' });
 }
 
-module.exports = { signup, verifyOtp, login, getProfile, refreshToken, logout };
+// POST /api/auth/forgot-password
+async function forgotPassword(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+
+    const user = await User.findByEmail(email);
+    if (!user) {
+      // Don't leak whether the email exists. Just return success.
+      return res.json({ message: 'If that email is in our system, we have sent a reset code.' });
+    }
+
+    const otpCode = await Otp.createOtp(user.id, 'reset_password');
+    // Important: we need to import sendPasswordResetEmail at the top!
+    const { sendPasswordResetEmail } = require('../../services/emailService');
+    await sendPasswordResetEmail(email, otpCode);
+
+    res.json({ message: 'If that email is in our system, we have sent a reset code.' });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ error: 'Failed to process request' });
+  }
+}
+
+// POST /api/auth/reset-password
+async function resetPassword(req, res) {
+  try {
+    const { email, otpCode, newPassword } = req.body;
+    if (!email || !otpCode || !newPassword) {
+      return res.status(400).json({ error: 'Email, OTP, and new password are required' });
+    }
+
+    const user = await User.findByEmail(email);
+    if (!user) return res.status(400).json({ error: 'Invalid or expired OTP' });
+
+    const validOtp = await Otp.findValidOtp(user.id, otpCode, 'reset_password');
+    if (!validOtp) return res.status(400).json({ error: 'Invalid or expired OTP' });
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await User.updatePassword(user.id, passwordHash);
+    await User.bumpTokenVersion(user.id); // Revoke existing sessions
+    await Otp.deleteOtpsForUser(user.id, 'reset_password');
+
+    res.json({ message: 'Password reset successfully. You can now log in.' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ error: 'Failed to reset password' });
+  }
+}
+
+module.exports = { signup, verifyOtp, login, getProfile, refreshToken, logout, forgotPassword, resetPassword };
 
 
 

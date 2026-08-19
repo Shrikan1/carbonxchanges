@@ -44,7 +44,7 @@ const SellerDashboard = ({ data, isLoading }) => {
               </div>
 
               <div className="mb-6">
-                <span className="text-3xl font-bold text-gray-900 tracking-tight">${(revenue || 0).toLocaleString()}</span>
+                <span className="text-3xl font-bold text-gray-900 tracking-tight">₹{(revenue || 0).toLocaleString('en-IN')}</span>
               </div>
 
               <div className="space-y-4">

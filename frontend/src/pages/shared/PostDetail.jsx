@@ -220,9 +220,23 @@ const PostDetail = () => {
               )}
 
               {/* Description */}
-              <div className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap flex-grow mb-6" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif' }}>
+              <div className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap mb-6" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif' }}>
                 {post.description}
               </div>
+
+              {post.story && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wider">Project Story</h4>
+                  <p className="text-[15px] text-gray-500 whitespace-pre-wrap leading-relaxed">{post.story}</p>
+                </div>
+              )}
+
+              {post.how_it_works && (
+                <div className="mb-6 bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                  <h4 className="text-sm font-black text-gray-900 mb-2 uppercase tracking-wider">How It Works</h4>
+                  <p className="text-[14px] text-gray-600 whitespace-pre-wrap leading-relaxed">{post.how_it_works}</p>
+                </div>
+              )}
 
               <div className="h-px bg-gray-100 mb-4"></div>
 

@@ -184,6 +184,15 @@ async function changeProjectStatus(projectId, status) {
   return result.rows[0];
 }
 
+// Rejects the project and removes any assigned agent in one step
+async function rejectProject(projectId) {
+  const result = await query(
+    `UPDATE projects SET status = 'rejected', agent_id = NULL, updated_at = NOW() WHERE id = $1 RETURNING *`,
+    [projectId]
+  );
+  return result.rows[0];
+}
+
 // Admin review queue — all projects in a given status, with seller name
 // attached for display. Core fields only (no ~40 detail columns) to keep
 // the queue list fast; full detail is a separate findProjectById call
@@ -306,6 +315,7 @@ module.exports = {
   findAllProjects,
   deleteProject,
   changeProjectStatus,
+  rejectProject,
   findByStatus,
   assignAgent,
   removeAgent,

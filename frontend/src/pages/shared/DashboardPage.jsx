@@ -24,17 +24,7 @@ const StatCard = ({ title, value, icon, subtitle }) => (
 
 
 
-const AgentDashboard = ({ data }) => {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard title="Total Assigned" value={data.total_assigned || 0} icon={<FiFileText size={20} />} />
-        <StatCard title="Pending Verifications" value={data.pending_verifications || 0} icon={<FiClock size={20} />} />
-        <StatCard title="Completed" value={data.completed_verifications || 0} icon={<FiCheckCircle size={20} />} />
-      </div>
-    </div>
-  );
-};
+import AgentDashboard from '../agent/AgentDashboard';
 
 const BuyerDashboard = ({ data }) => {
   return (
@@ -85,6 +75,11 @@ export default function DashboardPage() {
     return <AdminDashboard data={data} isLoading={isLoading} />;
   }
 
+  // Agent Dashboard renders entirely independently to maintain its white theme
+  if (user?.role === 'agent') {
+    return <AgentDashboard data={data} isLoading={isLoading} />;
+  }
+
   // Seller Dashboard renders entirely independently to maintain its white theme
   if (user?.is_seller) {
     return <SellerDashboard data={data} isLoading={isLoading} />;
@@ -113,7 +108,6 @@ export default function DashboardPage() {
           </div>
         ) : data ? (
           <>
-            {user?.role === 'agent' && <AgentDashboard data={data} />}
             {user?.is_buyer && !user?.role && !user?.is_seller && <BuyerDashboard data={data} />}
           </>
         ) : (

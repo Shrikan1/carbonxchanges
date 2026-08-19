@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as agentApi from '../../api/endpoint/agentApi';
 import LocationMap from '../../components/LocationMap';
+import GoogleMapModal from '../../components/GoogleMapModal';
+import DocumentEmbed from '../../components/ui/DocumentEmbed';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
 import { Label } from '../../components/ui/Label';
+import { FiExternalLink, FiChevronLeft } from 'react-icons/fi';
 
 const EMPTY_VERIFICATION_FORM = { gps_lat: '', gps_lng: '', photo_ipfs_cid: '', notes: '', verified_co2_amount: '' };
 const EMPTY_REINSPECTION_FORM = { gps_lat: '', gps_lng: '', photo_ipfs_cid: '', notes: '', reversal_detected: false, reversal_amount: '' };
@@ -22,6 +25,7 @@ export default function AgentProjectDetailPage() {
   const [reinspectForm, setReinspectForm] = useState(EMPTY_REINSPECTION_FORM);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
 
   useEffect(() => {
     load();
@@ -127,8 +131,16 @@ export default function AgentProjectDetailPage() {
   ].filter(Boolean);
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      <button onClick={() => navigate(-1)} className="text-sm text-muted-foreground">&larr; Back</button>
+    <div className="max-w-2xl mx-auto p-6 space-y-6 relative mt-4">
+      <button 
+        onClick={() => navigate(-1)} 
+        className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors w-fit mb-2"
+      >
+        <div className="w-8 h-8 rounded-full border border-border bg-card shadow-sm flex items-center justify-center group-hover:border-gray-300 group-hover:bg-gray-50 transition-all">
+          <FiChevronLeft size={18} strokeWidth={2.5} />
+        </div>
+        <span className="text-sm font-semibold tracking-wide">Back</span>
+      </button>
 
       <div>
         <h1 className="text-2xl uppercase logo-retro tracking-tighter">{project.title}</h1>
@@ -137,16 +149,61 @@ export default function AgentProjectDetailPage() {
         </p>
       </div>
 
-      {mapMarkers.length > 0 && <LocationMap markers={mapMarkers} zoom={12} />}
+      {mapMarkers.length > 0 && (
+        <div>
+          <LocationMap markers={mapMarkers} zoom={12} />
+          {project.latitude && project.longitude && (
+            <div className="mt-2 flex items-center justify-end">
+              <button
+                onClick={() => setShowMapModal(true)}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                View in Google Maps <FiExternalLink />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <div className="border border-border rounded-lg p-4 space-y-2">
-        <h2 className="font-semibold">Documents</h2>
-        {documents.length === 0 && <p className="text-sm text-muted-foreground">No documents uploaded yet.</p>}
-        {documents.map((d) => (
-          <p key={d.id} className="text-sm">{d.doc_type}: {d.ipfs_cid}</p>
-        ))}
+        <h2 className="font-semibold mb-4">Project Documents & Evidence</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {project.aadhaar_doc_signed_url && (
+            <DocumentEmbed 
+              url={project.aadhaar_doc_signed_url} 
+              title="Owner ID (KYC)" 
+            />
+          )}
+
+          {project.land_deed_signed_url && (
+            <DocumentEmbed 
+              url={project.land_deed_signed_url} 
+              title="Land Deed" 
+            />
+          )}
+
+          {project.live_verification_photo_signed_url && (
+            <DocumentEmbed 
+              url={project.live_verification_photo_signed_url} 
+              title="Live Photo (KYC)" 
+            />
+          )}
+
+          {documents.map((d) => (
+            <DocumentEmbed 
+              key={d.id}
+              url={`https://gateway.pinata.cloud/ipfs/${d.ipfs_cid}`} 
+              title={d.doc_type.replace(/_/g, ' ').toUpperCase()} 
+            />
+          ))}
+        </div>
+
+        {!project.aadhaar_doc_signed_url && !project.land_deed_signed_url && !project.live_verification_photo_signed_url && documents.length === 0 && (
+          <p className="text-sm text-muted-foreground mt-2">No documents uploaded yet.</p>
+        )}
       </div>
 
       {(project.status === 'assigned' || project.status === 'in_progress') && (
@@ -238,6 +295,15 @@ export default function AgentProjectDetailPage() {
             <Button type="submit">Send</Button>
           </form>
         </div>
+      )}
+
+      {showMapModal && project.latitude && project.longitude && (
+        <GoogleMapModal
+          lat={Number(project.latitude)}
+          lng={Number(project.longitude)}
+          label={project.title}
+          onClose={() => setShowMapModal(false)}
+        />
       )}
     </div>
   );

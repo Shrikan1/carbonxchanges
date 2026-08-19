@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, Outlet, ScrollRestoration } from '
 
 import Home from './pages/shared/Home';
 import AuthPage from './pages/auth/AuthPage';
+import ForgotPassword from './pages/auth/ForgotPassword';
 import VerifyEmail from './pages/auth/VerifyEmail';
 import About from './pages/shared/About';
 import Contact from './pages/shared/Contact';
@@ -94,6 +95,11 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <AuthPage />,
+  },
+
+  {
+    path: ~'/forgot-password',
+    element: <ForgotPassword />,
   },
 
   {

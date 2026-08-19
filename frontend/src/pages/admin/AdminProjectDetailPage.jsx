@@ -5,6 +5,11 @@ import * as adminApi from '../../api/endpoint/adminApi';
 import { Button } from '../../components/ui/Button';
 import { Select } from '../../components/ui/Select';
 import AdminHeader from '../../components/layout/AdminHeader';
+import LocationMap from '../../components/LocationMap';
+import GoogleMapModal from '../../components/GoogleMapModal';
+import DocumentEmbed from '../../components/ui/DocumentEmbed';
+import { FiExternalLink, FiChevronLeft } from 'react-icons/fi';
+import { TYPE_TO_STEP3 } from '../../components/seller/projectFormConfig';
 
 const InfoItem = ({ label, value, className = "" }) => (
   <div className={`flex flex-col gap-1`}>
@@ -27,6 +32,10 @@ export default function AdminProjectDetailPage() {
   const [selectedAgentId, setSelectedAgentId] = useState('');
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [showRejectConfirm, setShowRejectConfirm] = useState(false);
+
+  const [documents, setDocuments] = useState([]);
 
   useEffect(() => {
     load();
@@ -35,18 +44,21 @@ export default function AdminProjectDetailPage() {
   async function load() {
     const { data } = await adminProjectApi.getProjectDetails(id);
     setProject(data.project);
+    setDocuments(data.documents || []);
 
-    // Only needed while the project has no agent yet — skip the extra call otherwise
-    if (!data.project.agent_id) {
-      try {
-        const agentsRes = await adminApi.getAllAgents();
-        setAgents(agentsRes.data.data || []);
-      } catch (err) {
-        if (err.response?.status === 404) setAgents([]);
-        else console.error('Failed to load agents', err);
-      }
+    // Always load agents so we can display the assigned agent's name/email,
+    // and so they're ready if the admin wants to assign a different agent.
+    try {
+      const agentsRes = await adminApi.getAllAgents();
+      setAgents(agentsRes.data.data || []);
+    } catch (err) {
+      if (err.response?.status === 404) setAgents([]);
+      else console.error('Failed to load agents', err);
     }
   }
+
+  // Find the assigned agent object if one exists
+  const assignedAgent = agents.find((a) => a.id === project?.agent_id);
 
   async function handleApprove() {
     setError(null);
@@ -56,7 +68,7 @@ export default function AdminProjectDetailPage() {
       // approveProject's message tells you whether it actually minted or is
       // still pending (e.g. seller has no wallet yet) — surface that directly
       alert(data.message);
-      setProject(data.project);
+      await load();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to approve project');
     } finally {
@@ -65,12 +77,12 @@ export default function AdminProjectDetailPage() {
   }
 
   async function handleReject() {
-    if (!confirm('Reject this project? This cannot be undone.')) return;
     setError(null);
     setActionLoading(true);
+    setShowRejectConfirm(false);
     try {
-      const { data } = await adminProjectApi.rejectProject(id);
-      setProject(data.project);
+      await adminProjectApi.rejectProject(id);
+      await load();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to reject project');
     } finally {
@@ -83,8 +95,8 @@ export default function AdminProjectDetailPage() {
     setError(null);
     setActionLoading(true);
     try {
-      const { data } = await adminProjectApi.assignAgent(id, Number(selectedAgentId));
-      setProject(data.project);
+      await adminProjectApi.assignAgent(id, Number(selectedAgentId));
+      await load();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to assign agent');
     } finally {
@@ -96,8 +108,8 @@ export default function AdminProjectDetailPage() {
     setError(null);
     setActionLoading(true);
     try {
-      const { data } = await adminProjectApi.removeAgent(id);
-      setProject(data.project);
+      await adminProjectApi.removeAgent(id);
+      await load();
       const agentsRes = await adminApi.getAllAgents();
       setAgents(agentsRes.data.data || []);
     } catch (err) {
@@ -117,14 +129,22 @@ export default function AdminProjectDetailPage() {
     </div>
   );
 
+  const isActionable = !['rejected', 'approved', 'minted'].includes(project.status);
+
   return (
     <div className="admin-theme min-h-screen w-full flex flex-col items-center bg-gray-50/50">
       <div className="w-full max-w-[1400px] px-4 md:px-8 py-6">
         <AdminHeader title="Project Details" />
 
-        <div className="max-w-5xl mx-auto space-y-6 mt-4">
-          <button onClick={() => navigate(-1)} className="text-sm text-gray-500 hover:text-gray-900 font-medium flex items-center gap-2 mb-2 transition-colors">
-            &larr; Back
+        <div className="max-w-5xl mx-auto space-y-6 mt-4 relative">
+          <button 
+            onClick={() => navigate(-1)} 
+            className="group flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors w-fit mb-4"
+          >
+            <div className="w-8 h-8 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center group-hover:border-gray-300 group-hover:bg-gray-50 transition-all">
+              <FiChevronLeft size={18} strokeWidth={2.5} />
+            </div>
+            <span className="text-sm font-semibold tracking-wide">Back</span>
           </button>
 
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -160,16 +180,19 @@ export default function AdminProjectDetailPage() {
               <div className="mt-auto">
                 {project.agent_id ? (
                   <div className="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">Agent ID: {project.agent_id}</p>
-                    <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={handleRemoveAgent} disabled={actionLoading}>Remove Agent</Button>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{assignedAgent ? assignedAgent.name : `Agent ID: ${project.agent_id}`}</p>
+                      {assignedAgent && <p className="text-xs text-gray-500 mt-0.5">{assignedAgent.email}</p>}
+                    </div>
+                    <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={handleRemoveAgent} disabled={!isActionable || actionLoading}>Remove Agent</Button>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-3">
-                    <Select value={selectedAgentId} onChange={(e) => setSelectedAgentId(e.target.value)} className="w-full">
+                    <Select value={selectedAgentId} onChange={(e) => setSelectedAgentId(e.target.value)} className="w-full" disabled={!isActionable}>
                       <option value="">Select an agent...</option>
                       {(agents || []).map((a) => <option key={a.id} value={a.id}>{a.name} ({a.email})</option>)}
                     </Select>
-                    <Button className="w-full bg-gray-900 text-white hover:bg-gray-800" onClick={handleAssignAgent} disabled={!selectedAgentId || actionLoading}>Assign Agent</Button>
+                    <Button className="w-full bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-300" onClick={handleAssignAgent} disabled={!isActionable || !selectedAgentId || actionLoading}>Assign Agent</Button>
                   </div>
                 )}
               </div>
@@ -189,7 +212,14 @@ export default function AdminProjectDetailPage() {
                 >
                   Approve {project.status === 'verified' ? '(Auto-Mint)' : ''}
                 </Button>
-                <Button variant="outline" className="flex-1 border-red-200 text-red-600 hover:bg-red-50" onClick={handleReject} disabled={actionLoading}>Reject</Button>
+                <Button 
+                  variant="outline" 
+                  className={`flex-1 ${!isActionable ? 'border-gray-200 text-gray-400 bg-gray-50' : 'border-red-200 text-red-600 hover:bg-red-50'}`}
+                  onClick={() => setShowRejectConfirm(true)} 
+                  disabled={!isActionable || actionLoading}
+                >
+                  {project.status === 'rejected' ? 'Rejected' : 'Reject'}
+                </Button>
               </div>
             </div>
           </div>
@@ -226,36 +256,37 @@ export default function AdminProjectDetailPage() {
                 </div>
               </div>
 
-              {/* Ecological Data */}
-              <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-5">Ecological Data</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
-                  <InfoItem label="Climate Zone" value={project.climate_zone} />
-                  <InfoItem label="Soil Type" value={project.soil_type} />
-                  <InfoItem label="Hydrology Status" value={project.hydrology_status} />
-                  <InfoItem label="Dominant Species" value={project.dominant_species} />
-                  <InfoItem label="Species Type" value={project.species_type} />
-                  <InfoItem label="Management Regime" value={project.management_regime} />
-                  <InfoItem label="Biodiversity Index" value={project.biodiversity_index} />
-                </div>
-              </div>
-
-              {/* Carbon Metrics */}
-              <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-5">Carbon Metrics</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
-                  <InfoItem label="Above Ground Biomass" value={project.above_ground_biomass} />
-                  <InfoItem label="Below Ground Biomass" value={project.below_ground_biomass} />
-                  <InfoItem label="Soil Organic Carbon (0-30cm)" value={project.soil_organic_carbon_0_30cm} />
-                  <InfoItem label="Soil Organic Carbon (30-100cm)" value={project.soil_organic_carbon_30_100cm} />
-                  <InfoItem label="Dead Wood Carbon" value={project.dead_wood_carbon} />
-                  <InfoItem label="Litter Carbon" value={project.litter_carbon} />
-                  <InfoItem label="Total CO2 Claimed" value={project.total_co2_claimed ? `${project.total_co2_claimed} tCO2e` : null} className="text-green-600 font-bold text-lg" />
-                  <InfoItem label="Estimated VERs" value={project.estimated_vers} />
-                  <InfoItem label="Buffer Pool" value={project.buffer_pool_percent ? `${project.buffer_pool_percent}%` : null} />
-                  <InfoItem label="Uncertainty" value={project.uncertainty_percentage ? `${project.uncertainty_percentage}%` : null} />
-                </div>
-              </div>
+              {/* Type-Specific Data */}
+              {(() => {
+                const stepConfig = TYPE_TO_STEP3[project.project_type] || TYPE_TO_STEP3.other;
+                let specData = {};
+                try {
+                  specData = typeof project.methodology_specific_data === 'string' 
+                    ? JSON.parse(project.methodology_specific_data) 
+                    : (project.methodology_specific_data || {});
+                } catch (e) {
+                  console.error('Failed to parse methodology_specific_data', e);
+                }
+                                 
+                return (
+                  <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 lg:col-span-2">
+                    <h3 className="text-lg font-bold text-gray-900 mb-5">{stepConfig.title}</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4">
+                      {stepConfig.fields.map(field => (
+                        <InfoItem 
+                          key={field.name}
+                          label={field.label} 
+                          value={
+                            field.type === 'checkbox' 
+                              ? (specData[field.name] ? 'Yes' : 'No') 
+                              : specData[field.name]
+                          } 
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Methodology & Verification */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 lg:col-span-2">
@@ -289,10 +320,104 @@ export default function AdminProjectDetailPage() {
                   <InfoItem label="Stakeholder Consultation" value={project.stakeholder_consultation_summary} fullWidth />
                 </div>
               </div>
+
+              {/* Project Documents & Evidence */}
+              <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 lg:col-span-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-5">Documents & Evidence</h3>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {project.aadhaar_doc_signed_url && (
+                    <DocumentEmbed 
+                      url={project.aadhaar_doc_signed_url} 
+                      title="Owner ID (KYC)" 
+                    />
+                  )}
+                  {project.land_deed_signed_url && (
+                    <DocumentEmbed 
+                      url={project.land_deed_signed_url} 
+                      title="Land Deed" 
+                    />
+                  )}
+                  {project.live_verification_photo_signed_url && (
+                    <DocumentEmbed 
+                      url={project.live_verification_photo_signed_url} 
+                      title="Live Photo (KYC)" 
+                    />
+                  )}
+                  {documents.map((doc) => (
+                    <DocumentEmbed 
+                      key={doc.id}
+                      url={`https://gateway.pinata.cloud/ipfs/${doc.ipfs_cid}`} 
+                      title={doc.doc_type.replace(/_/g, ' ').toUpperCase()} 
+                    />
+                  ))}
+                </div>
+
+                {!project.aadhaar_doc_signed_url && !project.land_deed_signed_url && !project.live_verification_photo_signed_url && documents.length === 0 && (
+                  <span className="text-sm text-gray-400 italic">No documents uploaded.</span>
+                )}
+              </div>
             </div>
+
+            {/* Project Location Map */}
+            {project.latitude && project.longitude && (
+              <div className="mt-8">
+                <h2 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3 mb-6">Project Location</h2>
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="h-96">
+                    <LocationMap
+                      markers={[{ lat: Number(project.latitude), lng: Number(project.longitude), label: project.title }]}
+                      zoom={13}
+                      height="100%"
+                    />
+                  </div>
+                  <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      <span className="font-semibold text-gray-700">Coordinates:</span> {project.latitude}, {project.longitude}
+                    </div>
+                    <button
+                      onClick={() => setShowMapModal(true)}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors cursor-pointer"
+                    >
+                      View in Google Maps <FiExternalLink />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {showMapModal && project.latitude && project.longitude && (
+        <GoogleMapModal
+          lat={Number(project.latitude)}
+          lng={Number(project.longitude)}
+          label={project.title}
+          onClose={() => setShowMapModal(false)}
+        />
+      )}
+
+      {/* Reject Confirmation Modal */}
+      {showRejectConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-gray-100 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4 text-red-500">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Reject Project?</h3>
+            <p className="text-sm text-gray-500 mb-8 leading-relaxed">
+              This action cannot be undone. The project will be permanently marked as rejected and the assigned agent will be removed.
+            </p>
+            <div className="flex w-full gap-3">
+              <Button variant="outline" className="flex-1" onClick={() => setShowRejectConfirm(false)} disabled={actionLoading}>Cancel</Button>
+              <Button className="flex-1 bg-red-600 text-white hover:bg-red-700" onClick={handleReject} disabled={actionLoading}>Yes, Reject</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

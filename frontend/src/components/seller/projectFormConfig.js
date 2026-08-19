@@ -411,7 +411,7 @@ const STEP_OWNER_LEGAL = {
 
 // ─── Which type-specific step to show per project_type ───────────────────────
 
-const TYPE_TO_STEP3 = {
+export const TYPE_TO_STEP3 = {
   reforestation:        STEP_ECOLOGICAL_DATA,
   afforestation:        STEP_ECOLOGICAL_DATA,
   mangrove_restoration: STEP_ECOLOGICAL_DATA,
@@ -487,12 +487,24 @@ export function separateFormData(projectType, formData) {
   const step3 = TYPE_TO_STEP3[projectType] || STEP_ECOLOGICAL_DATA;
   const typeSpecificFieldNames = new Set(step3.fields.map((f) => f.name));
 
+  // Map form field names → DB column names for KYC document storage paths
+  const DOC_FIELD_TO_DB = {
+    aadhaar_doc: 'aadhaar_doc_path',
+    land_deed: 'land_deed_path',
+    live_verification_photo: 'live_verification_photo_path',
+  };
+
   const flatData = {};
   const methodologySpecificData = {};
 
   for (const [key, value] of Object.entries(formData)) {
     if (value === '' || value === null || value === undefined) continue;
-    if (key === 'aadhaar_doc' || key === 'land_deed' || key === 'live_verification_photo') continue;
+
+    // Map document fields to their DB column names
+    if (DOC_FIELD_TO_DB[key]) {
+      flatData[DOC_FIELD_TO_DB[key]] = value;
+      continue;
+    }
 
     if (typeSpecificFieldNames.has(key)) {
       methodologySpecificData[key] = value;
@@ -506,4 +518,4 @@ export function separateFormData(projectType, formData) {
   }
 
   return flatData;
-}
+}

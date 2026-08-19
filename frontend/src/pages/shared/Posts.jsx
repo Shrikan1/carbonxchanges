@@ -6,6 +6,30 @@ import * as projectPostApi from '../../api/endpoint/projectPostApi';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
+const ExpandableText = ({ text, maxLength = 60, className = "" }) => {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  
+  if (!text) return null;
+  
+  const finalClassName = `${className} break-words`;
+
+  if (text.length <= maxLength) {
+    return <p className={finalClassName}>{text}</p>;
+  }
+  
+  return (
+    <p className={finalClassName}>
+      {isExpanded ? text : `${text.substring(0, maxLength).trim()}... `}
+      <button 
+        onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+        className="text-gray-500 hover:text-gray-900 font-semibold transition-colors inline-block"
+      >
+        {isExpanded ? 'less' : 'more+'}
+      </button>
+    </p>
+  );
+};
+
 const Posts = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -276,8 +300,8 @@ const Posts = () => {
 
                 {/* Content text */}
                 <div className="mb-4">
-                  <p className="text-[15px] text-gray-900 leading-relaxed whitespace-pre-wrap">{post.title}</p>
-                  {post.description && <p className="text-[15px] text-gray-900 leading-relaxed whitespace-pre-wrap mt-2">{post.description}</p>}
+                  <ExpandableText text={post.title} className="text-[15px] text-gray-900 leading-relaxed whitespace-pre-wrap" />
+                  {post.description && <ExpandableText text={post.description} className="text-[15px] text-gray-900 leading-relaxed whitespace-pre-wrap mt-2" />}
                 </div>
 
                 {/* Single Media Preview */}

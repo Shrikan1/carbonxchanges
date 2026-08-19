@@ -159,7 +159,7 @@ export default function MarketplacePage() {
 
                   {/* Price Range */}
                   <div className="flex flex-col gap-1.5 flex-1 w-full">
-                    <label className="text-xs font-semibold text-gray-600 ml-1 uppercase tracking-wider">Min Price ($)</label>
+                    <label className="text-xs font-semibold text-gray-600 ml-1 uppercase tracking-wider">Min Price (₹)</label>
                     <Input 
                       type="number" 
                       name="min_price" 
@@ -169,7 +169,7 @@ export default function MarketplacePage() {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5 flex-1 w-full">
-                    <label className="text-xs font-semibold text-gray-600 ml-1 uppercase tracking-wider">Max Price ($)</label>
+                    <label className="text-xs font-semibold text-gray-600 ml-1 uppercase tracking-wider">Max Price (₹)</label>
                     <Input 
                       type="number" 
                       name="max_price" 
@@ -250,7 +250,7 @@ export default function MarketplacePage() {
                         </div>
                         <div className="flex flex-col text-right">
                           <span className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Price</span>
-                          <span className="text-gray-900 font-bold text-lg">${listing.price_per_ton.toLocaleString()}</span>
+                          <span className="text-gray-900 font-bold text-lg">₹{listing.price_per_ton.toLocaleString('en-IN')}</span>
                         </div>
                       </div>
                       

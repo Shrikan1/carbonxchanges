@@ -110,11 +110,7 @@ const Login = ({ isEmbedded }) => {
               </button>
             </div>
           </div>
-          <div className="flex items-center justify-between pt-1">
-            <label className="flex items-center space-x-2 cursor-pointer select-none">
-              <input type="checkbox" className="w-[14px] h-[14px] border-[#ccc] rounded-none accent-[#0c0c0c]" />
-              <span className="text-[13px] text-[#666]">Remember me</span>
-            </label>
+          <div className="flex items-center justify-end pt-1">
             <Link to="/forgot-password" className="text-[13px] text-[#666] hover:text-[#0c0c0c] transition-colors">Forgot Password?</Link>
           </div>
           <button
