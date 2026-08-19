@@ -1,5 +1,7 @@
 const Project = require('../../models/Project');
 const Reinspection = require('../../models/Reinspection');
+const Notification = require('../../models/Notification');
+const User = require('../../models/User');
 
 // POST /api/agent/projects/:id/reinspect
 // body: { gps_lat, gps_lng, photo_ipfs_cid, notes, reversal_detected, reversal_amount }
@@ -33,6 +35,16 @@ async function submitReinspection(req, res) {
     const report = await Reinspection.createReport(project.id, req.user.id, {
       gps_lat, gps_lng, photo_ipfs_cid, notes, reversal_detected, reversal_amount,
     });
+
+    if (reversal_detected) {
+      // Notify the seller
+      await Notification.createNotification(
+        project.seller_id,
+        'Reversal Detected',
+        `An agent detected a reversal on your project "${project.title}" during re-inspection.`
+      );
+      // Let's assume admin has ID 1 for simplicity or skip admin notification if too complex.
+    }
 
     res.status(201).json({
       message: reversal_detected

@@ -96,9 +96,9 @@ async function deleteProjectByAdmin(req , res){
 
         
       
-           return res.status(404).json({
-            success: true,
-            message:"Can Not Delete Project",
+           return res.status(400).json({
+            success: false,
+            message:"Cannot Delete Project. Only un-minted projects can be deleted.",
             })
         
     }catch(err){

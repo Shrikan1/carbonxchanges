@@ -1,10 +1,6 @@
-
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useRef, useEffect } from 'react';
-
-
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -17,42 +13,66 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function LocationMap({ markers = [], zoom = 10, height = '300px' }) {
-  const mapRef = useRef(null);
+  const mapContainerRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+
   const validMarkers = markers.filter((m) => m.lat != null && m.lng != null);
+
+  useEffect(() => {
+    if (validMarkers.length === 0 || !mapContainerRef.current) return;
+
+    // Clean up previous instance if it exists (handles StrictMode double-mount)
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+    }
+
+    // Initialize map
+    const center = [validMarkers[0].lat, validMarkers[0].lng];
+    const map = L.map(mapContainerRef.current, {
+      center,
+      zoom,
+    });
+    
+    mapInstanceRef.current = map;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    validMarkers.forEach((m) => {
+      const marker = L.marker([m.lat, m.lng]).addTo(map);
+      if (m.label) {
+        marker.bindPopup(m.label);
+      }
+    });
+
+    // Fix grey tiles issue
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+
+    // Cleanup on unmount
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [JSON.stringify(validMarkers), zoom]);
 
   if (validMarkers.length === 0) {
     return (
-      <div style={{ height }} className="flex items-center justify-center bg-muted rounded-md text-sm text-muted-foreground">
+      <div style={{ height }} className="flex items-center justify-center bg-gray-50 rounded-md text-sm text-gray-400">
         No location data available
       </div>
     );
   }
 
-  const center = [validMarkers[0].lat, validMarkers[0].lng];
-
   return (
-    <MapContainer
-      key={`${center[0]}-${center[1]}`}
-      center={center}
-      zoom={zoom}
-      style={{ height, width: '100%', borderRadius: '0.5rem' }}
-      ref={mapRef}
-      whenReady={() => {
-        // Invalidate size after mount to prevent grey tile issues
-        setTimeout(() => {
-          mapRef.current?.invalidateSize();
-        }, 100);
-      }}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {validMarkers.map((m, i) => (
-        <Marker key={i} position={[m.lat, m.lng]}>
-          {m.label && <Popup>{m.label}</Popup>}
-        </Marker>
-      ))}
-    </MapContainer>
+    <div 
+      ref={mapContainerRef} 
+      style={{ height, width: '100%', borderRadius: '0.5rem', zIndex: 10 }} 
+    />
   );
 }

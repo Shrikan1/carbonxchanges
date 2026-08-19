@@ -50,7 +50,7 @@ export default function SalesPage() {
             <div>
               <p className="text-[13px] font-medium text-gray-500 mb-0.5">Total Revenue</p>
               <div className="text-3xl font-bold text-gray-900 tracking-tight">
-                ${revenue ? Number(revenue.total_revenue).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '0.00'}
+                ₹{revenue ? Number(revenue.total_revenue).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '0.00'}
               </div>
             </div>
           </div>
@@ -75,12 +75,12 @@ export default function SalesPage() {
                         <span className="font-medium text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full text-xs">{s.buyer_name}</span>
                       </div>
                       <p className="text-sm text-gray-500">
-                        {Number(s.amount).toLocaleString()} credits @ ${Number(s.price_per_credit).toFixed(2)}
+                        {Number(s.amount).toLocaleString()} credits @ ₹{Number(s.price_per_credit).toFixed(2)}
                       </p>
                     </div>
                     <div className="text-right">
                       <div className="font-bold text-emerald-600 text-lg">
-                        +${Number(s.total_price).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        +₹{Number(s.total_price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </div>
                       <p className="text-xs text-gray-400">Transaction ID: #{s.id}</p>
                     </div>

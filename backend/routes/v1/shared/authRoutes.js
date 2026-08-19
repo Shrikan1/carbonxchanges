@@ -10,6 +10,8 @@ router.post('/signup', otpLimiter, authController.signup);
 router.post('/verify-otp', otpLimiter, authController.verifyOtp);
 router.post('/login', loginLimiter, authController.login);
 router.get('/me', requireAuth, authController.getProfile);
+router.post('/forgot-password', otpLimiter, authController.forgotPassword);
+router.post('/reset-password', otpLimiter, authController.resetPassword);
 
 // Token management
 router.post('/refresh', authController.refreshToken);     

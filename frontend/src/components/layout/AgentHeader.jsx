@@ -1,20 +1,16 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FiHome } from 'react-icons/fi';
-import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/useAuthStore';
 import NotificationDropdown from './NotificationDropdown';
 
 const tabs = [
   { name: 'Dashboard', path: '/dashboard' },
-  { name: 'Projects', path: '/admin/projects' },
-  { name: 'Agents', path: '/admin/agents' },
-  { name: 'Users', path: '/admin/oversight/users' },
-  { name: 'Transactions', path: '/admin/oversight/transactions' },
-  { name: 'Minting', path: '/admin/mint-queue' },
+  { name: 'Assigned Projects', path: '/agent/projects' },
+  { name: 'History', path: '/agent/history' },
 ];
 
-const AdminHeader = ({ title, pendingReviewCount = 0 }) => {
+const AgentHeader = ({ title }) => {
   const location = useLocation();
   const { user } = useAuthStore();
 
@@ -45,7 +41,6 @@ const AdminHeader = ({ title, pendingReviewCount = 0 }) => {
 
   return (
     <div className="mb-8 w-full relative z-20 flex flex-col gap-5">
-      
       {/* Top Row: Title and Icons */}
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-3 sm:gap-4">
@@ -53,7 +48,7 @@ const AdminHeader = ({ title, pendingReviewCount = 0 }) => {
             <FiHome className="w-4 h-4 sm:w-5 sm:h-5" />
           </Link>
           <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-gray-900">
-            {title || 'Admin Panel'}
+            {title || 'Agent Portal'}
           </h1>
         </div>
         {rightIcons}
@@ -63,9 +58,8 @@ const AdminHeader = ({ title, pendingReviewCount = 0 }) => {
       <div className="flex overflow-x-auto pb-2 scrollbar-hide w-full">
         {renderNav()}
       </div>
-
     </div>
   );
 };
 
-export default AdminHeader;
+export default AgentHeader;

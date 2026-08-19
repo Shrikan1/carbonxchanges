@@ -142,7 +142,7 @@ export default function ListingsPage() {
                             </span>
                           </div>
                           <p className="text-sm text-gray-500">
-                            <span className="font-semibold text-gray-700">{l.amount_sold}</span> sold out of <span className="font-semibold text-gray-700">{l.amount_listed}</span> @ <span className="font-semibold text-emerald-600">${Number(l.price_per_credit).toFixed(2)}</span>
+                            <span className="font-semibold text-gray-700">{l.amount_sold}</span> sold out of <span className="font-semibold text-gray-700">{l.amount_listed}</span> @ <span className="font-semibold text-emerald-600">₹{Number(l.price_per_credit).toFixed(2)}</span>
                           </p>
                         </div>
                         {l.status === 'active' && (

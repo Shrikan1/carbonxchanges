@@ -37,20 +37,20 @@ const AdminDashboard = ({ data, isLoading }) => {
               </div>
 
               <div className="mb-6">
-                <span className="text-3xl font-bold text-gray-900 tracking-tight">${(credits?.total_platform_revenue || 0).toLocaleString()}</span>
+                <span className="text-3xl font-bold text-gray-900 tracking-tight">₹{(credits?.total_platform_revenue || 0).toLocaleString('en-IN')}</span>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-gray-500 font-medium">Credits Sold</span>
-                    <span className="text-gray-900 font-semibold">${(credits?.total_credits_sold || 0).toLocaleString()}</span>
+                    <span className="text-gray-900 font-semibold">₹{(credits?.total_credits_sold || 0).toLocaleString('en-IN')}</span>
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-gray-500 font-medium">Credits Minted</span>
-                    <span className="text-gray-900 font-semibold">${(credits?.total_credits_minted || 0).toLocaleString()}</span>
+                    <span className="text-gray-900 font-semibold">₹{(credits?.total_credits_minted || 0).toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>

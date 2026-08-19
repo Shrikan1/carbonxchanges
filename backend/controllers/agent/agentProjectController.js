@@ -1,5 +1,28 @@
 const Project = require('../../models/Project');
-const Paginate = require('../../utils/paginate')
+const Paginate = require('../../utils/paginate');
+const Document = require('../../models/Document');
+const { getSignedUrl, BUCKETS } = require('../../services/supabaseStorageService');
+
+// Adds time-limited signed URLs for any private KYC documents attached to a project.
+async function enrichWithSignedUrls(project) {
+  const enriched = { ...project };
+  try {
+    if (project.aadhaar_doc_path) {
+      enriched.aadhaar_doc_signed_url = await getSignedUrl(BUCKETS.KYC_DOCS, project.aadhaar_doc_path);
+    }
+    if (project.land_deed_path) {
+      enriched.land_deed_signed_url = await getSignedUrl(BUCKETS.KYC_DOCS, project.land_deed_path);
+    }
+    if (project.live_verification_photo_path) {
+      enriched.live_verification_photo_signed_url = await getSignedUrl(
+        BUCKETS.KYC_DOCS, project.live_verification_photo_path
+      );
+    }
+  } catch (err) {
+    console.error('Error generating signed URLs for project KYC docs:', err.message);
+  }
+  return enriched;
+}
 // GET /api/agent/projects?status=assigned
 // Defaults to 'assigned' (active queue needing action). Pass ?status=all
 // (or any other value) to see the agent's full history instead.
@@ -47,7 +70,9 @@ async function getAssignedProjectDetails(req, res) {
       return res.status(403).json({ error: 'You are not assigned to this project' });
     }
 
-    res.json({ project });
+    const enrichedProject = await enrichWithSignedUrls(project);
+    const documents = await Document.findDocumentsByProject(project.id);
+    res.json({ project: enrichedProject, documents });
   } catch (err) {
     console.error('Get assigned project details error:', err);
     res.status(500).json({ error: 'Failed to fetch project details' });

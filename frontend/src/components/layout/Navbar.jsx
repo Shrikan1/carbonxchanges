@@ -327,7 +327,6 @@ const Navbar = ({
                       </Link>
                     </>
                   )}
-
                   {user?.is_buyer && (
                     <Link
                       to="/dashboard"
@@ -337,14 +336,52 @@ const Navbar = ({
                       Buyer Dashboard
                     </Link>
                   )}
+                  
                   {user?.role === 'admin' && (
-                    <Link
-                      to="/dashboard"
-                      onClick={closeProfileDropdown}
-                      className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
-                    >
-                      Admin Dashboard
-                    </Link>
+                    <>
+                      <Link
+                        to="/dashboard"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        to="/admin/projects"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Projects
+                      </Link>
+                      <Link
+                        to="/admin/agents"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Agents
+                      </Link>
+                      <Link
+                        to="/admin/users"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Users
+                      </Link>
+                      <Link
+                        to="/admin/transactions"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Transactions
+                      </Link>
+                      <Link
+                        to="/admin/minting"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Minting
+                      </Link>
+                    </>
                   )}
                   {user?.role === 'agent' && (
                     <Link
@@ -547,7 +584,7 @@ const Navbar = ({
 
           <Link
             to="/"
-            className={`flex items-center px-4 py-1.5 rounded-full transition-all duration-300 ${isScrolled || isLightPage ? 'bg-white shadow-sm border border-gray-200' : 'bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30'}`}
+            className="flex items-center px-4 py-1.5 rounded-full transition-all duration-300 bg-transparent hover:opacity-80"
           >
 
             {!hideLogo && (

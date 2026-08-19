@@ -57,10 +57,10 @@ const AuthPage = () => {
       {/* Back button */}
       <Link 
         to="/" 
-        className="fixed top-6 left-6 z-50 flex items-center space-x-2 text-white/50 hover:text-white transition-colors group"
+        className="fixed top-6 left-6 lg:top-10 lg:left-10 z-50 flex items-center space-x-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white transition-all backdrop-blur-md group shadow-lg"
       >
-        <FaArrowLeft className="text-sm group-hover:-translate-x-0.5 transition-transform" />
-        <span className="text-[13px] font-medium">Back</span>
+        <FaArrowLeft className="text-xs group-hover:-translate-x-1 transition-transform" />
+        <span className="text-[11px] font-bold uppercase tracking-widest">Home</span>
       </Link>
 
       {/* Main container */}

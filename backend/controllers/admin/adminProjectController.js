@@ -3,6 +3,8 @@ const User = require('../../models/User');
 const mintController = require('./mintController');
 const Paginate = require('../../utils/paginate');
 const Verification = require('../../models/Verification');
+const Document = require('../../models/Document');
+const Notification = require('../../models/Notification');
 const { generateAndPinVerificationPdf } = require('../../services/projectPdfService');
 const { getSignedUrl, BUCKETS } = require('../../services/supabaseStorageService');
 const { query } = require('../../config/db');
@@ -56,7 +58,10 @@ async function getProjectDetails(req, res) {
 
     // Enrich with time-limited signed URLs so admin can view documents directly
     const enrichedProject = await enrichWithSignedUrls(project);
-    res.json({ project: enrichedProject });
+    
+    const documents = await Document.findDocumentsByProject(project.id);
+    
+    res.json({ project: enrichedProject, documents });
   } catch (err) {
     console.error('Get project details error:', err);
     res.status(500).json({ error: 'Failed to fetch project details' });
@@ -102,6 +107,13 @@ async function approveProject(req, res) {
 
     // ── Step 2: Attempt on-chain mint ────────────────────────────────────────
     const mintResult = await mintController.attemptMint(approvedProject, verificationPdfCid);
+    
+    // Notify Seller
+    await Notification.createNotification(
+      project.seller_id,
+      'Project Approved',
+      `Your project "${project.title}" has been approved by the Admin.`
+    );
 
     if (!mintResult.minted) {
       return res.status(201).json({
@@ -113,6 +125,13 @@ async function approveProject(req, res) {
           : null,
       });
     }
+    
+    // Notify Seller about minting
+    await Notification.createNotification(
+      project.seller_id,
+      'Credits Minted',
+      `Carbon credits for your project "${project.title}" have been successfully minted.`
+    );
 
     const mintedProject = await Project.findProjectById(req.params.id);
     res.status(201).json({
@@ -140,7 +159,14 @@ async function rejectProject(req, res) {
       return res.status(400).json({ error: `Cannot reject a project with status "${project.status}"` });
     }
 
-    const updated = await Project.changeProjectStatus(req.params.id, 'rejected');
+    const updated = await Project.rejectProject(req.params.id);
+    
+    await Notification.createNotification(
+      project.seller_id,
+      'Project Rejected',
+      `Unfortunately, your project "${project.title}" has been rejected.`
+    );
+
     res.json({ message: 'Project rejected successfully', project: updated });
   } catch (err) {
     console.error('Reject project error:', err);
@@ -162,6 +188,21 @@ async function assignAgent(req, res) {
     if (!agent) return res.status(404).json({ error: 'Agent not found' });
 
     const updated = await Project.assignAgent(project.id, agent.id);
+    
+    // Notify Agent
+    await Notification.createNotification(
+      agent.id,
+      'New Assignment',
+      `You have been assigned to verify the project "${project.title}".`
+    );
+    
+    // Notify Seller
+    await Notification.createNotification(
+      project.seller_id,
+      'Agent Assigned',
+      `An agent has been assigned to verify your project "${project.title}".`
+    );
+
     res.json({ message: 'Agent assigned successfully', project: updated });
   } catch (err) {
     console.error('Assign agent error:', err);
@@ -180,6 +221,13 @@ async function removeAgent(req, res) {
     }
 
     const updated = await Project.removeAgent(req.params.id);
+    
+    await Notification.createNotification(
+      project.seller_id,
+      'Agent Removed',
+      `The assigned agent for your project "${project.title}" has been removed.`
+    );
+
     res.json({ message: 'Agent removed successfully', project: updated });
   } catch (err) {
     console.error('Remove agent error:', err);

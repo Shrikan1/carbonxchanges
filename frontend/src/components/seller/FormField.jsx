@@ -7,6 +7,7 @@ import { DatePicker } from '../ui/DatePicker';
 import { NumberPicker } from '../ui/NumberPicker';
 import { FiUpload, FiCheckCircle, FiCheck, FiAlertCircle, FiLoader, FiX } from 'react-icons/fi';
 import api from '../../api/axiosInstance';
+import FileUploadZone from '../ui/FileUploadZone';
 
 /**
  * FormField renders one form field from a projectFormConfig field definition.
@@ -26,8 +27,7 @@ export default function FormField({ field, value, onChange, error }) {
 
   // ── File (KYC document) upload ─────────────────────────────────────────────
   if (type === 'file') {
-    async function handleFileChange(e) {
-      const file = e.target.files[0];
+    async function handleFileSelect(file) {
       if (!file) return;
 
       setUploading(true);
@@ -45,11 +45,16 @@ export default function FormField({ field, value, onChange, error }) {
         onChange(name, res.data.storagePath);
         setUploadedFileName(file.name);
       } catch (err) {
+        const status = err.response?.status;
         const msg = err.response?.data?.error || 'Upload failed. Please try again.';
-        setUploadError(msg);
+
+        if (status === 503) {
+          setUploadError('Storage service is temporarily unavailable. You can save the draft and upload documents later.');
+        } else {
+          setUploadError(msg);
+        }
       } finally {
         setUploading(false);
-        e.target.value = null;
       }
     }
 
@@ -78,51 +83,36 @@ export default function FormField({ field, value, onChange, error }) {
         )}
 
         <div>
-          {value ? (
-            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-              <div className="flex items-center gap-2 min-w-0">
-                <FiCheckCircle className="text-emerald-500 flex-shrink-0" size={16} />
-                <span className="text-sm text-emerald-700 font-medium truncate">
-                  {uploadedFileName || 'Document uploaded'}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleClear}
-                className="ml-2 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
-              >
-                <FiX size={16} />
-              </button>
-            </div>
+          {value && !uploading ? (
+            <FileUploadZone
+              uploading={false}
+              uploadedFiles={[{ name: uploadedFileName || 'Document uploaded' }]}
+              onRemoveFile={handleClear}
+              disabled={false}
+              mediaType="document"
+            />
           ) : (
-            <label
-              htmlFor={name}
-              className={`flex items-center justify-center gap-2.5 border-2 border-dashed rounded-xl px-4 py-4 cursor-pointer transition-colors
-                ${uploadError ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-emerald-400'}`}
-            >
-              <input
-                id={name}
-                type="file"
-                accept={accept}
-                onChange={handleFileChange}
-                disabled={uploading}
-                className="sr-only"
-              />
-              {uploading
-                ? <FiLoader className="animate-spin text-emerald-500" size={18} />
-                : <FiUpload className="text-gray-400" size={18} />
-              }
-              <span className="text-sm font-medium text-gray-600">
-                {uploading ? 'Uploading...' : 'Click to upload'}
-              </span>
-            </label>
+            <FileUploadZone
+              onFileSelect={handleFileSelect}
+              accept={accept}
+              uploading={uploading}
+              disabled={uploading}
+              maxSizeMB={15}
+              formats="JPEG, PNG, WEBP, PDF"
+              mediaType="document"
+            />
           )}
 
           {(uploadError || error) && (
-            <div className="flex items-center gap-1.5 mt-1.5">
-              <FiAlertCircle className="text-red-500 flex-shrink-0" size={13} />
+            <div className="flex items-start gap-1.5 mt-1.5">
+              <FiAlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={13} />
               <p className="text-xs text-red-600">{uploadError || error}</p>
             </div>
+          )}
+
+          {/* Optional hint when no doc is uploaded */}
+          {!value && !uploadError && !error && (
+            <p className="text-[11px] text-gray-400 mt-1.5">Optional for draft — required before submitting for review.</p>
           )}
         </div>
       </div>

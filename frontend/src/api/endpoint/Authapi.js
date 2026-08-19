@@ -15,3 +15,9 @@ export const refreshToken = () => api.post('/v1/auth/refresh');
 export const logout = () => api.post('/v1/auth/logout');
 
 export const getProfile = () => api.get('/v1/auth/me');
+
+export const forgotPassword = (email) =>
+  api.post('/v1/auth/forgot-password', { email });
+
+export const resetPassword = (email, otpCode, newPassword) =>
+  api.post('/v1/auth/reset-password', { email, otpCode, newPassword });

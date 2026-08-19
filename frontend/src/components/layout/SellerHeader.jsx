@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FiSearch, FiBell, FiHome } from 'react-icons/fi';
+import { FiHome } from 'react-icons/fi';
 import { useAuthStore } from '../../store/useAuthStore';
+import NotificationDropdown from './NotificationDropdown';
 
 const tabs = [
   { name: 'Dashboard', path: '/dashboard' },
@@ -58,7 +59,11 @@ const SellerHeader = ({
     </h1>
   );
 
-  const rightIcons = null;
+  const rightIcons = (
+    <div className="flex items-center justify-end gap-2 sm:gap-3 shrink-0">
+      <NotificationDropdown />
+    </div>
+  );
 
   return (
     <div className="w-full flex flex-col items-center mb-8 relative z-20">
@@ -66,14 +71,17 @@ const SellerHeader = ({
       {/* Universal Top Navigation - ALWAYS max-w-[1400px] to prevent shifting */}
       <div className="w-full max-w-[1400px] px-4 md:px-8">
         {/* Desktop Layout */}
-        <div className="hidden lg:flex items-center justify-center gap-6 w-full relative min-h-[48px]">
+        <div className="hidden lg:flex items-center justify-between w-full relative min-h-[48px]">
           {homeButton}
-          {renderNav()}
+          <div className="absolute left-1/2 -translate-x-1/2">
+            {renderNav()}
+          </div>
+          {rightIcons}
         </div>
 
         {/* Mobile / Tablet Layout */}
         <div className="flex flex-col lg:hidden gap-4 w-full">
-          <div className="flex justify-between items-center w-full gap-4">
+          <div className="flex justify-between items-center w-full gap-4 mt-2">
             {homeButton}
             {rightIcons}
           </div>

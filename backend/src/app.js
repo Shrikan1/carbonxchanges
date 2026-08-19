@@ -38,6 +38,7 @@ app.use('/api/v1/role', require('../routes/v1/roleRoutes'));
 app.use('/api/v1/dashboard', require('../routes/v1/dashboardRoutes'));
 app.use('/api/v1/sales', require('../routes/v1/salesRoutes'));
 app.use('/api/v1/buyer', require('../routes/v1/buyerRoutes'));
+app.use('/api/v1/notifications', require('../routes/v1/shared/notificationRoutes'));
 app.use('/v1/share', require('../routes/v1/shared/ogRoutes'));
 
 app.use((req, res) => {
