@@ -12,7 +12,7 @@ import { Select } from '../../components/ui/Select';
 import FileUploadZone from '../../components/ui/FileUploadZone';
 import { FiUpload, FiX, FiImage, FiVideo, FiAlertCircle, FiLoader, FiCheckCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import SellerHeader from '../../components/layout/SellerHeader';
+import SellerLayout from '../../components/layout/SellerLayout';
 
 export default function ProjectPostEditorPage() {
   const { projectId: urlProjectId } = useParams();
@@ -108,13 +108,12 @@ export default function ProjectPostEditorPage() {
   const uploading = uploadingImage || uploadingVideo;
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 py-8 font-sans">
-      <SellerHeader 
-        title="Create Post" 
-        description="Create a public post to showcase your carbon reduction project to the community."
-        contentMaxWidth="800px"
-      />
-      <div className="w-full max-w-[800px] px-4 md:px-8">
+    <SellerLayout 
+      title="Create Post" 
+      subtitle="Create a public post to showcase your carbon reduction project to the community."
+    >
+      <div className="w-full flex flex-col items-center pb-12 font-sans relative pt-6">
+        <div className="w-full max-w-[800px] px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -270,6 +269,7 @@ export default function ProjectPostEditorPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </SellerLayout>
   );
 }

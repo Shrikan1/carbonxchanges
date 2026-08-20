@@ -229,7 +229,7 @@ const Navbar = ({
     if (isAuthenticated) {
 
       return (
-        <div className={`hidden lg:flex items-center space-x-1 p-1 rounded-full transition-all duration-300 ${isScrolled || isLightPage ? 'bg-white shadow-sm border border-gray-200' : 'bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30'}`}>
+        <div className={`hidden lg:flex items-center space-x-1.5 p-1 rounded-full transition-all duration-300 ${isScrolled || isLightPage ? 'bg-white shadow-sm border border-gray-200' : 'bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30'}`}>
 
 
 
@@ -237,7 +237,7 @@ const Navbar = ({
             <Link
               key={idx}
               to={dash.path}
-              className={`group px-4 py-2 text-xs font-bold uppercase tracking-wider flex items-center justify-center transition-colors rounded-full ${isScrolled || isLightPage ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100' : 'text-gray-200 hover:text-white hover:bg-white/10'}`}
+              className={`group px-6 py-2 text-[14px] font-bold font-mono uppercase tracking-wider flex items-center justify-center transition-colors rounded-full ${isScrolled || isLightPage ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100' : 'text-gray-200 hover:text-white hover:bg-white/10'}`}
             >
               <span className="relative overflow-hidden block leading-tight">
                 <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
@@ -251,7 +251,7 @@ const Navbar = ({
           ))}
 
 
-          <div className={`w-px h-6 mx-1 ${isScrolled || isLightPage ? 'bg-gray-200' : 'bg-white/20'}`}></div>
+          <div className={`w-px h-8 mx-2 ${isScrolled || isLightPage ? 'bg-gray-200' : 'bg-white/20'}`}></div>
 
           {/* ------------------------------------------
               PROFILE DROPDOWN
@@ -260,12 +260,12 @@ const Navbar = ({
             <button
               type="button"
               onClick={toggleProfileDropdown}
-              className={`flex items-center justify-center w-9 h-9 rounded-full border overflow-hidden focus:outline-none transition-all duration-300 ${isScrolled || isLightPage ? 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50' : 'border-white/20 hover:border-white/40 text-white bg-white/5'}`}
+              className={`flex items-center justify-center w-10 h-10 rounded-full border overflow-hidden focus:outline-none transition-all duration-300 ${isScrolled || isLightPage ? 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50' : 'border-white/20 hover:border-white/40 text-white bg-white/5'}`}
             >
               {user?.profileImage ? (
                 <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <div className={`w-full h-full flex items-center justify-center text-sm font-bold uppercase`}>
+                <div className={`w-full h-full flex items-center justify-center text-base font-bold uppercase`}>
                   {user?.name ? user.name.charAt(0) : 'U'}
                 </div>
               )}
@@ -430,17 +430,17 @@ const Navbar = ({
         {/* Login */}
         <Link
           to="/login"
-          className={`text-[14px] font-medium transition-colors ${isScrolled || isLightPage ? 'text-gray-600 hover:text-gray-900' : 'text-white/90 hover:text-white drop-shadow-md'}`}
+          className={`text-[15px] font-mono font-medium transition-colors ${isScrolled || isLightPage ? 'text-gray-600 hover:text-gray-900' : 'text-white/90 hover:text-white drop-shadow-md'}`}
         >
-          Sign In
+          SIGN IN
         </Link>
 
         {/* Sign Up — primary CTA for guests */}
         <Link
           to="/signup"
-          className="px-6 py-2.5 bg-[#bef264] text-[#0a0a0a] text-[14px] font-bold rounded-full hover:bg-[#a3e635] transition-all shadow-sm hover:shadow-md"
+          className="px-7 py-3 bg-[#bef264] text-[#0a0a0a] text-[15px] font-mono font-bold rounded-full hover:bg-[#a3e635] transition-all shadow-sm hover:shadow-md"
         >
-          Get Started
+          GET STARTED
         </Link>
       </div>
     );
@@ -472,7 +472,7 @@ const Navbar = ({
               key={idx}
               to={dash.path}
               onClick={closeMobileMenu}
-              className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+              className="block w-full px-4 py-3 text-center text-[#888] text-xs font-mono font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
             >
               {dash.label}
             </Link>
@@ -486,7 +486,7 @@ const Navbar = ({
           <button
             type="button"
             onClick={handleLogout}
-            className="block w-full px-4 py-3 text-center bg-[#222] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333] transition-colors"
+            className="block w-full px-4 py-3 text-center bg-[#222] text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#333] transition-colors"
           >
             Logout
           </button>
@@ -508,9 +508,9 @@ const Navbar = ({
         <Link
           to="/login"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+          className="block w-full px-4 py-3 text-center text-[#888] text-xs font-mono font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
         >
-          Login
+          LOGIN
         </Link>
 
 
@@ -519,9 +519,9 @@ const Navbar = ({
         <Link
           to="/signup"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-xs font-bold uppercase tracking-wider hover:bg-[#eee] transition-colors"
+          className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#eee] transition-colors"
         >
-          Sign Up
+          SIGN UP
         </Link>
 
       </>
@@ -613,7 +613,7 @@ const Navbar = ({
 
                 data-brand="logo"
 
-                className={`logo-retro uppercase tracking-tighter text-xl transition-colors duration-300 ${isScrolled || isLightPage ? 'text-gray-900' : 'text-[#bef264]'}`}
+                className={`wise-font font-black uppercase tracking-tight text-3xl transition-colors duration-300 ${isScrolled || isLightPage ? 'text-gray-900 [text-shadow:1px_1px_0_#c2ed6d,2px_2px_0_#c2ed6d,3px_3px_0_#c2ed6d]' : 'text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black]'}`}
                 transition={
                   animateEntrance
                     ? {
@@ -644,7 +644,7 @@ const Navbar = ({
               DESKTOP NAVIGATION
           ================================================= */}
 
-          <nav className="hidden lg:flex items-center space-x-1 bg-gray-100/80 backdrop-blur-sm rounded-full px-1 py-1">
+          <nav className="hidden lg:flex items-center space-x-1.5 bg-gray-100/80 backdrop-blur-sm rounded-full px-1.5 py-1">
 
             {navLinks.map((link) => {
 
@@ -655,7 +655,7 @@ const Navbar = ({
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`group px-5 py-2 text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 flex items-center justify-center ${isActive
+                  className={`group px-6 py-2 text-[14px] font-mono font-bold uppercase tracking-wider rounded-full transition-all duration-300 flex items-center justify-center ${isActive
                     ? 'bg-white text-gray-900 shadow-sm'
                     : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
                     }`}
@@ -765,7 +765,7 @@ const Navbar = ({
                   to={link.path}
                   onClick={closeMobileMenu}
 
-                  className={`px-4 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${isActive
+                  className={`px-4 py-3 text-xs font-mono font-bold uppercase tracking-wider transition-colors ${isActive
                     ? 'text-white'
                     : 'text-[#888] hover:text-white'
                     }`}

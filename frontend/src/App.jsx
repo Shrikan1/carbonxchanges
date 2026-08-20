@@ -47,6 +47,8 @@ import AgentAssignedProjectsPage from './pages/agent/AgentAssignedProjectsPage';
 import AgentProjectDetailPage from './pages/agent/AgentProjectDetailPage';
 import AgentHistoryPage from './pages/agent/AgentHistoryPage';
 
+import NotFoundPage from './pages/shared/NotFoundPage';
+
 import { Toaster } from 'react-hot-toast';
 
 const RootLayout = () => (
@@ -360,13 +362,7 @@ const router = createBrowserRouter([
   // 404
   {
     path: '*',
-    element: (
-      <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-4xl font-bold">
-          404 — Page Not Found
-        </h1>
-      </div>
-    ),
+    element: <NotFoundPage />,
   },
 
 

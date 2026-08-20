@@ -60,10 +60,10 @@ const Login = ({ isEmbedded }) => {
       {!isEmbedded && (
         <>
           <div className="flex items-center space-x-6 shrink-0 mb-8">
-            <span className="text-[#0c0c0c] text-xl tracking-tight border-b-2 border-[#0c0c0c] pb-2" style={{ fontFamily: "'Bungee', cursive" }}>
+            <span className="text-[#0c0c0c] text-2xl font-black uppercase wise-font tracking-tight border-b-2 border-[#0c0c0c] pb-2">
               Sign In
             </span>
-            <Link to="/signup" className="text-[#999] text-xl tracking-tight pb-2 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors" style={{ fontFamily: "'Bungee', cursive" }}>
+            <Link to="/signup" className="text-[#999] text-2xl font-black uppercase wise-font tracking-tight pb-2 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors">
               Sign Up
             </Link>
           </div>
@@ -82,7 +82,7 @@ const Login = ({ isEmbedded }) => {
               {error}
             </div>
           )}
-          
+
           <div>
             <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">Email</label>
             <input
@@ -115,25 +115,27 @@ const Login = ({ isEmbedded }) => {
           <div className="flex items-center justify-end pt-1">
             <Link to="/forgot-password" className="text-[13px] text-[#666] hover:text-[#0c0c0c] transition-colors">Forgot Password?</Link>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-2 disabled:opacity-60 flex items-center justify-center"
-          >
-            {loading ? (
-              <div className="flex items-center space-x-2">
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Signing in...</span>
-              </div>
-            ) : (
-              'Sign In'
-            )}
-          </button>
+          <div className="w-full pr-1 pb-1 mt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary font-semibold py-3.5 text-[14px] tracking-wide disabled:opacity-60 flex items-center justify-center"
+            >
+              {loading ? (
+                <div className="flex items-center space-x-2">
+                  <svg className="animate-spin h-4 w-4 text-[#0c0c0c]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </div>
         </form>
-        
+
         <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] text-[#999]">
           Don't have an account?{' '}
           <Link to="/signup" className="text-[#0c0c0c] font-semibold hover:underline">
@@ -160,7 +162,7 @@ const Login = ({ isEmbedded }) => {
             <div className="relative z-10 h-full flex flex-col justify-end p-10">
               {/* Top Logo removed */}
               <div>
-                <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 logo-retro-white">
+                <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 wise-font font-black uppercase">
                   Trade Carbon,<br />Save Earth.
                 </h2>
                 <p className="text-white/60 text-sm leading-relaxed max-w-xs">
@@ -177,7 +179,7 @@ const Login = ({ isEmbedded }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Full-screen smooth loading overlay */}
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300">

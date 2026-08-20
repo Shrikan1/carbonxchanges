@@ -8,7 +8,7 @@ import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { Label } from '../../components/ui/Label';
 import FileUploadZone from '../../components/ui/FileUploadZone';
-import SellerHeader from '../../components/layout/SellerHeader';
+import SellerLayout from '../../components/layout/SellerLayout';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   FiUser, FiCheckCircle, FiAlertCircle,
@@ -162,17 +162,16 @@ export default function ProjectVerificationPage() {
   const st = status?.status || 'pending';
 
   if (loading) return (
-    <div className="admin-theme min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 py-8 font-sans">
-      <SellerHeader title="Verification" contentMaxWidth="800px" />
-      <div className="flex-grow flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-400"></div></div>
-    </div>
+    <SellerLayout title="Verification">
+      <div className="flex-grow flex items-center justify-center p-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
+      </div>
+    </SellerLayout>
   );
 
   return (
-    <div className="admin-theme min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 py-8 font-sans">
-      <SellerHeader title="Verification" description="Track progress and upload documents." contentMaxWidth="800px" />
-
-      <div className="w-full max-w-[800px] px-4 md:px-8 space-y-5">
+    <SellerLayout title="Project Verification" subtitle="Track progress and upload documents.">
+      <div className="w-full max-w-[800px] mx-auto px-4 md:px-8 space-y-6 pb-12 pt-6">
 
         {/* banners */}
         {error && (
@@ -335,6 +334,6 @@ export default function ProjectVerificationPage() {
         )}
 
       </div>
-    </div>
+    </SellerLayout>
   );
 }

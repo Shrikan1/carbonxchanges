@@ -46,17 +46,17 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#0c0c0c] relative font-sans">
-      
+
       {/* Full-screen background */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${authBg})` }}
       />
       <div className="absolute inset-0 bg-black/70" />
 
       {/* Back button */}
-      <Link 
-        to="/" 
+      <Link
+        to="/"
         className="fixed top-6 left-6 lg:top-10 lg:left-10 z-50 flex items-center space-x-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white transition-all backdrop-blur-md group shadow-lg"
       >
         <FaArrowLeft className="text-xs group-hover:-translate-x-1 transition-transform" />
@@ -69,12 +69,12 @@ const AuthPage = () => {
 
           {/* Left Panel — Image + Branding */}
           <div className="relative hidden lg:block overflow-hidden h-[680px]">
-            <div 
+            <div
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${authBg})` }}
             />
             <div className="absolute inset-0 bg-black/40" />
-            
+
             <div className="relative z-10 h-full flex flex-col justify-end p-10">
               {/* Top Logo removed */}
 
@@ -97,7 +97,7 @@ const AuthPage = () => {
                       )}
                     </h2>
                     <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-                      {mode === 'login' 
+                      {mode === 'login'
                         ? 'Blockchain-powered carbon credit marketplace for a sustainable future.'
                         : 'Build a sustainable future with blockchain-powered carbon credits.'
                       }
@@ -110,33 +110,31 @@ const AuthPage = () => {
 
           {/* Right Panel — Auth Form */}
           <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start h-[680px] overflow-hidden">
-            
+
             {/* Mobile logo removed */}
 
             {/* Tab Navigation */}
             <div className="flex items-center space-x-6 shrink-0">
               <button
                 onClick={() => switchMode('login')}
-                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 ${
-                  mode === 'login' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
-                }`}
+                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 ${mode === 'login' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
+                  }`}
                 style={{ fontFamily: "'Bungee', cursive" }}
               >
                 Sign In
-                <span 
+                <span
                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0c0c0c] transition-transform duration-300 origin-left"
                   style={{ transform: mode === 'login' ? 'scaleX(1)' : 'scaleX(0)' }}
                 />
               </button>
               <button
                 onClick={() => switchMode('signup')}
-                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 ${
-                  mode === 'signup' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
-                }`}
+                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 ${mode === 'signup' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
+                  }`}
                 style={{ fontFamily: "'Bungee', cursive" }}
               >
                 Sign Up
-                <span 
+                <span
                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0c0c0c] transition-transform duration-300 origin-left"
                   style={{ transform: mode === 'signup' ? 'scaleX(1)' : 'scaleX(0)' }}
                 />

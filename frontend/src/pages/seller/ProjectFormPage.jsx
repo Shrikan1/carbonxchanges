@@ -12,7 +12,7 @@ import * as sellerApi from '../../api/endpoint/Sellerapi';
 import { Button } from '../../components/ui/Button';
 import { FiArrowLeft, FiArrowRight, FiSave, FiAlertCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import SellerHeader from '../../components/layout/SellerHeader';
+import SellerLayout from '../../components/layout/SellerLayout';
 
 // ─── LocalStorage key helpers ─────────────────────────────────────────────────
 
@@ -216,29 +216,11 @@ export default function ProjectFormPage() {
   }
 
   return (
-    <div className="min-h-[101vh] w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pb-8 font-sans">
-
-      <div className="w-full pt-8">
-        <SellerHeader
-          title={isEditMode ? 'Edit Draft Project' : 'Register Project'}
-          description={
-            isEditMode
-              ? 'Update your project details. You can save and come back anytime before submitting.'
-              : 'Provide details about your carbon reduction project to get verified.'
-          }
-          contentMaxWidth="800px"
-          action={
-            <Button
-              variant="outline"
-              onClick={() => navigate('/seller/projects')}
-              className="h-10 px-5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-medium shadow-sm transition-all flex items-center space-x-2"
-            >
-              <FiArrowLeft />
-              <span>Back to Projects</span>
-            </Button>
-          }
-        />
-      </div>
+    <SellerLayout 
+      title={isEditMode ? 'Edit Draft Project' : 'Register Project'}
+      subtitle={isEditMode ? 'Update your project details. You can save and come back anytime before submitting.' : 'Provide details about your carbon reduction project to get verified.'}
+    >
+      <div className="w-full flex flex-col items-center pb-12 font-sans relative">
 
       {/* Sticky Progress Bar */}
       <div className="sticky top-0 z-40 w-full flex flex-col items-center bg-[#f4f7f5]/95 backdrop-blur-md shadow-sm border-b border-gray-200/50 py-4 mb-8">
@@ -390,6 +372,7 @@ export default function ProjectFormPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </SellerLayout>
   );
 }

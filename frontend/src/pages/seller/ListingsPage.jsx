@@ -1,30 +1,26 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import * as marketplaceApi from '../../api/endpoint/marketplaceApi';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Label } from '../../components/ui/Label';
-import { FiPlus, FiTag, FiAlertCircle, FiTrash2 } from 'react-icons/fi';
-import { motion } from 'motion/react';
-import SellerHeader from '../../components/layout/SellerHeader';
+import SellerLayout from '../../components/layout/SellerLayout';
+import { FiPlus, FiTag, FiTrash2, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
 
 export default function ListingsPage() {
   const [listings, setListings] = useState([]);
   const [form, setForm] = useState({ batch_id: '', price_per_credit: '', amount_listed: '' });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [debugData, setDebugData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => { load(); }, []);
 
   async function load() {
+    setLoading(true);
     try {
       const { data } = await marketplaceApi.getMyListings();
-      setDebugData(JSON.stringify(data));
       setListings(data.data || []);
     } catch (err) {
       console.error('Failed to load listings:', err);
-      setDebugData('Error: ' + err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -54,137 +50,145 @@ export default function ListingsPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 py-8 font-sans">
-      <SellerHeader 
-        title="My Listings" 
-        description="Manage your active marketplace listings and create new ones."
-        contentMaxWidth="1200px"
-        // action={
-        //   // <Link to="/seller/listings/new" className="bg-brand hover:bg-brand-hover text-gray-900 font-bold h-10 px-6 rounded-xl flex items-center justify-center transition-colors shadow-sm">
-        //   //   + New Listing
-        //   // </Link>
-        // }
-      />
-      <div className="w-full max-w-[1200px] px-4 md:px-8">
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Create Listing Form */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 sticky top-24">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <FiPlus size={18} />
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900">New Listing</h2>
+    <SellerLayout title="My Listings" subtitle="Manage your active marketplace listings and create new ones.">
+      <div className="p-6 lg:p-8 max-w-[1200px] mx-auto w-full space-y-6">
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Create Listing Form (Left Column) */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 lg:sticky lg:top-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <FiPlus size={18} />
                 </div>
-
-                <form onSubmit={handleCreate} className="space-y-4">
-                  <div>
-                    <Label className="text-sm font-semibold text-gray-700">Batch ID</Label>
-                    <Input 
-                      value={form.batch_id} 
-                      onChange={(e) => setForm({ ...form, batch_id: e.target.value })} 
-                      required 
-                      className="mt-1.5 h-11 bg-gray-50 border-gray-200 rounded-xl focus:ring-emerald-500 focus:border-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm font-semibold text-gray-700">Price per Credit ($)</Label>
-                    <Input 
-                      type="number" 
-                      step="0.01" 
-                      value={form.price_per_credit} 
-                      onChange={(e) => setForm({ ...form, price_per_credit: e.target.value })} 
-                      required 
-                      className="mt-1.5 h-11 bg-gray-50 border-gray-200 rounded-xl focus:ring-emerald-500 focus:border-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm font-semibold text-gray-700">Amount to List</Label>
-                    <Input 
-                      type="number" 
-                      step="0.01" 
-                      value={form.amount_listed} 
-                      onChange={(e) => setForm({ ...form, amount_listed: e.target.value })} 
-                      required 
-                      className="mt-1.5 h-11 bg-gray-50 border-gray-200 rounded-xl focus:ring-emerald-500 focus:border-emerald-500"
-                    />
-                  </div>
-
-                  {error && (
-                    <div className="bg-red-50 text-red-700 p-3 rounded-xl flex items-start gap-2 text-sm">
-                      <FiAlertCircle className="mt-0.5 shrink-0" />
-                      <span>{error}</span>
-                    </div>
-                  )}
-
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="w-full h-11 bg-gray-900 hover:bg-black disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold rounded-xl mt-6 shadow-sm"
-                  >
-                    {isSubmitting ? 'Creating...' : 'Create Listing'}
-                  </Button>
-                </form>
+                <div>
+                  <h2 className="text-base font-semibold text-gray-900 tracking-tight">New Listing</h2>
+                  <p className="text-xs text-gray-500 mt-0.5">List batch credits for sale</p>
+                </div>
               </div>
-            </div>
 
-            {/* Active Listings List */}
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 min-h-[400px]">
-                <h3 className="text-lg font-bold text-gray-900 mb-6">Active & Past Listings</h3>
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-start gap-2.5 text-sm">
+                  <FiAlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <p className="leading-tight">{error}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleCreate} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Batch ID</label>
+                  <input 
+                    value={form.batch_id} 
+                    onChange={(e) => setForm({ ...form, batch_id: e.target.value })} 
+                    required 
+                    className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                    placeholder="e.g. 12"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Price per Credit ($)</label>
+                  <input 
+                    type="number" 
+                    step="0.01" 
+                    value={form.price_per_credit} 
+                    onChange={(e) => setForm({ ...form, price_per_credit: e.target.value })} 
+                    required 
+                    className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                    placeholder="0.00"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Amount to List</label>
+                  <input 
+                    type="number" 
+                    value={form.amount_listed} 
+                    onChange={(e) => setForm({ ...form, amount_listed: e.target.value })} 
+                    required 
+                    className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                    placeholder="Number of credits"
+                  />
+                </div>
                 
-                <div className="space-y-4">
-                  {listings.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500 border border-dashed border-gray-200 rounded-2xl">
-                      <FiTag size={24} className="mx-auto mb-3 text-gray-400" />
-                      <p>You have no marketplace listings.</p>
-                      {debugData && (
-                        <div className="mt-4 text-left p-4 bg-gray-100 rounded text-xs overflow-auto max-h-40">
-                          <strong>Debug Info:</strong>
-                          <pre>{debugData}</pre>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    listings.map((l) => (
-                      <div key={l.id} className="border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-emerald-200 transition-colors">
-                        <div>
-                          <div className="flex items-center gap-3 mb-1">
-                            <p className="font-bold text-gray-900">{l.project_title}</p>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${l.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
-                              {l.status}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            <span className="font-semibold text-gray-700">{l.amount_sold}</span> sold out of <span className="font-semibold text-gray-700">{l.amount_listed}</span> @ <span className="font-semibold text-emerald-600">₹{Number(l.price_per_credit).toFixed(2)}</span>
-                          </p>
-                        </div>
-                        {l.status === 'active' && (
-                          <Button 
-                            variant="outline" 
-                            onClick={() => handleCancel(l.id)}
-                            className="bg-red-50 border-red-100 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-xl px-4 h-9 font-semibold text-xs flex items-center gap-2"
-                          >
-                            <FiTrash2 size={14} /> Cancel
-                          </Button>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full mt-2 h-11 bg-[#10b981] hover:bg-emerald-600 disabled:opacity-50 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2 shadow-sm"
+                >
+                  {isSubmitting ? 'Creating...' : 'Create Listing'}
+                </button>
+              </form>
             </div>
-
           </div>
-        </motion.div>
+
+          {/* Active Listings (Right Column) */}
+          <div className="lg:col-span-2 flex flex-col">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+              <div className="px-6 py-5 border-b border-gray-200 flex items-center gap-2">
+                <FiTag className="text-emerald-600" />
+                <h2 className="text-base font-semibold text-gray-900 tracking-tight">Active Listings</h2>
+              </div>
+
+              {loading ? (
+                <div className="p-6 space-y-4">
+                  {[1, 2].map(i => (
+                    <div key={i} className="h-20 bg-gray-50 rounded-xl animate-pulse" />
+                  ))}
+                </div>
+              ) : listings.length === 0 ? (
+                <div className="p-16 text-center flex flex-col items-center justify-center flex-1">
+                  <div className="w-16 h-16 bg-gray-50 text-gray-400 rounded-full flex items-center justify-center mb-4">
+                    <FiTag className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">No active listings</h3>
+                  <p className="text-sm text-gray-500 max-w-sm">Use the form to list your batch credits on the marketplace.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-100 flex-1">
+                  <div className="hidden sm:grid grid-cols-[100px_1fr_100px_100px_60px] px-6 py-3 text-xs font-semibold tracking-wider text-gray-500 uppercase bg-gray-50">
+                    <span>Batch ID</span>
+                    <span>Listed Date</span>
+                    <span>Amount</span>
+                    <span>Price</span>
+                    <span className="text-right">Action</span>
+                  </div>
+                  {listings.map((l) => (
+                    <div key={l.id} className="group hover:bg-gray-50/50 transition-colors px-6 py-5">
+                      <div className="flex flex-col sm:grid sm:grid-cols-[100px_1fr_100px_100px_60px] gap-3 sm:gap-0 items-start sm:items-center">
+                        <div className="text-sm font-mono bg-gray-100 text-gray-600 px-2 py-1 rounded w-fit">
+                          B-{String(l.batch_id).padStart(4, '0')}
+                        </div>
+                        
+                        <div className="text-sm text-gray-500">
+                          {new Date(l.created_at).toLocaleDateString()}
+                        </div>
+                        
+                        <div className="text-sm font-bold text-gray-900">
+                          {l.amount_listed} <span className="text-xs font-medium text-gray-500">tCO2e</span>
+                        </div>
+                        
+                        <div className="text-sm font-bold text-emerald-600">
+                          ${l.price_per_credit}
+                        </div>
+                        
+                        <div className="w-full flex justify-end">
+                          <button 
+                            onClick={() => handleCancel(l.id)} 
+                            className="text-gray-400 hover:text-red-600 p-2 rounded hover:bg-red-50 transition-colors"
+                            title="Cancel Listing"
+                          >
+                            <FiTrash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </SellerLayout>
   );
 }

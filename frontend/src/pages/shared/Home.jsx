@@ -220,7 +220,7 @@ const Home = () => {
               >
                 <motion.span
                   layoutId="brand-logo"
-                  className="logo-retro uppercase tracking-tighter text-[clamp(3rem,8vw,6rem)] text-transparent"
+                  className="wise-font font-black tracking-tighter text-[clamp(3rem,8vw,6rem)] text-transparent"
                   style={{
                     WebkitTextStroke: '1.5px #bef264'
                   }}
@@ -247,26 +247,22 @@ const Home = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-8">
           {/* Headline — word-by-word stagger reveal */}
-          <div className="flex flex-col items-center justify-center space-y-4 mb-10 mt-4">
-            {['Pioneering Global', 'Climate Action.'].map((line, lineIdx) => (
-              <div key={lineIdx} className="flex flex-wrap justify-center gap-x-6 md:gap-x-8">
-                {line.split(' ').map((word, wordIdx) => (
-                  <motion.span
-                    key={wordIdx}
-                    className="logo-retro text-[clamp(2.5rem,6vw,5rem)] uppercase tracking-tight drop-shadow-lg leading-[1.1] inline-block"
-                    style={{ WebkitTextFillColor: 'white', background: 'none' }}
-                    initial={isFirstVisit ? { opacity: 0, y: 40, filter: 'blur(12px)' } : false}
-                    animate={isFirstVisit ? { opacity: 1, y: 0, filter: 'blur(0px)' } : false}
-                    transition={isFirstVisit ? {
-                      duration: 1.2,
-                      ease: [0.22, 1, 0.36, 1],
-                      delay: 1.8 + (lineIdx * 0.3) + (wordIdx * 0.12)
-                    } : {}}
-                  >
-                    {word}
-                  </motion.span>
-                ))}
-              </div>
+          <div className="flex flex-col items-center justify-center mb-10 mt-4">
+            {['Pioneering', 'Global', 'Climate Action'].map((phrase, phraseIdx) => (
+              <motion.div
+                key={phraseIdx}
+                className="wise-font font-black uppercase text-[clamp(3rem,7vw,6.5rem)] tracking-tight [text-shadow:1px_1px_0_#d1d5db,2px_2px_0_#d1d5db,3px_3px_0_#d1d5db,4px_4px_0_#d1d5db,5px_5px_0_#d1d5db,6px_6px_0_#d1d5db,7px_7px_0_#d1d5db,8px_8px_0_#d1d5db] text-white leading-[1.1] text-center"
+                style={{ background: 'none' }}
+                initial={isFirstVisit ? { opacity: 0, y: 40, filter: 'blur(12px)' } : false}
+                animate={isFirstVisit ? { opacity: 1, y: 0, filter: 'blur(0px)' } : false}
+                transition={isFirstVisit ? {
+                  duration: 1.2,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: 1.8 + (phraseIdx * 0.3)
+                } : {}}
+              >
+                {phrase}
+              </motion.div>
             ))}
           </div>
 
@@ -298,7 +294,7 @@ const Home = () => {
             >
               <p className="text-[13px] font-mono uppercase tracking-[0.2em] text-[#999]">Our Purpose</p>
               {/* Word-by-word blur reveal on the headline */}
-              <h2 className="text-4xl sm:text-6xl tracking-tighter leading-tight uppercase logo-retro">
+              <h2 className="text-4xl sm:text-6xl tracking-tighter leading-tight uppercase wise-font font-black [text-shadow:2px_2px_0_#bef264,4px_4px_0_#bef264,6px_6px_0_#bef264]">
                 {'Empowering Global Climate Action.'.split(' ').map((word, i) => (
                   <motion.span
                     key={i}
@@ -332,7 +328,7 @@ const Home = () => {
             </motion.div>
 
             <div className="w-full lg:w-7/12">
-              <div className="relative overflow-hidden  shadow-[0_20px_50px_rgba(0,0,0,0.15)] aspect-video ring-1 ring-black/5 transform transition-transform duration-500 ">
+              <div className="relative overflow-hidden border-2 border-gray-900 shadow-[17px_17px_0px_0px_#bef264] aspect-video transform transition-all duration-500 hover:-translate-y-1 hover:shadow-[16px_16px_0px_0px_#bef264]">
                 <video
                   autoPlay
                   loop
@@ -350,85 +346,22 @@ const Home = () => {
       </section>
 
       {/* ─── PROJECT GALLERY (DARK & FLOATING GALLERY) ─── */}
-      <section id="gallery" className="bg-[#022c22] text-white overflow-hidden py-32 relative">
-        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="max-w-md z-10">
-            <h2 className="text-5xl sm:text-7xl font-normal tracking-tight mb-6 text-white logo-retro" style={{ WebkitTextFillColor: 'white', background: 'none' }}>
-              Explore<br />Projects.
+      <section id="gallery" className="bg-[#112a14] text-white overflow-hidden py-32 relative">
+        <div className="max-w-[1400px] mx-auto px-6 flex flex-col gap-16">
+          <div className="w-full flex flex-col">
+            <h2 className="text-[14vw] xl:text-[180px] leading-[0.8] font-black tracking-tighter text-[#bef264] uppercase wise-font">
+              Explore
             </h2>
-            <p className="text-white/70 text-lg leading-relaxed mb-8 font-medium">
-              A profile, portfolio, and social feed in one place.
-              Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
-            </p>
-          </div>
-
-          <div className="relative w-full lg:ml-8 mt-10 lg:mt-0 flex flex-col">
-            <div className="flex items-center justify-between mb-4 px-4">
-              <span className="text-sm font-bold text-gray-500 tracking-widest uppercase">Slide Projects</span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => document.getElementById('project-slider-dark').scrollBy({ left: -260, behavior: 'smooth' })}
-                  className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-gray-800 transition-colors"
-                >
-                  <FaArrowRight className="transform rotate-180 text-xs" />
-                </button>
-                <button
-                  onClick={() => document.getElementById('project-slider-dark').scrollBy({ left: 260, behavior: 'smooth' })}
-                  className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-gray-800 transition-colors"
-                >
-                  <FaArrowRight className="text-xs" />
-                </button>
-              </div>
-            </div>
-
-            <div ref={projectSliderRef} id="project-slider-dark" className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 pt-2 px-4 [&::-webkit-scrollbar]:hidden scroll-smooth w-full">
-              {[...projectGalleryItems].reverse().map((item, idx) => (
-                <div
-                  key={idx}
-                  className="snap-start relative w-[260px] h-[360px] rounded-[2rem] overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.5)] flex-shrink-0 cursor-pointer group bg-[#111] p-2 border border-gray-800 transition-transform duration-300 hover:-translate-y-2"
-                >
-                  <div className="w-full h-full rounded-[1.5rem] overflow-hidden relative">
-                    <img src={item.image} className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110" alt={item.title} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-5 left-5 right-5 text-left pointer-events-none">
-                      <p className="text-white text-sm font-bold uppercase tracking-widest leading-tight mb-1">{item.title}</p>
-                      <div className="w-8 h-1 bg-[#10b981] rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <h2 className="text-[14vw] xl:text-[180px] leading-[0.8] font-black tracking-tighter text-[#bef264] uppercase wise-font mt-2 lg:mt-0">
+              Projects.
+            </h2>
+            <div className="max-w-2xl mt-8">
+              <p className="text-white/90 text-lg md:text-xl leading-relaxed font-medium">
+                A profile, portfolio, and social feed in one place.
+                Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
+              </p>
             </div>
           </div>
-
-          {/*
-          <div className="relative h-[600px] w-full">
-            <div className="w-full h-full overflow-hidden transform -rotate-6 scale-[1.05]">
-              <DriftWall
-                items={projectGalleryItems}
-                columns={4}
-                tileWidth={260}
-                tileHeight={180}
-                gap={16}
-                tilt={0}
-                turn={0}
-                perspective={1000}
-                depth={0}
-                speed={30}
-                direction="up"
-                variance={0.2}
-                parallax={0}
-                lift={0}
-                fade={0}
-                dim={1}
-                overlayColor="#0a0a0a"
-                radius={0}
-                roll={0}
-                pauseOnHover={false}
-                grayscale={false}
-              />
-            </div>
-          </div>
-          */}
         </div>
       </section>
 
@@ -457,7 +390,7 @@ const Home = () => {
 
         <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="max-w-xl lg:pr-10 z-10">
-            <h2 className="text-5xl sm:text-7xl tracking-tighter mb-8 leading-[1.05] text-[#1c1f1d] uppercase logo-retro">
+            <h2 className="text-5xl sm:text-7xl tracking-tighter mb-8 leading-[1.05] text-[#1c1f1d] uppercase wise-font font-black">
               Why CarbonXplanet.
             </h2>
             <p className="text-[#4a5550] text-[18px] leading-relaxed mb-6 font-medium">
@@ -507,7 +440,7 @@ const Home = () => {
         {/* Massive Parallax Watermark */}
         <div className="absolute inset-0 flex items-end pb-16 justify-center opacity-[0.08] pointer-events-none overflow-hidden select-none">
           <motion.span
-            className="text-[20vw] font-black leading-none whitespace-nowrap logo-retro"
+            className="text-[20vw] font-black leading-none whitespace-nowrap wise-font"
             style={{ x: textX }}
           >
             CARBONXPLANET DECENTRALIZED MARKET
@@ -516,7 +449,7 @@ const Home = () => {
 
         <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="max-w-xl">
-            <h2 className="text-5xl sm:text-7xl tracking-tighter mb-8 leading-[1.05] text-[#bef264] uppercase logo-retro">
+            <h2 className="text-5xl sm:text-7xl tracking-tighter mb-8 leading-[1.05] text-[#bef264] uppercase wise-font font-black">
               A carbon market<br />that doesn't<br />manipulate you.
             </h2>
             <p className="text-white/90 text-[18px] leading-relaxed mb-6 font-medium">
@@ -575,7 +508,7 @@ const Home = () => {
       <section className="bg-[#bef264] text-[#0a0a0a] overflow-hidden py-32 relative">
         {/* Massive Watermark */}
         <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none overflow-hidden select-none -rotate-6 scale-150">
-          <div className="flex flex-col space-y-4 font-black text-[20vw] leading-[0.8] whitespace-nowrap logo-retro">
+          <div className="flex flex-col space-y-4 font-black text-[20vw] leading-[0.8] whitespace-nowrap wise-font">
             <span>IMPACT IMPACT</span>
             <span>IMPACT IMPACT</span>
             <span>IMPACT IMPACT</span>
@@ -592,7 +525,7 @@ const Home = () => {
                 transition: { staggerChildren: 0.15 }
               }
             }}
-            className="text-4xl sm:text-5xl lg:text-7xl uppercase tracking-tighter mb-12 leading-[1.05] text-[#0a0a0a] logo-retro flex flex-col items-center text-center"
+            className="text-4xl sm:text-5xl lg:text-7xl uppercase tracking-tighter mb-12 leading-[1.05] text-[#0a0a0a] wise-font font-black flex flex-col items-center text-center"
             style={{ WebkitTextFillColor: '#0a0a0a', background: 'none' }}
           >
             <span className="overflow-hidden block">
@@ -694,7 +627,7 @@ const Home = () => {
       <section className="bg-[#f0f4f2] text-[#0a0a0a] py-24 lg:py-32 font-sans border-t border-[#e2e8e4]">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl tracking-tighter mb-4 uppercase logo-retro">Got Questions?</h2>
+            <h2 className="text-3xl md:text-5xl tracking-tighter mb-4 uppercase wise-font font-black">Got Questions?</h2>
             <p className="text-gray-500 text-base max-w-xl mx-auto font-medium">Everything you need to know about trading verified carbon credits on our platform.</p>
           </div>
 
@@ -738,7 +671,7 @@ const Home = () => {
         <div className="max-w-5xl mx-auto px-6 py-24">
           <div className="bg-[#022c22] border border-[#064e3b] p-10 sm:p-16 text-center shadow-2xl rounded-3xl">
             <p className="text-[12px] font-bold font-['JetBrains_Mono'] uppercase tracking-widest text-[#666] mb-4">For Enterprises</p>
-            <h2 className="text-3xl sm:text-5xl tracking-tighter text-white mb-6 uppercase logo-retro">
+            <h2 className="text-3xl sm:text-5xl tracking-tighter text-white mb-6 uppercase wise-font font-black">
               Ready to offset your<br className="hidden sm:block" /> carbon footprint?
             </h2>
             <p className="text-[#888] text-[15px] max-w-lg mx-auto mb-10 leading-relaxed">
@@ -768,7 +701,7 @@ const Home = () => {
         <div className="max-w-[1200px] w-full mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
           {/* Left Column - Contact Details */}
           <div className="flex flex-col justify-center">
-            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-normal mb-6 text-[#bef264] tracking-tighter leading-[1.05] uppercase logo-retro">
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 text-[#bef264] tracking-tighter leading-[1.05] uppercase wise-font">
               Get in<br />Touch.
             </h2>
             <p className="text-white/70 text-[16px] leading-relaxed max-w-md mb-12 font-medium">
@@ -815,7 +748,7 @@ const Home = () => {
           {/* Right Column - Form */}
           <div className="flex items-center justify-center">
             <div className="bg-[#111] border border-gray-800 p-8 md:p-10 shadow-2xl rounded-3xl w-full">
-              <h3 className="text-3xl md:text-4xl font-normal mb-8 text-white tracking-tighter uppercase logo-retro">Send a Message</h3>
+              <h3 className="text-3xl md:text-4xl font-black mb-8 text-white tracking-tighter uppercase wise-font">Send a Message</h3>
               <form onSubmit={handleContactSubmit} className="space-y-6">
 
                 <div className="relative">

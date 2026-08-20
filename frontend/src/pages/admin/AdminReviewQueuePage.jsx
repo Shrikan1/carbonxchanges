@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSearch, FiBell } from 'react-icons/fi';
+import { FiSearch, FiFolder, FiChevronRight, FiFilter, FiFileText } from 'react-icons/fi';
 import * as adminProjectApi from '../../api/endpoint/adminProjectApi';
-import { useAuthStore } from '../../store/useAuthStore';
-import AdminHeader from '../../components/layout/AdminHeader';
+import AdminLayout from '../../components/layout/AdminLayout';
 import PdfViewerModal from '../../components/ui/PdfViewerModal';
 
-const STATUSES = ['assigned', 'pending', 'in_progress', 'verified', 'approved', 'rejected', 'minted'];
+const STATUSES = ['pending', 'assigned', 'in_progress', 'verified', 'approved', 'rejected', 'minted'];
+
+const getStatusColor = (status) => {
+  const map = {
+    pending: 'bg-orange-100 text-orange-700',
+    assigned: 'bg-blue-100 text-blue-700',
+    in_progress: 'bg-blue-100 text-blue-700',
+    verified: 'bg-emerald-100 text-emerald-700',
+    approved: 'bg-emerald-100 text-emerald-700',
+    rejected: 'bg-red-100 text-red-700',
+    minted: 'bg-indigo-100 text-indigo-700',
+  };
+  return map[status] || 'bg-gray-100 text-gray-700';
+};
 
 export default function AdminReviewQueuePage() {
-  const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [status, setStatus] = useState('assigned');
+  const [status, setStatus] = useState('pending');
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState('');
   const [selectedPdfCid, setSelectedPdfCid] = useState(null);
 
   useEffect(() => {
@@ -29,117 +41,147 @@ export default function AdminReviewQueuePage() {
       if (err.response?.status === 404) {
         setProjects([]);
       } else {
-        console.error("Failed to load review queue", err);
+        console.error("Failed to load projects", err);
       }
     } finally {
       setLoading(false);
     }
   }
 
+  const filteredProjects = projects.filter(p => 
+    p.title?.toLowerCase().includes(search.toLowerCase()) || 
+    p.seller_name?.toLowerCase().includes(search.toLowerCase()) ||
+    p.id?.toString().includes(search)
+  );
+
   return (
-    <div className="admin-theme min-h-screen w-full flex flex-col items-center">
-      <div className="w-full max-w-[1400px] px-4 md:px-8 py-6">
+    <AdminLayout title="Projects" subtitle="Review and manage carbon projects across the verification pipeline.">
+      <div className="p-6 lg:p-8 w-full max-w-[1400px] mx-auto flex flex-col h-full">
 
-        <AdminHeader title="Project Review" />
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-140px)]">
+          
+          {/* Header & Controls */}
+          <div className="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row gap-4 items-center justify-between shrink-0">
+            <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-2 sm:pb-0 scrollbar-hide">
+              {STATUSES.map(s => (
+                <button
+                  key={s}
+                  onClick={() => setStatus(s)}
+                  className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all whitespace-nowrap ${
+                    status === s 
+                      ? 'bg-[#0f172a] text-white shadow-sm' 
+                      : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-100'
+                  }`}
+                >
+                  {s.replace('_', ' ')}
+                </button>
+              ))}
+            </div>
 
-        {/* Filters & Content */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col min-h-[600px]">
-          <div className="flex flex-col gap-4 mb-8 border-b border-gray-100 pb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Queue Management</h2>
-
-            <div className="flex items-center overflow-x-auto w-full pb-2 scrollbar-hide">
-              <div className="flex items-center bg-gray-50 rounded-lg p-1 border border-gray-100 min-w-max">
-                {STATUSES.map(s => (
-                  <button
-                    key={s}
-                    onClick={() => setStatus(s)}
-                    className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${status === s ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100/50'}`}
-                  >
-                    {s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                  </button>
-                ))}
-              </div>
+            <div className="relative w-full sm:w-64 shrink-0">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search projects..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+              />
             </div>
           </div>
 
-          {/* Project List */}
-          {loading ? (
-            <div className="flex flex-col gap-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="flex flex-col md:flex-row md:items-center bg-white border border-gray-100 rounded-2xl p-5 gap-4 md:gap-8 skeleton-glare">
-                  <div className="flex flex-col md:w-1/3 shrink-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="h-5 w-24 bg-gray-200 rounded"></div>
-                      <div className="h-3 w-16 bg-gray-200 rounded"></div>
-                    </div>
-                    <div className="h-5 w-3/4 bg-gray-200 rounded mt-1"></div>
-                  </div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 w-full bg-gray-200 rounded"></div>
-                    <div className="h-4 w-2/3 bg-gray-200 rounded"></div>
-                  </div>
-                  <div className="flex items-center justify-between md:justify-end gap-6 md:w-1/3 shrink-0 border-t md:border-t-0 border-gray-100 pt-4 md:pt-0 mt-4 md:mt-0">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0"></div>
-                      <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                    </div>
-                    <div className="h-4 w-16 bg-gray-200 rounded shrink-0"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : projects.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-3">
-              <FiSearch size={32} className="opacity-20" />
-              <p>No projects found in '{status}' queue.</p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {projects.map((p) => (
-                <div
-                  key={p.id}
-                  onClick={() => navigate(`/admin/projects/${p.id}`)}
-                  className="group cursor-pointer flex flex-col md:flex-row md:items-center bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md hover:border-gray-200 transition-all gap-4 md:gap-8 relative"
-                >
-                  <div className="flex flex-col md:w-1/3 shrink-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded w-fit">
-                        {p.project_type || 'Carbon Project'}
+          {/* Data Table */}
+          <div className="flex-1 overflow-auto">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-white sticky top-0 z-10 border-b border-gray-200 shadow-sm">
+                <tr>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider w-[35%]">Project</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider w-[15%]">Seller</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider w-[15%]">Est. Credits</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider w-[15%]">Status</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right w-[20%]">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i} className="animate-pulse">
+                      <td className="px-6 py-5"><div className="h-4 bg-gray-100 rounded w-3/4 mb-2"></div><div className="h-3 bg-gray-100 rounded w-1/2"></div></td>
+                      <td className="px-6 py-5"><div className="h-4 bg-gray-100 rounded w-24"></div></td>
+                      <td className="px-6 py-5"><div className="h-4 bg-gray-100 rounded w-16"></div></td>
+                      <td className="px-6 py-5"><div className="h-6 bg-gray-100 rounded-full w-20"></div></td>
+                      <td className="px-6 py-5 text-right"><div className="h-4 bg-gray-100 rounded w-16 ml-auto"></div></td>
+                    </tr>
+                  ))
+                ) : filteredProjects.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-20 text-center">
+                      <div className="flex flex-col items-center justify-center text-gray-400">
+                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-100">
+                          <FiFolder size={24} className="text-gray-300" />
+                        </div>
+                        <p className="text-sm font-medium text-gray-900">No projects found</p>
+                        <p className="text-xs text-gray-500 mt-1">There are no projects currently in the '{status}' state.</p>
                       </div>
-                      {p.created_at && (
-                        <span className="text-xs font-medium text-gray-400">{new Date(p.created_at).toLocaleDateString()}</span>
-                      )}
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">{p.title}</h3>
-                  </div>
-
-                  <p className="text-sm text-gray-500 line-clamp-2 flex-1">{p.description || "No description provided."}</p>
-
-                  <div className="flex items-center justify-between md:justify-end gap-6 md:w-1/3 shrink-0 border-t md:border-t-0 border-gray-100 pt-4 md:pt-0">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center text-sm font-bold text-green-800 shrink-0">
-                        {p.seller_name?.charAt(0) || 'S'}
-                      </div>
-                      <span className="text-sm font-medium text-gray-700 line-clamp-1">{p.seller_name || 'Seller'}</span>
-                    </div>
-                    <span className="text-sm font-semibold text-gray-900 shrink-0 whitespace-nowrap">{p.total_credits_estimated || 0} Credits</span>
-                    
-                    {p.verification_pdf_ipfs_cid && (
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedPdfCid(p.verification_pdf_ipfs_cid);
-                        }}
-                        className="px-3 py-1.5 text-xs font-medium bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded transition-colors"
-                      >
-                        PDF
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredProjects.map(p => (
+                    <tr 
+                      key={p.id} 
+                      onClick={() => navigate(`/admin/projects/${p.id}`)}
+                      className="hover:bg-gray-50 cursor-pointer transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="font-semibold text-gray-900 line-clamp-1">{p.title}</div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-gray-500 font-mono">ID: {p.id}</span>
+                          <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
+                            {p.project_type || 'Carbon'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center text-[10px] font-bold text-indigo-800">
+                            {p.seller_name?.charAt(0) || 'S'}
+                          </div>
+                          <span className="text-sm font-medium text-gray-700">{p.seller_name || '—'}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-semibold text-gray-900">{p.total_credits_estimated?.toLocaleString() || 0}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getStatusColor(status)}`}>
+                          {status.replace('_', ' ')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-3">
+                          {p.verification_pdf_ipfs_cid && (
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPdfCid(p.verification_pdf_ipfs_cid);
+                              }}
+                              className="px-3 py-1.5 text-xs font-medium bg-white border border-gray-200 text-gray-600 hover:text-emerald-700 hover:border-emerald-200 hover:bg-emerald-50 rounded-lg transition-colors flex items-center gap-1.5"
+                            >
+                              <FiFileText /> PDF
+                            </button>
+                          )}
+                          <span className="text-emerald-600 font-medium text-sm flex items-center gap-1 group-hover:underline">
+                            Review <FiChevronRight />
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div>
@@ -150,6 +192,6 @@ export default function AdminReviewQueuePage() {
           onClose={() => setSelectedPdfCid(null)} 
         />
       )}
-    </div>
+    </AdminLayout>
   );
 }

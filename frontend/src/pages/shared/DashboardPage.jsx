@@ -77,7 +77,9 @@ export default function DashboardPage() {
 
   // Agent Dashboard renders entirely independently to maintain its white theme
   if (user?.role === 'agent') {
-    return <AgentDashboard data={data} isLoading={isLoading} />;
+    return (
+      <AgentDashboard data={data} isLoading={isLoading} />
+    );
   }
 
   // Seller Dashboard renders entirely independently to maintain its white theme

@@ -1,179 +1,192 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuthStore } from '../../store/useAuthStore';
-import AdminHeader from '../../components/layout/AdminHeader';
+import AdminLayout from '../../components/layout/AdminLayout';
+import { 
+  FiFolder, FiClock, FiCheckCircle, FiCpu, 
+  FiUsers, FiShoppingBag, FiUserCheck, FiDollarSign 
+} from 'react-icons/fi';
+import { motion } from 'motion/react';
 
-const AdminDashboard = ({ data, isLoading }) => {
-  const { user } = useAuthStore();
-  const { users, projects, credits, pending_review_count, overdue_completions_count } = data || {};
-
-  return (
-    <div className="admin-theme min-h-screen w-full flex flex-col items-center">
-      <div className="w-full max-w-[1400px] px-4 md:px-8 py-6">
-
-        <AdminHeader title="Admin Dashboard" pendingReviewCount={pending_review_count} />
-
-        {/* Widgets Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col min-h-[200px] skeleton-glare">
-                <div className="h-6 bg-gray-200 rounded w-1/2 mb-6"></div>
-                <div className="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
-                <div className="space-y-3 mt-auto">
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-
-            {/* Gross Volume / Credits */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-semibold text-gray-900">Gross Volume</h3>
-              </div>
-
-              <div className="mb-6">
-                <span className="text-3xl font-bold text-gray-900 tracking-tight">₹{(credits?.total_platform_revenue || 0).toLocaleString('en-IN')}</span>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-500 font-medium">Credits Sold</span>
-                    <span className="text-gray-900 font-semibold">₹{(credits?.total_credits_sold || 0).toLocaleString('en-IN')}</span>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-500 font-medium">Credits Minted</span>
-                    <span className="text-gray-900 font-semibold">₹{(credits?.total_credits_minted || 0).toLocaleString('en-IN')}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Platform Users */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-semibold text-gray-900">Platform Users</h3>
-              </div>
-
-              {/* Donut Chart */}
-              {(() => {
-                const total = users?.total_users || 1;
-                const sPct = ((users?.total_sellers || 0) / total) * 100;
-                const bPct = ((users?.total_buyers || 0) / total) * 100;
-
-                const gradient = `conic-gradient(
-                #3b82f6 0% ${sPct}%, 
-                #10b981 ${sPct}% ${sPct + bPct}%, 
-                #fb923c ${sPct + bPct}% 100%
-              )`;
-
-                return (
-                  <div className="flex justify-center mb-6 mt-2">
-                    <div
-                      className="relative w-32 h-32 rounded-full flex items-center justify-center shadow-sm transition-all"
-                      style={{ background: total > 1 ? gradient : '#f3f4f6' }}
-                    >
-                      <div className="w-24 h-24 bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
-                        <span className="text-3xl font-bold text-gray-900 tracking-tight">{(users?.total_users || 0).toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              <div className="space-y-4 text-sm mt-auto">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-                    <span className="text-gray-500 font-medium">Sellers</span>
-                  </div>
-                  <span className="font-semibold text-gray-900">{users?.total_sellers || 0}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                    <span className="text-gray-500 font-medium">Buyers</span>
-                  </div>
-                  <span className="font-semibold text-gray-900">{users?.total_buyers || 0}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-orange-400"></div>
-                    <span className="text-gray-500 font-medium">Agents</span>
-                  </div>
-                  <span className="font-semibold text-gray-900">{users?.total_agents || 0}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Projects Pipeline */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col row-span-1">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-semibold text-gray-900">Projects Pipeline</h3>
-              </div>
-
-              <div className="mb-6 flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-gray-900 tracking-tight">{(projects?.total || 0).toLocaleString()}</span>
-                <span className="text-sm font-medium text-gray-500">Total</span>
-              </div>
-
-              <div className="space-y-3 text-sm flex-1">
-                {['pending', 'assigned', 'verified', 'approved', 'minted'].map((status) => {
-                  const count = projects?.[status] || 0;
-                  const max = projects?.total || 1;
-                  const percent = (count / max) * 100;
-                  return (
-                    <div key={status} className="flex flex-col gap-1.5">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-500 capitalize text-xs font-medium">{status.replace('_', ' ')}</span>
-                        <span className="font-semibold text-gray-900 text-xs">{count}</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-gray-900 rounded-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Insights */}
-            <div className="bg-gradient-to-br from-[#417698] via-[#8597a7] to-[#eeb075] rounded-3xl p-6 shadow-md border border-white/20 flex flex-col text-white relative overflow-hidden">
-              <div className="relative z-10 h-full flex flex-col justify-between">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-medium border border-white/20 mb-4">
-                    Insights
-                  </div>
-
-                  <h4 className="text-xl font-semibold leading-tight mb-2">
-                    Action Required
-                  </h4>
-
-                  <div className="space-y-3 mt-4 text-sm text-white/90">
-                    <div className="flex justify-between items-center bg-white/10 px-3 py-2 rounded-lg">
-                      <span>Pending Review</span>
-                      <span className="font-bold text-lg">{pending_review_count || 0}</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-white/10 px-3 py-2 rounded-lg">
-                      <span>Overdue Completions</span>
-                      <span className="font-bold text-lg">{overdue_completions_count || 0}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+const StatCard = ({ title, value, icon, loading, subtitle, trend }) => (
+  <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between">
+    <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500">
+          {icon}
+        </div>
+        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{title}</h3>
+      </div>
+    </div>
+    
+    {loading ? (
+      <div className="h-10 bg-gray-100 rounded animate-pulse w-1/2"></div>
+    ) : (
+      <div>
+        <div className="text-3xl font-bold text-gray-900 tracking-tight">{value}</div>
+        {subtitle && (
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-sm font-medium text-gray-500">{subtitle}</span>
           </div>
         )}
       </div>
-    </div>
-  );
-};
+    )}
+  </div>
+);
 
-export default AdminDashboard;
+export default function AdminDashboard({ data, isLoading }) {
+  const { users, projects, credits, pending_review_count } = data || {};
+
+  return (
+    <AdminLayout title="Admin Dashboard" subtitle="Monitor platform activity, project verification and credit issuance.">
+      <div className="p-6 lg:p-8 w-full max-w-[1400px] mx-auto space-y-8">
+        
+        {/* KPI Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard 
+            title="Total Projects" 
+            value={projects?.total?.toLocaleString() || '0'} 
+            icon={<FiFolder size={20} />} 
+            loading={isLoading}
+          />
+          <StatCard 
+            title="Pending Review" 
+            value={pending_review_count || '0'} 
+            icon={<FiClock size={20} className="text-orange-500" />} 
+            loading={isLoading}
+            subtitle={pending_review_count > 0 ? 'Requires immediate action' : 'All caught up'}
+          />
+          <StatCard 
+            title="Approved / Verified" 
+            value={(projects?.approved || 0) + (projects?.verified || 0)} 
+            icon={<FiCheckCircle size={20} className="text-emerald-500" />} 
+            loading={isLoading}
+          />
+          <StatCard 
+            title="Credits Minted" 
+            value={credits?.total_credits_minted?.toLocaleString() || '0'} 
+            icon={<FiCpu size={20} className="text-blue-500" />} 
+            loading={isLoading}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Verification Pipeline */}
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 lg:p-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-6">Verification Pipeline</h2>
+            
+            {isLoading ? (
+              <div className="space-y-4">
+                {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-12 bg-gray-50 rounded-lg animate-pulse" />)}
+              </div>
+            ) : (
+              <div className="relative">
+                <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-gray-100 z-0 hidden sm:block"></div>
+                <div className="space-y-3 relative z-10">
+                  
+                  {[
+                    { key: 'pending', label: 'Pending', icon: FiClock, color: 'orange' },
+                    { key: 'assigned', label: 'Assigned to Agent', icon: FiUserCheck, color: 'blue' },
+                    { key: 'verified', label: 'Agent Verified', icon: FiCheckCircle, color: 'emerald' },
+                    { key: 'approved', label: 'Admin Approved', icon: FiCheckCircle, color: 'emerald' },
+                    { key: 'minted', label: 'Minted on-chain', icon: FiCpu, color: 'indigo' },
+                  ].map((stage, idx) => {
+                    const count = projects?.[stage.key] || 0;
+                    return (
+                      <div key={stage.key} className="flex items-center gap-4 bg-gray-50 border border-gray-100 rounded-lg p-2 sm:p-0 sm:bg-transparent sm:border-none sm:rounded-none">
+                        <div className={`w-10 h-10 shrink-0 bg-white border-2 border-${stage.color}-100 rounded-full flex items-center justify-center text-${stage.color}-600 shadow-sm z-10`}>
+                          <stage.icon size={16} />
+                        </div>
+                        <div className="flex-1 flex justify-between items-center bg-white sm:bg-gray-50 border border-gray-100 py-2 px-4 rounded-lg shadow-sm">
+                          <div>
+                            <p className="text-sm font-semibold text-gray-900">{stage.label}</p>
+                          </div>
+                          <div className="text-lg font-bold text-gray-900">
+                            {count}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Platform Overview & Finance */}
+          <div className="space-y-8">
+            
+            {/* Platform Users */}
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-6">Platform Overview</h2>
+              
+              {isLoading ? (
+                <div className="h-40 bg-gray-50 rounded-xl animate-pulse"></div>
+              ) : (
+                <div>
+                  <div className="flex items-end gap-2 mb-6">
+                    <span className="text-4xl font-bold text-gray-900 tracking-tight">{users?.total_users || 0}</span>
+                    <span className="text-sm font-medium text-gray-500 pb-1">Total Users</span>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <FiFolder className="text-gray-500" />
+                        <span className="text-sm font-semibold text-gray-700">Sellers</span>
+                      </div>
+                      <span className="font-bold text-gray-900">{users?.total_sellers || 0}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <FiShoppingBag className="text-gray-500" />
+                        <span className="text-sm font-semibold text-gray-700">Buyers</span>
+                      </div>
+                      <span className="font-bold text-gray-900">{users?.total_buyers || 0}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <FiUserCheck className="text-gray-500" />
+                        <span className="text-sm font-semibold text-gray-700">Agents</span>
+                      </div>
+                      <span className="font-bold text-gray-900">{users?.total_agents || 0}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Financial Overview */}
+            <div className="bg-[#0f172a] rounded-2xl border border-slate-800 shadow-lg p-6 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-full blur-[60px] opacity-20 pointer-events-none"></div>
+              <h2 className="text-lg font-bold text-white mb-6 relative z-10 flex items-center gap-2">
+                <FiDollarSign className="text-emerald-400" /> Gross Volume
+              </h2>
+              
+              {isLoading ? (
+                <div className="h-12 bg-slate-800/50 rounded-xl animate-pulse"></div>
+              ) : (
+                <div className="relative z-10">
+                  <div className="mb-6">
+                    <span className="text-3xl font-black tracking-tight">
+                      ₹{credits?.total_platform_revenue?.toLocaleString('en-IN') || 0}
+                    </span>
+                  </div>
+                  <div className="space-y-3 pt-4 border-t border-slate-700/50">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-slate-400">Credits Sold</span>
+                      <span className="font-semibold">₹{credits?.total_credits_sold?.toLocaleString('en-IN') || 0}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </div>
+        </div>
+        
+      </div>
+    </AdminLayout>
+  );
+}

@@ -11,9 +11,9 @@ import { Textarea } from '../../components/ui/Textarea';
 import { Label } from '../../components/ui/Label';
 import { FiExternalLink, FiChevronLeft, FiCamera, FiTrash2, FiCheckCircle, FiFlag, FiAlertTriangle } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import AgentHeader from '../../components/layout/AgentHeader';
 import { TYPE_TO_STEP3 } from '../../components/seller/projectFormConfig';
 import CameraUploader from '../../components/ui/CameraUploader';
+import AgentLayout from '../../components/layout/AgentLayout';
 
 const InfoItem = ({ label, value, className = "", fullWidth = false }) => (
   <div className={`flex flex-col gap-1 ${fullWidth ? 'sm:col-span-2' : ''}`}>
@@ -356,32 +356,30 @@ export default function AgentProjectDetailPage() {
   const isCompletionLocked = project.status === 'in_progress' && expectedDate && today < expectedDate;
 
   return (
-    <div className="admin-theme min-h-screen w-full flex flex-col items-center bg-gray-50/50">
-      <div className="w-full max-w-[1400px] px-4 md:px-8 py-6">
-        <AgentHeader title="Project Details" hideNav={true} />
-
-        <div className="max-w-5xl mx-auto space-y-6 mt-4 relative">
+    <AgentLayout title="Project Details" subtitle="Verification workspace">
+      <div className="flex flex-col h-full w-full max-w-[1400px] mx-auto pb-12">
+        <div className="max-w-5xl mx-auto space-y-6 relative w-full">
           <button 
             onClick={() => navigate(-1)} 
-            className="group flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors w-fit mb-4"
+            className="group flex items-center gap-3 text-[#555] hover:text-[#0a0a0a] transition-colors w-fit mb-2"
           >
-            <div className="w-8 h-8 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center group-hover:border-gray-300 group-hover:bg-gray-50 transition-all">
-              <FiChevronLeft size={18} strokeWidth={2.5} />
+            <div className="w-10 h-10 rounded-full border border-[#e2e8e4] bg-white shadow-sm flex items-center justify-center group-hover:border-[#10b981] group-hover:bg-[#10b981] group-hover:text-white transition-all duration-300">
+              <FiChevronLeft size={20} strokeWidth={2.5} />
             </div>
-            <span className="text-sm font-semibold tracking-wide">Back</span>
+            <span className="text-sm font-bold tracking-wide">Back to Queue</span>
           </button>
 
           <ProjectStepper status={project.status} />
 
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl text-gray-900 mb-2 uppercase logo-retro tracking-tighter">{project.title}</h1>
-              <p className="text-sm text-gray-500 flex flex-wrap gap-2 items-center">
+              <h1 className="text-2xl sm:text-3xl text-[#0a0a0a] font-semibold mb-2 tracking-tight">{project.title}</h1>
+              <p className="text-xs text-[#999] flex flex-wrap gap-3 items-center uppercase tracking-[0.1em]" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                 <span>{project.project_type}</span>
-                <span className="text-gray-300">•</span>
+                <span className="text-[#e2e8e4]">|</span>
                 <span>{project.project_scale}</span>
-                <span className="text-gray-300">•</span>
-                <span>Status: <strong className="text-gray-900 uppercase tracking-wide">{project.status}</strong></span>
+                <span className="text-[#e2e8e4]">|</span>
+                <span className="font-bold text-[#666]">Status: {project.status.replace('_', ' ')}</span>
               </p>
             </div>
             
@@ -1013,6 +1011,6 @@ export default function AgentProjectDetailPage() {
           </div>
         </div>
       )}
-    </div>
+    </AgentLayout>
   );
 }

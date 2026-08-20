@@ -12,8 +12,8 @@ const Footer = () => {
             {/* Logo and Description (Left Column) */}
             <div className="md:col-span-5">
               <Link to="/" className="flex items-center mb-6">
-                <span className="logo-retro text-[22px] tracking-tight" style={{ WebkitTextFillColor: '#bef264', background: 'none' }}>
-                  CarbonXplanet
+                <span className="wise-font font-black uppercase tracking-tight text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black] text-3xl">
+                  CARBONXPLANET
                 </span>
               </Link>
               <p className="text-[#888] text-[13px] leading-relaxed mb-8 max-w-sm font-medium">
