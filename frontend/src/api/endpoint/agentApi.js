@@ -12,7 +12,7 @@ export const submitCompletionVerification = (projectId, payload) =>
 export const flagProject = (projectId, payload) =>
   api.post(`/v1/agent/projects/${projectId}/flag`, payload);
 
-export const updateReviewProgress = (projectId, review_progress) => api.put(`/v1/agent/projects/${projectId}/progress`, { review_progress });
+export const updateReviewProgress = (projectId, progressJson) => api.put(`/v1/agent/projects/${projectId}/progress`, { progressJson });
 export const reviewDocument = (projectId, docId, status, rejection_reason) => api.post(`/v1/agent/projects/${projectId}/documents/${docId}/review`, { status, rejection_reason });
 export const reviewKycDocument = (projectId, docType, status, rejection_reason) => api.post(`/v1/agent/projects/${projectId}/kyc-review`, { docType, status, rejection_reason });
 

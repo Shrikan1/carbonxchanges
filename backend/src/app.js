@@ -37,6 +37,8 @@ app.use('/api/v1/wallet', require('../routes/v1/walletRoutes'));
 app.use('/api/v1/role', require('../routes/v1/roleRoutes'));
 app.use('/api/v1/dashboard', require('../routes/v1/dashboardRoutes'));
 app.use('/api/v1/sales', require('../routes/v1/salesRoutes'));
+app.use('/api/v1/credits', require('../routes/v1/seller/Creditroutes'));
+app.use('/api/v1/marketplace', require('../routes/v1/seller/Marketplaceroutes'));
 app.use('/api/v1/buyer', require('../routes/v1/buyerRoutes'));
 app.use('/api/v1/notifications', require('../routes/v1/shared/notificationRoutes'));
 app.use('/v1/share', require('../routes/v1/shared/ogRoutes'));

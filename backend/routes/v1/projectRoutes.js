@@ -19,6 +19,7 @@ router.get('/all', requireRole('admin'), projectController.getAllProject);
 router.post('/', ensureSeller, projectController.createProject);
 router.put('/:id/submit', ensureSeller, projectController.submitProjectForReview);
 router.put('/:id/kyc-doc', ensureSeller, projectController.replaceKycDocument);
+router.put('/:id', ensureSeller, projectController.updateProject);
 router.get('/:id', projectController.getProjectById); // ownership check lives inside the controller — correct as-is
 router.delete('/:id', ensureSeller, projectController.deleteProject);
 

@@ -12,71 +12,32 @@ const Article = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Original high-quality project-related data, adapted for the new UI
-  const originalData = [
-    {
-      id: 1,
-      title: "Web3 & The Fight Against Climate Change",
-      tags: ["FEATURED", "WEB3", "CLIMATE"],
-      cover_image: img1,
-      date: "Aug 15, 2026",
-      read_time: "14 min read",
-      url: "#"
-    },
-    {
-      id: 2,
-      title: "The Future of Carbon Markets",
-      tags: ["MARKETS", "TRENDS", "EMISSIONS"],
-      cover_image: img2,
-      date: "Aug 12, 2026",
-      read_time: "8 min read",
-      url: "#"
-    },
-    {
-      id: 3,
-      title: "Blockchain's Role in Reforestation",
-      tags: ["BLOCKCHAIN", "REFORESTATION", "TECH"],
-      cover_image: img3,
-      date: "Aug 05, 2026",
-      read_time: "12 min read",
-      url: "#"
-    },
-    {
-      id: 4,
-      title: "Understanding Renewable Energy Certificates",
-      tags: ["EDUCATION", "RENEWABLE", "CERTIFICATES"],
-      cover_image: img4,
-      date: "Jul 28, 2026",
-      read_time: "5 min read",
-      url: "#"
-    },
-    {
-      id: 5,
-      title: "Ocean Conservation & Blue Carbon",
-      tags: ["CONSERVATION", "OCEAN", "BLUE CARBON"],
-      cover_image: img5,
-      date: "Jul 21, 2026",
-      read_time: "10 min read",
-      url: "#"
-    },
-    {
-      id: 6,
-      title: "Building an Infinite Grid for Eco-Tracking",
-      tags: ["DEVELOPER", "FRONT-END", "TUTORIAL"],
-      cover_image: img1, // Reusing an image to fill out the 3x2 grid
-      date: "Feb 16, 2026",
-      read_time: "6 min read",
-      url: "#"
-    }
-  ];
+  const fallbackImage = img1;
 
   useEffect(() => {
-    // Simulating API fetch
     const fetchArticles = async () => {
       setLoading(true);
       try {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setArticles(originalData);
+        const apiKey = import.meta.env.VITE_ARTICAL_API;
+        if (!apiKey) {
+          console.error("VITE_ARTICAL_API is not defined in .env");
+          return;
+        }
+
+        const url = 
+          `https://content.guardianapis.com/search` +
+          `?q=carbon%20credits` +
+          `&section=environment` +
+          `&order-by=newest` +
+          `&show-fields=thumbnail,trailText` +
+          `&api-key=${apiKey}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.response && data.response.results) {
+          setArticles(data.response.results);
+        }
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -117,30 +78,38 @@ const Article = () => {
             ))
           ) : (
             articles.map((article) => (
-              <a href={article.url} key={article.id} className="group flex flex-col bg-white border border-gray-200 border-b-[5px] border-b-gray-300 hover:border-b-gray-400 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+              <a href={article.webUrl} target="_blank" rel="noopener noreferrer" key={article.id} className="group flex flex-col bg-white border border-gray-200 border-b-[5px] border-b-gray-300 hover:border-b-gray-400 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 
                 {/* Image Section */}
-                <div className="w-full aspect-[4/5] sm:aspect-square overflow-hidden bg-gray-100">
+                <div className="w-full aspect-[4/5] sm:aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
                   <img 
-                    src={article.cover_image} 
-                    alt={article.title} 
+                    src={article.fields?.thumbnail || fallbackImage} 
+                    alt={article.webTitle} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
                 
                 {/* Content Section */}
-                <div className="flex flex-col p-5 sm:p-6 bg-white">
+                <div className="flex flex-col p-5 sm:p-6 bg-white flex-grow">
                   
                   {/* Title */}
-                  <h2 className="text-[22px] font-medium text-gray-900 tracking-tight leading-snug line-clamp-2 mb-2 group-hover:text-emerald-600 transition-colors">
-                    {article.title}
-                  </h2>
+                  <h2 
+                    className="text-[22px] font-medium text-gray-900 tracking-tight leading-snug line-clamp-3 mb-2 group-hover:text-emerald-600 transition-colors"
+                    dangerouslySetInnerHTML={{ __html: article.webTitle }}
+                  />
                   
                   {/* Description */}
-                  <p className="text-sm text-gray-500 line-clamp-2 font-normal leading-relaxed">
-                    {article.tags?.join(' • ')} — A deep dive into sustainable carbon markets and environmental impact.
-                  </p>
+                  {article.fields?.trailText && (
+                    <p 
+                      className="text-sm text-gray-500 line-clamp-3 font-normal leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: article.fields.trailText }}
+                    />
+                  )}
                   
+                  {/* Date */}
+                  <div className="mt-auto pt-4 flex items-center text-xs text-gray-400 font-medium uppercase tracking-wider">
+                    <span>{new Date(article.webPublicationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  </div>
                 </div>
               </a>
             ))

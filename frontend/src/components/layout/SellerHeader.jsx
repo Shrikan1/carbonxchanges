@@ -11,6 +11,7 @@ const tabs = [
   { name: 'Credits', path: '/seller/credits' },
   { name: 'Listings', path: '/seller/listings' },
   { name: 'Sales', path: '/seller/sales' },
+  { name: 'Wallet', path: '/seller/wallet' },
 ];
 
 const SellerHeader = ({ 

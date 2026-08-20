@@ -7,6 +7,7 @@ import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import { FiThumbsUp, FiShare2, FiClock, FiMapPin, FiArrowLeft, FiTarget, FiInfo, FiActivity } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
+import ProjectStepper from '../../components/ProjectStepper';
 
 export default function PublicProjectShowcasePage() {
   const { projectId } = useParams();
@@ -94,6 +95,12 @@ export default function PublicProjectShowcasePage() {
             </span>
           </div>
         </div>
+
+        {project?.status && (
+          <div className="mb-10">
+            <ProjectStepper status={project.status} />
+          </div>
+        )}
 
         {/* Project Detailed Stats & Description */}
         {project && (

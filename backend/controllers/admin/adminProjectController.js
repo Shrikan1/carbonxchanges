@@ -60,8 +60,23 @@ async function getProjectDetails(req, res) {
     const enrichedProject = await enrichWithSignedUrls(project);
     
     const documents = await Document.findDocumentsByProject(project.id);
+    let verification = await Verification.getVerificationStatus(project.id);
     
-    res.json({ project: enrichedProject, documents });
+    // Enrich verification photos with signed URLs
+    if (verification) {
+      try {
+        if (verification.initial_report?.photo_url) {
+          verification.initial_report.photo_signed_url = await getSignedUrl(BUCKETS.KYC_DOCS, verification.initial_report.photo_url);
+        }
+        if (verification.completion_report?.photo_url) {
+          verification.completion_report.photo_signed_url = await getSignedUrl(BUCKETS.KYC_DOCS, verification.completion_report.photo_url);
+        }
+      } catch (err) {
+        console.error('Error generating signed URLs for verification photos:');
+      }
+    }
+
+    res.json({ project: enrichedProject, documents, verification });
   } catch (err) {
     console.error('Get project details error:', err);
     res.status(500).json({ error: 'Failed to fetch project details' });

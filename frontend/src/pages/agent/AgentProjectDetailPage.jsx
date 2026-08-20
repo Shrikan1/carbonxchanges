@@ -4,6 +4,7 @@ import * as agentApi from '../../api/endpoint/agentApi';
 import LocationMap from '../../components/LocationMap';
 import GoogleMapModal from '../../components/GoogleMapModal';
 import DocumentEmbed from '../../components/ui/DocumentEmbed';
+import ProjectStepper from '../../components/ProjectStepper';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
@@ -100,9 +101,10 @@ export default function AgentProjectDetailPage() {
     }
   }
 
-  const renderKycDoc = (url, title, docType) => {
-    if (!url) return null;
+  const renderKycDoc = (url, title, docType, path) => {
+    if (!url && !path) return null;
     const docData = project.kyc_docs_status?.[docType] || { status: 'pending', reason: null };
+    const isBroken = path && !url;
     
     const headerRight = (
       <div className="flex gap-2 items-center">
@@ -125,7 +127,21 @@ export default function AgentProjectDetailPage() {
 
     return (
       <div className="w-full">
-        <DocumentEmbed url={url} title={title} headerRight={headerRight} />
+        {isBroken ? (
+          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm h-[400px] flex flex-col">
+            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+              <h4 className="font-semibold text-gray-800 text-sm">{title}</h4>
+              {headerRight}
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 text-gray-400 p-6 text-center">
+              <FiAlertTriangle size={48} className="mb-4 text-red-400" />
+              <p className="font-medium text-gray-700">Image Failed to Load</p>
+              <p className="text-xs mt-2 max-w-xs">The file path exists in the database, but the image is missing from storage. Please reject it so the seller can re-upload.</p>
+            </div>
+          </div>
+        ) : (
+          <DocumentEmbed url={url} title={title} headerRight={headerRight} />
+        )}
       </div>
     );
   };
@@ -354,6 +370,8 @@ export default function AgentProjectDetailPage() {
             </div>
             <span className="text-sm font-semibold tracking-wide">Back</span>
           </button>
+
+          <ProjectStepper status={project.status} />
 
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
@@ -809,9 +827,9 @@ export default function AgentProjectDetailPage() {
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {renderKycDoc(project.aadhaar_doc_signed_url, "Owner ID (KYC)", "aadhaar")}
-                  {renderKycDoc(project.land_deed_signed_url, "Land Deed", "land_deed")}
-                  {renderKycDoc(project.live_verification_photo_signed_url, "Live Photo (KYC)", "live_photo")}
+                  {renderKycDoc(project.aadhaar_doc_signed_url, "Owner ID (KYC)", "aadhaar", project.aadhaar_doc_path)}
+                  {renderKycDoc(project.land_deed_signed_url, "Land Deed", "land_deed", project.land_deed_path)}
+                  {renderKycDoc(project.live_verification_photo_signed_url, "Live Photo (KYC)", "live_photo", project.live_verification_photo_path)}
                   {documents.map((doc) => {
                     const headerRight = (
                       <div className="flex gap-2 items-center">

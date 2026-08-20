@@ -14,7 +14,7 @@ function getContract() {
   if (cachedContract) return cachedContract;
 
   const artifactPath = path.join(
-    __dirname, '..', '..', '..', 'blockchain', 'artifacts', 'contracts', 'CarbonToken.sol', 'CarbonToken.json'
+    __dirname, '..', '..', 'blockchain', 'artifacts', 'contracts', 'CarbonToken.sol', 'CarbonToken.json'
   );
   const artifact = require(artifactPath);
 

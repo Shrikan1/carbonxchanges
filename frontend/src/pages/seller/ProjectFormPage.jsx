@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   getFormStepsNumbered,
   getInitialFormData,
@@ -8,22 +8,88 @@ import {
 } from '../../components/seller/projectFormConfig';
 import FormField from '../../components/seller/FormField';
 import { useSellerStore } from '../../store/useSellerStore';
+import * as sellerApi from '../../api/endpoint/Sellerapi';
 import { Button } from '../../components/ui/Button';
 import { FiArrowLeft, FiArrowRight, FiSave, FiAlertCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import SellerHeader from '../../components/layout/SellerHeader';
 
+// ─── LocalStorage key helpers ─────────────────────────────────────────────────
+
+function getDraftKey(projectId) {
+  return projectId ? `project_draft_${projectId}` : 'project_draft_new';
+}
+
+function saveDraftToStorage(projectId, formData) {
+  try {
+    localStorage.setItem(getDraftKey(projectId), JSON.stringify(formData));
+  } catch { /* quota exceeded – ignore */ }
+}
+
+function loadDraftFromStorage(projectId) {
+  try {
+    const raw = localStorage.getItem(getDraftKey(projectId));
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function clearDraftFromStorage(projectId) {
+  try {
+    localStorage.removeItem(getDraftKey(projectId));
+  } catch { /* ignore */ }
+}
+
+// ─── Helpers: flatten a project record back to the form shape ─────────────────
+function flattenProjectToFormData(project) {
+  const initial = getInitialFormData();
+  if (!project) return initial;
+
+  const merged = { ...initial };
+
+  for (const key of Object.keys(initial)) {
+    if (project[key] !== undefined && project[key] !== null) {
+      merged[key] = project[key];
+    }
+  }
+
+  if (project.methodology_specific_data && typeof project.methodology_specific_data === 'object') {
+    for (const [k, v] of Object.entries(project.methodology_specific_data)) {
+      if (v !== null && v !== undefined) {
+        merged[k] = v;
+      }
+    }
+  }
+
+  const DB_TO_FORM = {
+    aadhaar_doc_path: 'aadhaar_doc',
+    land_deed_path: 'land_deed',
+    live_verification_photo_path: 'live_verification_photo',
+  };
+  for (const [dbKey, formKey] of Object.entries(DB_TO_FORM)) {
+    if (project[dbKey]) merged[formKey] = project[dbKey];
+  }
+
+  return merged;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function ProjectFormPage() {
   const navigate = useNavigate();
-  const createProject = useSellerStore((s) => s.createProject);
+  const { projectId } = useParams();
+  const isEditMode = Boolean(projectId);
+
+  const { createProject, updateProject, projects, fetchProjects } = useSellerStore();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState(getInitialFormData());
-  const [fieldErrors, setFieldErrors] = useState({}); // per-field error map
+  const [formData, setFormData] = useState(getInitialFormData);
+  const [fieldErrors, setFieldErrors] = useState({});
   const [globalError, setGlobalError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [loadingDraft, setLoadingDraft] = useState(isEditMode);
+  const [savedProjectId, setSavedProjectId] = useState(projectId ? Number(projectId) : null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Dynamically re-generate steps whenever project_type changes
   const steps = useMemo(
     () => getFormStepsNumbered(formData.project_type),
     [formData.project_type]
@@ -32,9 +98,50 @@ export default function ProjectFormPage() {
   const stepConfig = steps[currentStep - 1];
   const isLastStep = currentStep === steps.length;
 
+  // ── On mount: load existing data ──────────────────────────────────────────
+  useEffect(() => {
+    if (!isEditMode) {
+      // New project: restore any in-progress draft from localStorage
+      const stored = loadDraftFromStorage(null);
+      if (stored) setFormData(stored);
+      return;
+    }
+
+    // Edit mode: always fetch full project data from API so no fields are missing.
+    // localStorage is only used as a cache for mid-session edits — we clear it
+    // first so stale partial data never overrides fresh server data.
+    const loadFullProject = async () => {
+      try {
+        const { data } = await sellerApi.getProjectById(projectId);
+        const project = data.project || data;
+        const flattened = flattenProjectToFormData(project);
+
+        // Merge with any in-progress localStorage edits on top of the server data
+        const stored = loadDraftFromStorage(projectId);
+        const merged = stored ? { ...flattened, ...stored } : flattened;
+
+        setFormData(merged);
+        // Cache merged result so next visit is instant
+        saveDraftToStorage(projectId, merged);
+      } catch (err) {
+        console.error('Failed to load project for editing:', err);
+        // If the API call fails, fall back to localStorage if available
+        const stored = loadDraftFromStorage(projectId);
+        if (stored) setFormData(stored);
+      } finally {
+        setLoadingDraft(false);
+      }
+    };
+
+    loadFullProject();
+  }, [isEditMode, projectId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   function handleFieldChange(name, value) {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear per-field error when user starts correcting it
+    setFormData((prev) => {
+      const next = { ...prev, [name]: value };
+      saveDraftToStorage(savedProjectId ?? (isEditMode ? projectId : null), next);
+      return next;
+    });
     if (fieldErrors[name]) {
       setFieldErrors((prev) => { const n = { ...prev }; delete n[name]; return n; });
     }
@@ -47,15 +154,13 @@ export default function ProjectFormPage() {
       setGlobalError(null);
       return true;
     }
-
-    // Build a per-field error map for inline display
     const errorMap = {};
     for (const field of stepConfig.fields) {
       const fieldError = errors.find((e) => e.includes(`"${field.label}"`));
       if (fieldError) errorMap[field.name] = fieldError.replace(`"${field.label}" `, '');
     }
     setFieldErrors(errorMap);
-    setGlobalError('Please fill all the fields.');
+    setGlobalError('Please fill all the required fields.');
     return false;
   }
 
@@ -75,16 +180,23 @@ export default function ProjectFormPage() {
   async function handleSaveDraft() {
     if (!validateCurrentStep()) return;
 
-    // Separate type-specific fields into methodology_specific_data JSONB
     const payload = separateFormData(formData.project_type, formData);
 
     setSaving(true);
     setGlobalError(null);
     try {
-      const project = await createProject(payload);
-      navigate('/seller/projects', { state: { justCreated: project.id } });
+      if (savedProjectId) {
+        await updateProject(savedProjectId, payload);
+      } else {
+        const project = await createProject(payload);
+        setSavedProjectId(project.id);
+        clearDraftFromStorage(null);
+        saveDraftToStorage(project.id, formData);
+      }
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-      setGlobalError(err.response?.data?.error || 'Failed to create project draft');
+      setGlobalError(err.response?.data?.error || 'Failed to save draft');
     } finally {
       setSaving(false);
     }
@@ -92,14 +204,28 @@ export default function ProjectFormPage() {
 
   const progressPercent = Math.round((currentStep / steps.length) * 100);
 
+  if (loadingDraft) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-[#f4f7f5]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500" />
+          <p className="text-sm text-gray-500 font-medium">Loading project...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[101vh] w-full flex flex-col items-center bg-[#f4f7f5] text-gray-900 pb-8 font-sans">
-      
-      {/* Normal Scrolling Header */}
+
       <div className="w-full pt-8">
-        <SellerHeader 
-          title="Register Project" 
-          description="Provide details about your carbon reduction project to get verified."
+        <SellerHeader
+          title={isEditMode ? 'Edit Draft Project' : 'Register Project'}
+          description={
+            isEditMode
+              ? 'Update your project details. You can save and come back anytime before submitting.'
+              : 'Provide details about your carbon reduction project to get verified.'
+          }
           contentMaxWidth="800px"
           action={
             <Button
@@ -114,7 +240,7 @@ export default function ProjectFormPage() {
         />
       </div>
 
-      {/* Sticky Progress Section */}
+      {/* Sticky Progress Bar */}
       <div className="sticky top-0 z-40 w-full flex flex-col items-center bg-[#f4f7f5]/95 backdrop-blur-md shadow-sm border-b border-gray-200/50 py-4 mb-8">
         <div className="w-full max-w-[800px] px-4 md:px-8 mx-auto">
           <div className="flex justify-between items-center mb-2">
@@ -132,7 +258,6 @@ export default function ProjectFormPage() {
               </span>
             </div>
           </div>
-          {/* Segmented progress bar */}
           <div className="flex gap-1.5">
             {steps.map((s) => (
               <div
@@ -151,7 +276,6 @@ export default function ProjectFormPage() {
         </div>
       </div>
 
-      {/* Main Form Content */}
       <div className="w-full max-w-[800px] px-4 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -159,14 +283,48 @@ export default function ProjectFormPage() {
           transition={{ duration: 0.4 }}
           className="w-full"
         >
+          {/* Save success banner */}
+          {saveSuccess && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-2xl mb-6 flex items-center gap-3"
+            >
+              <FiSave size={18} className="flex-shrink-0" />
+              <p className="text-sm font-medium">
+                Draft saved! You can continue editing or go back to your projects.
+              </p>
+            </motion.div>
+          )}
+
+          {/* Edit mode info banner */}
+          {isEditMode && !saveSuccess && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-2xl mb-6 flex items-center gap-3">
+              <FiSave size={18} className="flex-shrink-0" />
+              <p className="text-sm font-medium">
+                You're editing a draft. Make your changes and click <strong>Save Draft</strong> to update. Submit when you're ready.
+              </p>
+            </div>
+          )}
+
+          {/* Error banner */}
+          {globalError && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-6 flex items-center gap-3"
+            >
+              <FiAlertCircle size={20} className="flex-shrink-0" />
+              <p className="text-sm font-medium">{globalError}</p>
+            </motion.div>
+          )}
 
           {/* Form Card */}
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-6">
             <h2 className="text-xl font-bold text-gray-900 mb-1">{stepConfig.title}</h2>
             {stepConfig.typeSpecific && formData.project_type && (
               <p className="text-sm text-gray-500 mb-6">
-                These fields are specific to <strong className="capitalize">{formData.project_type.replace(/_/g, ' ')}</strong> projects
-                and will be stored as structured methodology data.
+                These fields are specific to <strong className="capitalize">{formData.project_type.replace(/_/g, ' ')}</strong> projects.
               </p>
             )}
             {!stepConfig.typeSpecific && <div className="mb-6" />}
@@ -193,18 +351,6 @@ export default function ProjectFormPage() {
             </AnimatePresence>
           </div>
 
-          {/* Global Error Banner */}
-          {globalError && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-6 flex items-center gap-3"
-            >
-              <FiAlertCircle size={20} className="flex-shrink-0" />
-              <p className="text-sm font-medium">{globalError}</p>
-            </motion.div>
-          )}
-
           {/* Navigation Controls */}
           <div className="flex justify-between items-center mt-8">
             <Button
@@ -219,24 +365,28 @@ export default function ProjectFormPage() {
               Previous
             </Button>
 
-            {isLastStep ? (
+            <div className="flex items-center gap-3">
+              {/* Always-visible Save Draft button */}
               <Button
                 onClick={handleSaveDraft}
                 disabled={saving}
-                className="h-11 px-8 rounded-xl bg-brand hover:bg-brand-hover text-gray-900 font-bold shadow-sm"
+                variant="outline"
+                className="h-11 px-6 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold shadow-sm flex items-center gap-2"
               >
+                <FiSave size={15} />
                 {saving ? 'Saving...' : 'Save Draft'}
-                <FiSave className="ml-2" />
               </Button>
-            ) : (
-              <Button
-                onClick={handleNext}
-                className="h-11 px-8 rounded-xl bg-gray-900 hover:bg-black text-white font-bold shadow-sm"
-              >
-                Next
-                <FiArrowRight className="ml-2" />
-              </Button>
-            )}
+
+              {!isLastStep && (
+                <Button
+                  onClick={handleNext}
+                  className="h-11 px-8 rounded-xl bg-gray-900 hover:bg-black text-white font-bold shadow-sm"
+                >
+                  Next
+                  <FiArrowRight className="ml-2" />
+                </Button>
+              )}
+            </div>
           </div>
         </motion.div>
       </div>

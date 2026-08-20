@@ -8,7 +8,8 @@ import AdminHeader from '../../components/layout/AdminHeader';
 import LocationMap from '../../components/LocationMap';
 import GoogleMapModal from '../../components/GoogleMapModal';
 import DocumentEmbed from '../../components/ui/DocumentEmbed';
-import { FiExternalLink, FiChevronLeft } from 'react-icons/fi';
+import ProjectStepper from '../../components/ProjectStepper';
+import { FiExternalLink, FiChevronLeft, FiAlertTriangle } from 'react-icons/fi';
 import { TYPE_TO_STEP3 } from '../../components/seller/projectFormConfig';
 
 const InfoItem = ({ label, value, className = "" }) => (
@@ -39,9 +40,11 @@ const SectionHeader = ({ title, sectionKey, project }) => {
   );
 };
 
-const renderKycDoc = (project, docType, label, path) => {
-  if (!project || !path) return null;
+const renderKycDoc = (project, docType, label, url, dbPath) => {
+  if (!project) return null;
+  if (!url && !dbPath) return null;
   const st = project.kyc_docs_status?.[docType] || { status: 'pending', reason: null };
+  const isBroken = dbPath && !url;
   
   const headerRight = (
     <div className="flex gap-2 items-center">
@@ -58,7 +61,21 @@ const renderKycDoc = (project, docType, label, path) => {
 
   return (
     <div key={docType} className="w-full">
-      <DocumentEmbed url={path} title={label} headerRight={headerRight} />
+      {isBroken ? (
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm h-[400px] flex flex-col">
+          <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+            <h4 className="font-semibold text-gray-800 text-sm">{label}</h4>
+            {headerRight}
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 text-gray-400 p-6 text-center">
+            <FiAlertTriangle size={48} className="mb-4 text-red-400" />
+            <p className="font-medium text-gray-700">Image Failed to Load</p>
+            <p className="text-xs mt-2 max-w-xs">The file path exists in the database, but the image is missing from storage.</p>
+          </div>
+        </div>
+      ) : (
+        <DocumentEmbed url={url} title={label} headerRight={headerRight} />
+      )}
     </div>
   );
 };
@@ -75,6 +92,7 @@ export default function AdminProjectDetailPage() {
   const [showRejectConfirm, setShowRejectConfirm] = useState(false);
 
   const [documents, setDocuments] = useState([]);
+  const [verification, setVerification] = useState(null);
 
   useEffect(() => {
     load();
@@ -84,6 +102,7 @@ export default function AdminProjectDetailPage() {
     const { data } = await adminProjectApi.getProjectDetails(id);
     setProject(data.project);
     setDocuments(data.documents || []);
+    setVerification(data.verification || null);
 
     // Always load agents so we can display the assigned agent's name/email,
     // and so they're ready if the admin wants to assign a different agent.
@@ -185,6 +204,8 @@ export default function AdminProjectDetailPage() {
             </div>
             <span className="text-sm font-semibold tracking-wide">Back</span>
           </button>
+
+          <ProjectStepper status={project.status} />
 
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
@@ -289,14 +310,38 @@ export default function AdminProjectDetailPage() {
               {/* Location & Area */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
                 <SectionHeader title="Location & Area" sectionKey="location" project={project} />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4 mb-5">
                   <InfoItem label="Country" value={project.country} />
                   <InfoItem label="State/Region" value={project.state_region} />
-                  <InfoItem label="Coordinates" value={(project.latitude && project.longitude) ? `${project.latitude}, ${project.longitude}` : null} />
+                  <InfoItem label="Coordinates" value={(project.latitude && project.longitude) ? `${Number(project.latitude).toFixed(6)}, ${Number(project.longitude).toFixed(6)}` : null} />
                   <InfoItem label="Total Area" value={project.total_project_area_hectares ? `${project.total_project_area_hectares} ha` : null} />
                   <InfoItem label="Eligible Area" value={project.eligible_area_hectares ? `${project.eligible_area_hectares} ha` : null} />
-                  <InfoItem label="Set-Aside Conservation" value={project.set_aside_conservation_percent ? `${project.set_aside_conservation_percent}%` : null} />
+                  <InfoItem label="Set-Aside Conservation" value={project.set_aside_conservation_percent !== null && project.set_aside_conservation_percent !== undefined ? `${project.set_aside_conservation_percent}%` : null} />
                 </div>
+
+                {/* Embedded Map */}
+                {project.latitude && project.longitude && (
+                  <div className="rounded-2xl overflow-hidden border border-gray-100 mt-2">
+                    <div className="h-56">
+                      <LocationMap
+                        markers={[{ lat: Number(project.latitude), lng: Number(project.longitude), label: project.title }]}
+                        zoom={13}
+                        height="100%"
+                      />
+                    </div>
+                    <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                      <span className="text-xs text-gray-500">
+                        <span className="font-semibold text-gray-700">Coordinates:</span> {project.latitude}, {project.longitude}
+                      </span>
+                      <button
+                        onClick={() => setShowMapModal(true)}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
+                      >
+                        View in Google Maps <FiExternalLink size={12} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Type-Specific Data */}
@@ -369,9 +414,9 @@ export default function AdminProjectDetailPage() {
                 <h3 className="text-lg font-bold text-gray-900 mb-5">Documents & Evidence</h3>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {renderKycDoc(project, 'aadhaar', 'Owner ID (KYC)', project.aadhaar_doc_signed_url)}
-                  {renderKycDoc(project, 'land_deed', 'Land Deed', project.land_deed_signed_url)}
-                  {renderKycDoc(project, 'live_photo', 'Live Photo (KYC)', project.live_verification_photo_signed_url)}
+                  {renderKycDoc(project, 'aadhaar', 'Owner ID (KYC)', project.aadhaar_doc_signed_url, project.aadhaar_doc_path)}
+                  {renderKycDoc(project, 'land_deed', 'Land Deed', project.land_deed_signed_url, project.land_deed_path)}
+                  {renderKycDoc(project, 'live_photo', 'Live Photo (KYC)', project.live_verification_photo_signed_url, project.live_verification_photo_path)}
                   {documents.map((doc) => {
                     const headerRight = (
                       <div className="flex gap-2 items-center">
@@ -404,32 +449,86 @@ export default function AdminProjectDetailPage() {
               </div>
             </div>
 
-            {/* Project Location Map */}
-            {project.latitude && project.longitude && (
-              <div className="mt-8">
-                <h2 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3 mb-6">Project Location</h2>
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="h-96">
-                    <LocationMap
-                      markers={[{ lat: Number(project.latitude), lng: Number(project.longitude), label: project.title }]}
-                      zoom={13}
-                      height="100%"
-                    />
-                  </div>
-                  <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      <span className="font-semibold text-gray-700">Coordinates:</span> {project.latitude}, {project.longitude}
+            {/* Agent Verification Report Section */}
+            {(verification?.initial_report || verification?.completion_report || project.verification_pdf_ipfs_cid) && (
+              <div className="bg-white rounded-3xl p-8 lg:p-10 shadow-sm border border-gray-100 mt-8">
+                <SectionHeader 
+                  title="Agent Verification Report" 
+                  icon={
+                    <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  } 
+                />
+
+                <div className="space-y-8 mt-6">
+                  {verification?.initial_report && (
+                    <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100">
+                      <h4 className="text-md font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">Initial Site Verification</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <InfoItem label="Date Submitted" value={new Date(verification.initial_report.submitted_at).toLocaleDateString()} />
+                        <InfoItem label="Agent Notes" value={verification.initial_report.notes || 'N/A'} />
+                        <InfoItem label="GPS Coordinates" value={`${verification.initial_report.gps_lat}, ${verification.initial_report.gps_lng}`} />
+                        {verification.initial_report.photo_signed_url && (
+                          <div>
+                            <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Field Photo</span>
+                            <a href={verification.initial_report.photo_signed_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm font-medium flex items-center gap-1">
+                              View Image
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <button
-                      onClick={() => setShowMapModal(true)}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors cursor-pointer"
-                    >
-                      View in Google Maps <FiExternalLink />
-                    </button>
-                  </div>
+                  )}
+
+                  {verification?.completion_report && (
+                    <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100">
+                      <h4 className="text-md font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">Completion Verification</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <InfoItem label="Date Submitted" value={new Date(verification.completion_report.submitted_at).toLocaleDateString()} />
+                        <InfoItem label="Agent Notes" value={verification.completion_report.notes || 'N/A'} />
+                        <InfoItem label="Verified CO2 Reduction" value={`${verification.completion_report.verified_co2_amount} Tons`} />
+                        <InfoItem label="GPS Coordinates" value={`${verification.completion_report.gps_lat}, ${verification.completion_report.gps_lng}`} />
+                        {verification.completion_report.photo_signed_url && (
+                          <div>
+                            <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Field Photo</span>
+                            <a href={verification.completion_report.photo_signed_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm font-medium flex items-center gap-1">
+                              View Image
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {project.verification_pdf_ipfs_cid && (
+                    <div className="mt-4 flex items-center p-4 bg-emerald-50 rounded-xl border border-emerald-100 gap-4">
+                      <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shrink-0">
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-bold text-gray-900">Final Verification Report (PDF)</h4>
+                        <p className="text-xs text-gray-500">Immutable record pinned to IPFS.</p>
+                      </div>
+                      <a 
+                        href={`https://gateway.pinata.cloud/ipfs/${project.verification_pdf_ipfs_cid}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm flex items-center gap-2"
+                      >
+                        Download PDF
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
+
           </div>
         </div>
       </div>

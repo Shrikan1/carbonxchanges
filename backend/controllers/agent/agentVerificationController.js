@@ -41,7 +41,7 @@ async function submitInitialVerification(req, res) {
     }
 
     const { kyc_docs_status } = project;
-    if (!kyc_docs_status || kyc_docs_status.aadhaar !== 'approved' || kyc_docs_status.land_deed !== 'approved' || kyc_docs_status.live_photo !== 'approved') {
+    if (!kyc_docs_status || kyc_docs_status.aadhaar?.status !== 'approved' || kyc_docs_status.land_deed?.status !== 'approved' || kyc_docs_status.live_photo?.status !== 'approved') {
       return res.status(400).json({
         error: 'Cannot submit initial verification — all KYC documents (Aadhaar, Land Deed, Live Photo) must be approved first.'
       });

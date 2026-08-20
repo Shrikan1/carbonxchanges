@@ -22,11 +22,13 @@ import * as authApi from './api/endpoint/Authapi';
 
 
 import PublicProjectShowcasePage from './pages/shared/PublicProjectShowcasePage';
+import MarketplaceDetailPage from './pages/shared/MarketplaceDetailPage';
 import ProjectPostEditorPage from './pages/seller/ProjectPostEditorPage';
 import ProjectVerificationPage from './pages/seller/ProjectVerificationPage';
 import CreditsPage from './pages/seller/CreditsPage';
 import ListingsPage from './pages/seller/ListingsPage';
 import SalesPage from './pages/seller/SalesPage';
+import SellerWalletPage from './pages/seller/SellerWalletPage';
 
 import WalletPage from './pages/shared/WalletPage';
 import DashboardPage from './pages/shared/DashboardPage';
@@ -140,6 +142,16 @@ const router = createBrowserRouter([
     ),
   },
 
+  // Edit Draft Project
+  {
+    path: '/seller/projects/:projectId/edit',
+    element: (
+      <RequireAuth requireSeller={true}>
+        <ProjectFormPage />
+      </RequireAuth>
+    ),
+  },
+
   {
     path: '/projects/:projectId',
     element: <PublicProjectShowcasePage />,
@@ -198,6 +210,15 @@ const router = createBrowserRouter([
   ),
 },
 
+{
+  path: '/seller/wallet',
+  element: (
+    <RequireAuth requireSeller={true}>
+      <SellerWalletPage />
+    </RequireAuth>
+  ),
+},
+
   // Wallet
 {
   path: '/wallet',
@@ -212,6 +233,10 @@ const router = createBrowserRouter([
 {
   path: '/marketplace',
   element: <MarketplacePage />,
+},
+{
+  path: '/marketplace/:listingId',
+  element: <MarketplaceDetailPage />,
 },
 
 // Dashboard

@@ -22,6 +22,14 @@ export const useSellerStore = create((set, get) => ({
     return data.project;
   },
 
+  updateProject: async (projectId, formData) => {
+    const { data } = await sellerApi.updateProject(projectId, formData);
+    set((state) => ({
+      projects: state.projects.map((p) => (p.id === projectId ? data.project : p)),
+    }));
+    return data.project;
+  },
+
   submitForReview: async (projectId) => {
     const { data } = await sellerApi.submitProjectForReview(projectId);
     set((state) => ({
@@ -34,4 +42,4 @@ export const useSellerStore = create((set, get) => ({
     await sellerApi.deleteProject(projectId);
     set((state) => ({ projects: state.projects.filter((p) => p.id !== projectId) }));
   },
-}));
+}));

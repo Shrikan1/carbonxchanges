@@ -17,7 +17,7 @@ export default function ListingsPage() {
 
   async function load() {
     const { data } = await marketplaceApi.getMyListings();
-    setListings(data.listings);
+    setListings(data.data || []);
   }
 
   async function handleCreate(e) {
@@ -48,11 +48,11 @@ export default function ListingsPage() {
         title="My Listings" 
         description="Manage your active marketplace listings and create new ones."
         contentMaxWidth="1200px"
-        action={
-          <Link to="/seller/listings/new" className="bg-brand hover:bg-brand-hover text-gray-900 font-bold h-10 px-6 rounded-xl flex items-center justify-center transition-colors shadow-sm">
-            + New Listing
-          </Link>
-        }
+        // action={
+        //   // <Link to="/seller/listings/new" className="bg-brand hover:bg-brand-hover text-gray-900 font-bold h-10 px-6 rounded-xl flex items-center justify-center transition-colors shadow-sm">
+        //   //   + New Listing
+        //   // </Link>
+        // }
       />
       <div className="w-full max-w-[1200px] px-4 md:px-8">
         <motion.div 

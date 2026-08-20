@@ -31,26 +31,28 @@ const Login = ({ isEmbedded }) => {
     try {
       setLoading(true);
       const response = await login(formData.email, formData.password);
-      console.log('Login successful:', response.data);
-      
-      // Attempt to extract token and user from backend response
+
+      // Extract token and user from backend response
       const token = response.data.token;
       const user = response.data.user || response.data;
-      
+
       if (token) {
         useAuthStore.getState().setSession(user, token);
-      } else {
-        console.warn('Login succeeded but no token was found in the response.');
       }
-      
+
       // Redirect to home/dashboard
       navigate('/');
     } catch (error) {
-      console.error('Login failed:', error);
-      setError(error.response?.data?.message || 'Invalid email or password. Please try again.');
+      // Surface the exact error message from the backend (supports both .error and .message fields)
+      const backendMessage =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        'Invalid email or password. Please try again.';
+      setError(backendMessage);
     } finally {
       setLoading(false);
     }
+
   };
 
   const formContent = (

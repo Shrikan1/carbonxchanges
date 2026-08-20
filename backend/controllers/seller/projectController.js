@@ -475,8 +475,42 @@ async function replaceKycDocument(req, res) {
   }
 }
 
+// PUT /api/projects/:id  — update a draft project's fields
+async function updateProject(req, res) {
+  try {
+    const project = await Project.findProjectById(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+
+    if (project.seller_id !== req.user.id) {
+      return res.status(403).json({ error: 'You do not own this project' });
+    }
+    if (project.status !== 'draft') {
+      return res.status(400).json({ error: `Only draft projects can be edited (current status: ${project.status})` });
+    }
+
+    if (req.body.project_type && !VALID_PROJECT_TYPES.includes(req.body.project_type)) {
+      return res.status(400).json({ error: `Invalid project_type.` });
+    }
+    if (req.body.project_scale && !VALID_SCALES.includes(req.body.project_scale)) {
+      return res.status(400).json({ error: `Invalid project_scale.` });
+    }
+
+    const numericErrors = validateNumericConstraints(req.body);
+    if (numericErrors.length > 0) {
+      return res.status(400).json({ error: numericErrors.join('; ') });
+    }
+
+    const updated = await Project.updateProject(project.id, req.body);
+    res.json({ message: 'Project draft updated', project: updated });
+  } catch (err) {
+    console.error('Update project error:', err);
+    res.status(500).json({ error: 'Failed to update project' });
+  }
+}
+
 module.exports = {
   createProject,
+  updateProject,
   submitProjectForReview,
   getProjectById,
   getPublicProjectById,

@@ -224,7 +224,7 @@ export default function MarketplacePage() {
               {filteredListings.map((listing) => (
                 <Link
                   key={listing.id}
-                  to={`/projects/${listing.project_id}`}
+                  to={`/marketplace/${listing.listing_id}`}
                   className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 flex flex-col h-full hover:-translate-y-1"
                 >
                   {/* Dynamic Gradient Image Placeholder */}
@@ -246,11 +246,11 @@ export default function MarketplacePage() {
                       <div className="flex items-center justify-between py-3 border-y border-gray-100">
                         <div className="flex flex-col">
                           <span className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Available</span>
-                          <span className="text-gray-900 font-semibold">{listing.available_amount.toLocaleString()} <span className="text-gray-500 font-normal">tons</span></span>
+                          <span className="text-gray-900 font-semibold">{Number(listing.amount_available || 0).toLocaleString()} <span className="text-gray-500 font-normal">tons</span></span>
                         </div>
                         <div className="flex flex-col text-right">
                           <span className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Price</span>
-                          <span className="text-gray-900 font-bold text-lg">₹{listing.price_per_ton.toLocaleString('en-IN')}</span>
+                          <span className="text-gray-900 font-bold text-lg">₹{Number(listing.price_per_credit || 0).toLocaleString('en-IN')}</span>
                         </div>
                       </div>
                       

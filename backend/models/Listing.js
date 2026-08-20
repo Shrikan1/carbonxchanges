@@ -137,6 +137,7 @@ async function findListingPublicById(listingId) {
   const result = await query(
     `SELECT cl.*, (cl.amount_listed - cl.amount_sold) AS amount_available,
             p.id AS project_id, p.title AS project_title, p.project_type, p.project_scale,
+            pd.total_project_area_hectares, pd.total_co2_claimed, pd.duration_months, pd.methodology_specific_data,
             pd.country, pd.state_region, pd.latitude, pd.longitude, pd.project_summary,
             u.name AS seller_name
      FROM credit_listings cl

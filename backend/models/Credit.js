@@ -17,12 +17,12 @@ async function findCreditsBySeller(sellerId, { limit = 20, offset = 0 } = {}) {
       `SELECT cb.*, p.title AS project_title
        FROM credit_batches cb
        JOIN projects p ON p.id = cb.project_id
-       WHERE p.seller_id = $1
+       WHERE p.seller_id = $1 AND cb.contract_address IS NOT NULL
        ORDER BY cb.minted_at DESC LIMIT $2 OFFSET $3`,
       [sellerId, limit, offset]
     ),
     query(
-      `SELECT COUNT(*) FROM credit_batches cb JOIN projects p ON p.id = cb.project_id WHERE p.seller_id = $1`,
+      `SELECT COUNT(*) FROM credit_batches cb JOIN projects p ON p.id = cb.project_id WHERE p.seller_id = $1 AND cb.contract_address IS NOT NULL`,
       [sellerId]
     ),
   ]);
@@ -58,19 +58,27 @@ async function findCreditTransactions(sellerId, { limit = 20, offset = 0 } = {})
 // dashboard — the real, authoritative balance always lives on-chain via
 // the wallet's ERC-20 balanceOf(), fetched separately through ethers.js.
 async function calculateSellerBalance(sellerId) {
-  const result = await query(
-    `SELECT
-       COALESCE(SUM(cb.token_amount), 0) AS total_minted,
-       COALESCE(SUM(t.amount) FILTER (WHERE t.type = 'purchase'), 0) AS total_sold
-     FROM credit_batches cb
-     JOIN projects p ON p.id = cb.project_id
-     LEFT JOIN transactions t ON t.batch_id = cb.id
-     WHERE p.seller_id = $1`,
-    [sellerId]
-  );
-  const row = result.rows[0];
-  const totalMinted = Number(row.total_minted);
-  const totalSold = Number(row.total_sold);
+  const [mintedResult, soldResult] = await Promise.all([
+    query(
+      `SELECT COALESCE(SUM(cb.token_amount), 0) AS total_minted
+       FROM credit_batches cb
+       JOIN projects p ON p.id = cb.project_id
+       WHERE p.seller_id = $1 AND cb.contract_address IS NOT NULL`,
+      [sellerId]
+    ),
+    query(
+      `SELECT COALESCE(SUM(t.amount), 0) AS total_sold
+       FROM transactions t
+       JOIN credit_batches cb ON cb.id = t.batch_id
+       JOIN projects p ON p.id = cb.project_id
+       WHERE p.seller_id = $1 AND t.type = 'purchase'`,
+      [sellerId]
+    )
+  ]);
+
+  const totalMinted = Number(mintedResult.rows[0].total_minted);
+  const totalSold = Number(soldResult.rows[0].total_sold);
+  
   return {
     total_minted: totalMinted,
     total_sold: totalSold,

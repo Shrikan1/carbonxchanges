@@ -131,16 +131,38 @@ async function findAgentById(agentId) {
   return result.rows[0] || null;
 }
 
-// Full agent roster — used by the admin UI's agent picker/workload view
 async function findAllAgents({ limit = 20, offset = 0 } = {}) {
   const [dataResult, countResult] = await Promise.all([
     query(
-      `SELECT id, name, email, created_at FROM users WHERE role = 'agent' ORDER BY name ASC LIMIT $1 OFFSET $2`,
+      `SELECT 
+         u.id, u.name, u.email, u.created_at,
+         COUNT(p.id) FILTER (WHERE p.status = 'assigned')::int AS active_count,
+         COUNT(p.id) FILTER (WHERE p.status IN ('approved', 'minted'))::int AS completed_count
+       FROM users u
+       LEFT JOIN projects p ON p.agent_id = u.id
+       WHERE u.role = 'agent'
+       GROUP BY u.id
+       ORDER BY u.name ASC 
+       LIMIT $1 OFFSET $2`,
       [limit, offset]
     ),
-    query(`SELECT COUNT(*) FROM users WHERE role = 'agent'`),
+    query(`SELECT COUNT(*) FROM users WHERE role = 'agent'`)
   ]);
-  return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
+
+  const formattedRows = dataResult.rows.map(row => {
+    return {
+      id: row.id,
+      name: row.name,
+      email: row.email,
+      created_at: row.created_at,
+      workload: {
+        active_count: row.active_count || 0,
+        completed_count: row.completed_count || 0
+      }
+    };
+  });
+
+  return { rows: formattedRows, total: parseInt(countResult.rows[0].count) };
 }
 
 module.exports = {
