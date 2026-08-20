@@ -206,9 +206,12 @@ async function findByStatus(status, { limit = 20, offset = 0 } = {}) {
   const [dataResult, countResult] = await Promise.all([
     query(
       `SELECT p.id, p.title, p.project_type, p.project_scale, p.status,
-              p.agent_id, p.created_at, u.name AS seller_name, u.email AS seller_email
+              p.agent_id, p.created_at, p.verification_pdf_ipfs_cid,
+              u.name AS seller_name, u.email AS seller_email,
+              pd.project_summary AS description, pd.total_co2_claimed AS total_credits_estimated
        FROM projects p
        JOIN users u ON u.id = p.seller_id
+       LEFT JOIN project_details pd ON pd.project_id = p.id
        WHERE p.status = $1
        ORDER BY p.created_at ASC LIMIT $2 OFFSET $3`,
       [status, limit, offset]

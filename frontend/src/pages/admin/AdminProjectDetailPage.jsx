@@ -9,6 +9,7 @@ import LocationMap from '../../components/LocationMap';
 import GoogleMapModal from '../../components/GoogleMapModal';
 import DocumentEmbed from '../../components/ui/DocumentEmbed';
 import ProjectStepper from '../../components/ProjectStepper';
+import PdfViewerModal from '../../components/ui/PdfViewerModal';
 import { FiExternalLink, FiChevronLeft, FiAlertTriangle } from 'react-icons/fi';
 import { TYPE_TO_STEP3 } from '../../components/seller/projectFormConfig';
 
@@ -90,6 +91,7 @@ export default function AdminProjectDetailPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
   const [showRejectConfirm, setShowRejectConfirm] = useState(false);
+  const [showPdfViewer, setShowPdfViewer] = useState(false);
 
   const [documents, setDocuments] = useState([]);
   const [verification, setVerification] = useState(null);
@@ -514,15 +516,13 @@ export default function AdminProjectDetailPage() {
                         <h4 className="text-sm font-bold text-gray-900">Final Verification Report (PDF)</h4>
                         <p className="text-xs text-gray-500">Immutable record pinned to IPFS.</p>
                       </div>
-                      <a 
-                        href={`https://gateway.pinata.cloud/ipfs/${project.verification_pdf_ipfs_cid}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                      <button 
+                        onClick={() => setShowPdfViewer(true)}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm flex items-center gap-2"
                       >
-                        Download PDF
+                        View PDF
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                      </a>
+                      </button>
                     </div>
                   )}
                 </div>
@@ -539,6 +539,13 @@ export default function AdminProjectDetailPage() {
           lng={Number(project.longitude)}
           label={project.title}
           onClose={() => setShowMapModal(false)}
+        />
+      )}
+
+      {showPdfViewer && project?.verification_pdf_ipfs_cid && (
+        <PdfViewerModal
+          cid={project.verification_pdf_ipfs_cid}
+          onClose={() => setShowPdfViewer(false)}
         />
       )}
 

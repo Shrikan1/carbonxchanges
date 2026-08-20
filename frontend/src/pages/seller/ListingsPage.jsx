@@ -12,17 +12,26 @@ export default function ListingsPage() {
   const [listings, setListings] = useState([]);
   const [form, setForm] = useState({ batch_id: '', price_per_credit: '', amount_listed: '' });
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [debugData, setDebugData] = useState(null);
 
   useEffect(() => { load(); }, []);
 
   async function load() {
-    const { data } = await marketplaceApi.getMyListings();
-    setListings(data.data || []);
+    try {
+      const { data } = await marketplaceApi.getMyListings();
+      setDebugData(JSON.stringify(data));
+      setListings(data.data || []);
+    } catch (err) {
+      console.error('Failed to load listings:', err);
+      setDebugData('Error: ' + err.message);
+    }
   }
 
   async function handleCreate(e) {
     e.preventDefault();
     setError(null);
+    setIsSubmitting(true);
     try {
       await marketplaceApi.createListing({
         batch_id: Number(form.batch_id),
@@ -30,9 +39,11 @@ export default function ListingsPage() {
         amount_listed: Number(form.amount_listed),
       });
       setForm({ batch_id: '', price_per_credit: '', amount_listed: '' });
-      load();
+      await load();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create listing');
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -113,8 +124,12 @@ export default function ListingsPage() {
                     </div>
                   )}
 
-                  <Button type="submit" className="w-full h-11 bg-gray-900 hover:bg-black text-white font-bold rounded-xl mt-6 shadow-sm">
-                    Create Listing
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full h-11 bg-gray-900 hover:bg-black disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold rounded-xl mt-6 shadow-sm"
+                  >
+                    {isSubmitting ? 'Creating...' : 'Create Listing'}
                   </Button>
                 </form>
               </div>
@@ -130,6 +145,12 @@ export default function ListingsPage() {
                     <div className="text-center py-12 text-gray-500 border border-dashed border-gray-200 rounded-2xl">
                       <FiTag size={24} className="mx-auto mb-3 text-gray-400" />
                       <p>You have no marketplace listings.</p>
+                      {debugData && (
+                        <div className="mt-4 text-left p-4 bg-gray-100 rounded text-xs overflow-auto max-h-40">
+                          <strong>Debug Info:</strong>
+                          <pre>{debugData}</pre>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     listings.map((l) => (

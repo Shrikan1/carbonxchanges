@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiBell } from 'react-icons/fi';
 import * as adminProjectApi from '../../api/endpoint/adminProjectApi';
 import { useAuthStore } from '../../store/useAuthStore';
 import AdminHeader from '../../components/layout/AdminHeader';
+import PdfViewerModal from '../../components/ui/PdfViewerModal';
 
 const STATUSES = ['assigned', 'pending', 'in_progress', 'verified', 'approved', 'rejected', 'minted'];
 
 export default function AdminReviewQueuePage() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [status, setStatus] = useState('assigned');
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedPdfCid, setSelectedPdfCid] = useState(null);
 
   useEffect(() => {
     load();
@@ -93,10 +96,10 @@ export default function AdminReviewQueuePage() {
           ) : (
             <div className="flex flex-col gap-4">
               {projects.map((p) => (
-                <Link
+                <div
                   key={p.id}
-                  to={`/admin/projects/${p.id}`}
-                  className="group flex flex-col md:flex-row md:items-center bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md hover:border-gray-200 transition-all gap-4 md:gap-8"
+                  onClick={() => navigate(`/admin/projects/${p.id}`)}
+                  className="group cursor-pointer flex flex-col md:flex-row md:items-center bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md hover:border-gray-200 transition-all gap-4 md:gap-8 relative"
                 >
                   <div className="flex flex-col md:w-1/3 shrink-0">
                     <div className="flex items-center gap-3 mb-2">
@@ -120,14 +123,33 @@ export default function AdminReviewQueuePage() {
                       <span className="text-sm font-medium text-gray-700 line-clamp-1">{p.seller_name || 'Seller'}</span>
                     </div>
                     <span className="text-sm font-semibold text-gray-900 shrink-0 whitespace-nowrap">{p.total_credits_estimated || 0} Credits</span>
+                    
+                    {p.verification_pdf_ipfs_cid && (
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedPdfCid(p.verification_pdf_ipfs_cid);
+                        }}
+                        className="px-3 py-1.5 text-xs font-medium bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded transition-colors"
+                      >
+                        PDF
+                      </button>
+                    )}
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}
         </div>
 
       </div>
+      
+      {selectedPdfCid && (
+        <PdfViewerModal 
+          cid={selectedPdfCid} 
+          onClose={() => setSelectedPdfCid(null)} 
+        />
+      )}
     </div>
   );
 }
