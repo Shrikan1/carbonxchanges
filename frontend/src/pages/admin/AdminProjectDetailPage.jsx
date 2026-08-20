@@ -24,6 +24,45 @@ const InfoItem = ({ label, value, className = "" }) => (
   </div>
 );
 
+const SectionHeader = ({ title, sectionKey, project }) => {
+  if (!project) return <h3 className="text-lg font-bold text-gray-900 mb-5">{title}</h3>;
+  const isChecked = project.agent_review_progress?.[sectionKey];
+  return (
+    <div className="flex items-center justify-between mb-5">
+      <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+      {isChecked !== undefined && (
+        <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${isChecked ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}`}>
+          {isChecked ? '✅ REVIEWED' : '⏳ PENDING'}
+        </span>
+      )}
+    </div>
+  );
+};
+
+const renderKycDoc = (project, docType, label, path) => {
+  if (!project || !path) return null;
+  const st = project.kyc_docs_status?.[docType] || { status: 'pending', reason: null };
+  
+  const headerRight = (
+    <div className="flex gap-2 items-center">
+      {st.status === 'approved' && <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-emerald-200">APPROVED</span>}
+      {st.status === 'pending' && <span className="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-yellow-200">PENDING</span>}
+      {st.status === 'rejected' && (
+        <div className="flex items-center gap-2">
+          <span className="bg-white/90 text-red-700 text-[10px] px-2 py-1 rounded shadow-sm max-w-[120px] truncate border border-red-100" title={st.reason}>{st.reason}</span>
+          <span className="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-red-200" title={st.reason}>REJECTED</span>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div key={docType} className="w-full">
+      <DocumentEmbed url={path} title={label} headerRight={headerRight} />
+    </div>
+  );
+};
+
 export default function AdminProjectDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -231,13 +270,17 @@ export default function AdminProjectDetailPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* General Information */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-5">General Information</h3>
+                <SectionHeader title="General Information" sectionKey="general" project={project} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
                   <InfoItem label="Project ID" value={project.id} />
                   <InfoItem label="Seller ID" value={project.seller_id} />
+                  <InfoItem label="Seller Name" value={project.seller_name} />
+                  <InfoItem label="Seller Email" value={project.seller_email} />
+                  <InfoItem label="Seller Phone" value={project.seller_phone} />
+                  <InfoItem label="Seller Address" value={project.seller_address} fullWidth />
                   <InfoItem label="Summary" value={project.project_summary} fullWidth />
-                  <InfoItem label="Duration" value={project.duration_years ? `${project.duration_years} years` : null} />
-                  <InfoItem label="Crediting Period" value={project.crediting_period_years ? `${project.crediting_period_years} years` : null} />
+                  <InfoItem label="Duration" value={project.duration_months ? `${project.duration_months} months` : null} />
+                  <InfoItem label="Crediting Period" value={project.crediting_period_months ? `${project.crediting_period_months} months` : null} />
                   <InfoItem label="Start Date" value={project.project_start_date ? new Date(project.project_start_date).toLocaleDateString() : null} />
                   <InfoItem label="Expected Completion" value={project.expected_completion_date ? new Date(project.expected_completion_date).toLocaleDateString() : null} />
                 </div>
@@ -245,7 +288,7 @@ export default function AdminProjectDetailPage() {
 
               {/* Location & Area */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-5">Location & Area</h3>
+                <SectionHeader title="Location & Area" sectionKey="location" project={project} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
                   <InfoItem label="Country" value={project.country} />
                   <InfoItem label="State/Region" value={project.state_region} />
@@ -270,7 +313,7 @@ export default function AdminProjectDetailPage() {
                                  
                 return (
                   <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 lg:col-span-2">
-                    <h3 className="text-lg font-bold text-gray-900 mb-5">{stepConfig.title}</h3>
+                    <SectionHeader title={stepConfig.title} sectionKey="specific" project={project} />
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4">
                       {stepConfig.fields.map(field => (
                         <InfoItem 
@@ -290,7 +333,7 @@ export default function AdminProjectDetailPage() {
 
               {/* Methodology & Verification */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 lg:col-span-2">
-                <h3 className="text-lg font-bold text-gray-900 mb-5">Methodology & Verification</h3>
+                <SectionHeader title="Methodology & Verification" sectionKey="methodology" project={project} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4">
                   <InfoItem label="Methodology Applied" value={project.methodology_applied} />
                   <InfoItem label="GHG Sources Included" value={project.ghg_sources_included} />
@@ -306,7 +349,7 @@ export default function AdminProjectDetailPage() {
 
               {/* Ownership & Compliance */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 lg:col-span-2">
-                <h3 className="text-lg font-bold text-gray-900 mb-5">Ownership & Compliance</h3>
+                <SectionHeader title="Ownership & Compliance" sectionKey="ownership" project={project} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-4">
                   <InfoItem label="Owner Name" value={project.owner_full_name} />
                   <InfoItem label="Owner ID Type" value={project.owner_id_type} />
@@ -326,31 +369,33 @@ export default function AdminProjectDetailPage() {
                 <h3 className="text-lg font-bold text-gray-900 mb-5">Documents & Evidence</h3>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {project.aadhaar_doc_signed_url && (
-                    <DocumentEmbed 
-                      url={project.aadhaar_doc_signed_url} 
-                      title="Owner ID (KYC)" 
-                    />
-                  )}
-                  {project.land_deed_signed_url && (
-                    <DocumentEmbed 
-                      url={project.land_deed_signed_url} 
-                      title="Land Deed" 
-                    />
-                  )}
-                  {project.live_verification_photo_signed_url && (
-                    <DocumentEmbed 
-                      url={project.live_verification_photo_signed_url} 
-                      title="Live Photo (KYC)" 
-                    />
-                  )}
-                  {documents.map((doc) => (
-                    <DocumentEmbed 
-                      key={doc.id}
-                      url={`https://gateway.pinata.cloud/ipfs/${doc.ipfs_cid}`} 
-                      title={doc.doc_type.replace(/_/g, ' ').toUpperCase()} 
-                    />
-                  ))}
+                  {renderKycDoc(project, 'aadhaar', 'Owner ID (KYC)', project.aadhaar_doc_signed_url)}
+                  {renderKycDoc(project, 'land_deed', 'Land Deed', project.land_deed_signed_url)}
+                  {renderKycDoc(project, 'live_photo', 'Live Photo (KYC)', project.live_verification_photo_signed_url)}
+                  {documents.map((doc) => {
+                    const headerRight = (
+                      <div className="flex gap-2 items-center">
+                        {doc.status === 'approved' && <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-emerald-200">APPROVED</span>}
+                        {doc.status === 'pending' && <span className="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-yellow-200">PENDING</span>}
+                        {doc.status === 'rejected' && (
+                          <div className="flex items-center gap-2">
+                            <span className="bg-white/90 text-red-700 text-[10px] px-2 py-1 rounded shadow-sm max-w-[120px] truncate border border-red-100" title={doc.rejection_reason}>{doc.rejection_reason}</span>
+                            <span className="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-red-200" title={doc.rejection_reason}>REJECTED</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+
+                    return (
+                      <div key={doc.id} className="w-full">
+                        <DocumentEmbed 
+                          url={`https://gateway.pinata.cloud/ipfs/${doc.ipfs_cid}`} 
+                          title={doc.doc_type.replace(/_/g, ' ').toUpperCase()} 
+                          headerRight={headerRight}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {!project.aadhaar_doc_signed_url && !project.land_deed_signed_url && !project.live_verification_photo_signed_url && documents.length === 0 && (

@@ -3,14 +3,14 @@
 
 const { query } = require('../config/db');
 
-async function createUser({ name, email, passwordHash }) {
+async function createUser({ name, email, passwordHash, phone_number, address }) {
   // No role passed in — every self-signup starts as the base 'user' role
   // (DB default) with is_seller/is_buyer both false.
   const result = await query(
-    `INSERT INTO users (name, email, password_hash)
-     VALUES ($1, $2, $3)
-     RETURNING id, name, email, role, is_seller, is_buyer, created_at`,
-    [name, email, passwordHash]
+    `INSERT INTO users (name, email, password_hash, phone_number, address)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, name, email, role, phone_number, address, is_seller, is_buyer, created_at`,
+    [name, email, passwordHash, phone_number, address]
   );
   return result.rows[0];
 }

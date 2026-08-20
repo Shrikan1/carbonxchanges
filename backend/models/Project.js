@@ -6,7 +6,7 @@ const { pool, query } = require('../config/db');
 // Shared fields common to ALL project types.
 // Type-specific ecological/energy/methane fields are stored in methodology_specific_data (JSONB).
 const DETAIL_FIELDS = [
-  'duration_years', 'crediting_period_years', 'project_start_date', 'project_summary',
+  'duration_months', 'crediting_period_months', 'project_start_date', 'project_summary',
   'funding_sources', 'publicly_funded',
   'country', 'state_region', 'latitude', 'longitude', 'total_project_area_hectares',
   'eligible_area_hectares', 'set_aside_conservation_percent', 'climate_zone', 'soil_type',
@@ -14,7 +14,7 @@ const DETAIL_FIELDS = [
   'technologies_measures_description', 'methodology_applied', 'ghg_sources_included',
   'baseline_scenario', 'additionality_demonstration', 'sdg_targets', 'total_co2_claimed',
   'estimated_vers', 'monitoring_frequency', 'responsible_person',
-  'stakeholder_consultation_summary', 'grievance_mechanism',
+  'stakeholder_consultation_summary', 'griebance_mechanism',
   // Owner & legal
   'owner_full_name', 'owner_id_type', 'owner_id_number', 'land_ownership_type',
   // KYC document storage paths (private Supabase bucket paths, NOT public URLs)
@@ -122,12 +122,17 @@ async function updateProject(projectId, data) {
   }
 }
 
-// Full project record: core + details joined together
+// Full project record: core + details joined together + seller details
 async function findProjectById(projectId) {
   const result = await query(
-    `SELECT p.*, d.*
+    `SELECT p.*, d.*,
+            u.name AS seller_name, 
+            u.email AS seller_email, 
+            u.phone_number AS seller_phone, 
+            u.address AS seller_address
      FROM projects p
      LEFT JOIN project_details d ON d.project_id = p.id
+     LEFT JOIN users u ON p.seller_id = u.id
      WHERE p.id = $1`,
     [projectId]
   );
@@ -274,21 +279,37 @@ async function findProjectsByAgent(agentId, { status = null, limit = 20, offset 
   return { rows: dataResult.rows, total: parseInt(countResult.rows[0].count) };
 }
 
-// Computes expected_completion_date = project_start_date + duration_years,
+// Computes expected_completion_date = project_start_date + duration_months,
 // reading directly from project_details, and stores it on the core
 // projects row for fast querying later. Called once, at submission time
 // (both fields are guaranteed present by then — see REQUIRED_ON_SUBMIT).
 // This date becomes the earliest a completion verification can happen —
 // the agent can't certify a project as "built" before the seller's own
 // declared timeline says it should be.
-async function setExpectedCompletionDate(projectId) {
+async function setExpectedCompletionDate(projectId, overrideDate = null) {
+  if (overrideDate) {
+    const result = await query(
+      `UPDATE projects SET expected_completion_date = $1 WHERE id = $2 RETURNING *`,
+      [overrideDate, projectId]
+    );
+    return result.rows[0];
+  } else {
+    const result = await query(
+      `UPDATE projects p
+       SET expected_completion_date = (pd.project_start_date + (pd.duration_months || ' months')::interval)::date
+       FROM project_details pd
+       WHERE p.id = pd.project_id AND p.id = $1
+       RETURNING p.*`,
+      [projectId]
+    );
+    return result.rows[0];
+  }
+}
+
+async function updateAgentReviewProgress(projectId, progressJson) {
   const result = await query(
-    `UPDATE projects p
-     SET expected_completion_date = (pd.project_start_date + (pd.duration_years || ' years')::interval)::date
-     FROM project_details pd
-     WHERE p.id = pd.project_id AND p.id = $1
-     RETURNING p.*`,
-    [projectId]
+    `UPDATE projects SET agent_review_progress = $1 WHERE id = $2 RETURNING *`,
+    [JSON.stringify(progressJson), projectId]
   );
   return result.rows[0];
 }
@@ -307,6 +328,64 @@ async function findDueForCompletion(agentId) {
   return result.rows;
 }
 
+async function updateKycDocStatus(projectId, docType, status, reason = null) {
+  const result = await query(
+    `UPDATE projects
+     SET kyc_docs_status = jsonb_set(
+       kyc_docs_status,
+       $1::text[],
+       $2::jsonb
+     )
+     WHERE id = $3
+     RETURNING *`,
+    [[docType], JSON.stringify({ status, reason }), projectId]
+  );
+  return result.rows[0];
+}
+
+async function updateKycDocPath(projectId, docType, path) {
+  // Update the path on the project_details or projects table, and reset its kyc_docs_status to pending
+  // We need to map docType to the column name
+  const colMap = {
+    'aadhaar': 'aadhaar_doc_path',
+    'land_deed': 'land_deed_path',
+    'live_photo': 'live_verification_photo_path'
+  };
+  const colName = colMap[docType];
+  if (!colName) throw new Error('Invalid docType');
+
+  // Updating project_details since these are detail fields
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    
+    await client.query(
+      `UPDATE project_details SET ${colName} = $1 WHERE project_id = $2`,
+      [path, projectId]
+    );
+
+    const projectResult = await client.query(
+      `UPDATE projects
+       SET kyc_docs_status = jsonb_set(
+         kyc_docs_status,
+         $1::text[],
+         $2::jsonb
+       )
+       WHERE id = $3
+       RETURNING *`,
+      [[docType], JSON.stringify({ status: 'pending', reason: null }), projectId]
+    );
+
+    await client.query('COMMIT');
+    return findProjectById(projectId); // Return fully joined project
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
 module.exports = {
   createProject,
   updateProject,
@@ -323,5 +402,8 @@ module.exports = {
   findProjectsByAgent,
   setExpectedCompletionDate,
   findDueForCompletion,
+  updateAgentReviewProgress,
+  updateKycDocStatus,
+  updateKycDocPath,
   DETAIL_FIELDS,
 };

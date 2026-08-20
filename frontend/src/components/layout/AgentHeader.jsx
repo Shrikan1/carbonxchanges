@@ -5,12 +5,11 @@ import { useAuthStore } from '../../store/useAuthStore';
 import NotificationDropdown from './NotificationDropdown';
 
 const tabs = [
-  { name: 'Dashboard', path: '/dashboard' },
   { name: 'Assigned Projects', path: '/agent/projects' },
   { name: 'History', path: '/agent/history' },
 ];
 
-const AgentHeader = ({ title }) => {
+const AgentHeader = ({ title, hideNav = false, centerContent }) => {
   const location = useLocation();
   const { user } = useAuthStore();
 
@@ -40,23 +39,28 @@ const AgentHeader = ({ title }) => {
   );
 
   return (
-    <div className="mb-8 w-full relative z-20 flex flex-col gap-5">
-      {/* Top Row: Title and Icons */}
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Link to="/" className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm border border-gray-100 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" title="Back to Main Site">
-            <FiHome className="w-4 h-4 sm:w-5 sm:h-5" />
-          </Link>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-gray-900">
-            {title || 'Agent Portal'}
-          </h1>
-        </div>
-        {rightIcons}
+    <div className="mb-8 w-full relative z-20 flex flex-col md:flex-row md:items-center justify-between gap-5">
+      {/* Left: Title and Home */}
+      <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+        <Link to="/" className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm border border-gray-100 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" title="Back to Main Site">
+          <FiHome className="w-4 h-4 sm:w-5 sm:h-5" />
+        </Link>
+        <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-gray-900">
+          {title || 'Agent Portal'}
+        </h1>
       </div>
 
-      {/* Bottom Row: Navigation */}
-      <div className="flex overflow-x-auto pb-2 scrollbar-hide w-full">
-        {renderNav()}
+      {/* Center: Custom Content */}
+      {centerContent && (
+        <div className="flex-1 flex justify-center w-full md:w-auto">
+          {centerContent}
+        </div>
+      )}
+
+      {/* Right: Navigation and Icons */}
+      <div className="flex items-center gap-4 w-full md:w-auto overflow-x-auto scrollbar-hide justify-start md:justify-end shrink-0">
+        {!hideNav && renderNav()}
+        {rightIcons}
       </div>
     </div>
   );

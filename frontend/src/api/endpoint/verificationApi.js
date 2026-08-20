@@ -5,6 +5,8 @@ export const getVerificationStatus = (projectId) => api.get(`/v1/verification/${
 export const getAssignedAgent = (projectId) => api.get(`/v1/verification/${projectId}/agent`);
 export const uploadProjectDocuments = (projectId, doc_type, ipfs_cid) =>
   api.post(`/v1/verification/${projectId}/documents`, { doc_type, ipfs_cid });
+export const getProjectDocuments = (projectId) => api.get(`/v1/verification/${projectId}/documents`);
+export const deleteProjectDocument = (projectId, docId) => api.delete(`/v1/verification/${projectId}/documents/${docId}`);
 export const submitSellerResponse = (reportId, response_text) =>
   api.put(`/v1/verification/reports/${reportId}/response`, { response_text });
 export const getReportThread = (reportId) => api.get(`/v1/verification/reports/${reportId}/messages`);

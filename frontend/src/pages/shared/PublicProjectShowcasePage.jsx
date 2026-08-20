@@ -118,7 +118,7 @@ export default function PublicProjectShowcasePage() {
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
                 <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Duration</div>
-                <div className="text-xl font-black text-gray-900">{project.duration_years} <span className="text-sm font-medium text-gray-500">yrs</span></div>
+                <div className="text-xl font-black text-gray-900">{project.duration_months} <span className="text-sm font-medium text-gray-500">mo</span></div>
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
                 <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Scale</div>

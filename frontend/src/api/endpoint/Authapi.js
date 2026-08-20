@@ -1,8 +1,16 @@
 import api from '../axiosInstance';
 
-export const signup = (name, email, password, confirmPassword, role_type) =>
-  api.post('/v1/auth/signup', { name, email, password, confirmPassword, role_type });
-
+export const signup = (name, email, password, confirmPassword, role_type, phone_number, address) => {
+  return api.post('/v1/auth/signup', {
+    name,
+    email,
+    password,
+    confirmPassword,
+    role_type,
+    phone_number,
+    address
+  });
+};
 
 export const verifyOtp = (userId, otpCode) =>
   api.post('/v1/auth/verify-otp', { userId, otpCode });

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiMaximize2, FiExternalLink, FiFileText } from 'react-icons/fi';
 
-export default function DocumentEmbed({ url, title }) {
+export default function DocumentEmbed({ url, title, headerRight }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Simple heuristic to check if it's an image based on the URL extension.
@@ -30,6 +30,7 @@ export default function DocumentEmbed({ url, title }) {
           </h4>
         </div>
         <div className="flex items-center gap-2">
+          {headerRight}
           <button
             onClick={() => setIsFullscreen(true)}
             className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"

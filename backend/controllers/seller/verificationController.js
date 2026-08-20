@@ -13,9 +13,10 @@ async function getVerificationStatus(req, res) {
 
     const status = await Verification.getVerificationStatus(req.params.projectId);
     return res.status(200).json({
-    success: true,
-    verification: status
-});
+      success: true,
+      verification: status,
+      project: project
+    });
   } catch (err) {
     console.error('Get verification status error:', err);
     res.status(500).json({ error: 'Failed to fetch verification status' });
@@ -89,4 +90,36 @@ async function uploadProjectDocuments(req, res) {
   }
 }
 
-module.exports = { getVerificationStatus, viewAssignedAgent, submitSellerResponse, uploadProjectDocuments };
+async function getProjectDocuments(req, res) {
+  try {
+    const project = await Project.findProjectById(req.params.projectId);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    if (project.seller_id !== req.user.id) {
+      return res.status(403).json({ error: 'You do not own this project' });
+    }
+
+    const documents = await Document.findDocumentsByProject(req.params.projectId);
+    res.json({ documents });
+  } catch (err) {
+    console.error('Get project documents error:', err);
+    res.status(500).json({ error: 'Failed to fetch documents' });
+  }
+}
+
+async function deleteProjectDocument(req, res) {
+  try {
+    const project = await Project.findProjectById(req.params.projectId);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    if (project.seller_id !== req.user.id) {
+      return res.status(403).json({ error: 'You do not own this project' });
+    }
+
+    await Document.deleteDocument(req.params.docId);
+    res.json({ message: 'Document deleted successfully' });
+  } catch (err) {
+    console.error('Delete document error:', err);
+    res.status(500).json({ error: 'Failed to delete document' });
+  }
+}
+
+module.exports = { getVerificationStatus, viewAssignedAgent, submitSellerResponse, uploadProjectDocuments, getProjectDocuments, deleteProjectDocument };

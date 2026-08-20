@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import * as verificationApi from '../../api/endpoint/verificationApi';
+import * as sellerApi from '../../api/endpoint/Sellerapi';
 import api from '../../api/axiosInstance';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -45,6 +46,9 @@ export default function ProjectVerificationPage() {
   const [sendingMsg, setSendingMsg]   = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [documents, setDocuments]     = useState([]);
+  const [project, setProject]         = useState(null);
+  const [replacingKyc, setReplacingKyc] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => { loadStatus(); }, [projectId]);
@@ -55,12 +59,14 @@ export default function ProjectVerificationPage() {
     try {
       const { data } = await verificationApi.getVerificationStatus(projectId);
       setStatus(data.verification);
+      setProject(data.project);
       try { const r = await verificationApi.getAssignedAgent(projectId); setAgent(r.data.agent); } catch { setAgent(null); }
       const reportId = data.verification?.completion_report?.id || data.verification?.initial_report?.id;
       if (reportId) {
         const t = await verificationApi.getReportThread(reportId);
         setThread({ reportId, messages: t.data.messages });
       }
+      try { const docsRes = await verificationApi.getProjectDocuments(projectId); setDocuments(docsRes.data.documents); } catch (e) { console.error('Failed to load docs'); }
     } catch (err) { setError(err.response?.data?.error || 'Failed to load verification status'); }
     finally { setLoading(false); }
   }
@@ -80,9 +86,66 @@ export default function ProjectVerificationPage() {
       await verificationApi.uploadProjectDocuments(projectId, docType, cidToUse);
       setDocType(''); setDocCid(''); setSelectedFile(null);
       setUploadSuccess(true); setTimeout(() => setUploadSuccess(false), 3000);
+      loadStatus();
     } catch (err) { setError(err.response?.data?.error || 'Upload failed'); }
     finally { setUploadingDoc(false); }
   }
+
+  async function handleDeleteDoc(docId) {
+    if (!window.confirm('Are you sure you want to delete this document?')) return;
+    try {
+      await verificationApi.deleteProjectDocument(projectId, docId);
+      setUploadSuccess(true); setTimeout(() => setUploadSuccess(false), 3000);
+      loadStatus();
+    } catch (err) { setError(err.response?.data?.error || 'Delete failed'); }
+  }
+
+  async function handleReplaceKycDoc(docType, file) {
+    if (!file) return;
+    setReplacingKyc(docType);
+    setError(null);
+    try {
+      const fd = new FormData(); fd.append('file', file);
+      const r = await api.post('/upload/kyc', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const path = r.data.path || r.data.cid || r.data.url;
+      if (!path) throw new Error('Upload failed to return path');
+      await sellerApi.replaceKycDocument(projectId, docType, path);
+      setUploadSuccess(true); setTimeout(() => setUploadSuccess(false), 3000);
+      loadStatus();
+    } catch (err) { setError(err.response?.data?.error || 'Failed to replace KYC document'); }
+    finally { setReplacingKyc(null); }
+  }
+
+  const renderKycDoc = (docType, label, path) => {
+    if (!project || !path) return null;
+    const st = project.kyc_docs_status?.[docType] || { status: 'pending', reason: null };
+    return (
+      <div key={docType} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50 gap-3">
+        <div>
+          <p className="text-sm font-semibold text-gray-800" style={s}>{label}</p>
+          <a href={project[`${docType === 'live_photo' ? 'live_verification_photo' : docType}_signed_url`] || path} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline" style={s}>View Document</a>
+        </div>
+        <div className="flex items-center gap-3">
+          {st.status === 'approved' && <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded">APPROVED</span>}
+          {st.status === 'pending' && <span className="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded">PENDING REVIEW</span>}
+          {st.status === 'rejected' && (
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex items-center gap-2">
+                <span className="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded" title={st.reason}>REJECTED</span>
+                <span className="text-[11px] text-red-600 font-medium">Reason: {st.reason}</span>
+              </div>
+              <div className="relative">
+                <input type="file" onChange={(e) => handleReplaceKycDoc(docType, e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf,.jpg,.jpeg,.png,.webp" disabled={replacingKyc === docType} />
+                <button type="button" className="text-[11px] font-bold bg-gray-900 hover:bg-gray-800 text-white px-3 py-1.5 rounded transition-colors disabled:opacity-50" disabled={replacingKyc === docType} style={s}>
+                  {replacingKyc === docType ? 'Uploading...' : 'Upload Replacement'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   async function handleSendMessage(e) {
     e.preventDefault();
@@ -191,6 +254,50 @@ export default function ProjectVerificationPage() {
             </Button>
           </form>
         </div>
+
+        {/* ── Core Identity Documents ────────────────────── */}
+        {project && (
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+            <h3 className="text-base font-bold text-gray-900 mb-4" style={s}>Core Identity Documents</h3>
+            <div className="space-y-3">
+              {renderKycDoc('aadhaar', 'Owner ID (KYC)', project.aadhaar_doc_signed_url)}
+              {renderKycDoc('land_deed', 'Land Deed', project.land_deed_signed_url)}
+              {renderKycDoc('live_photo', 'Live Photo (KYC)', project.live_verification_photo_signed_url)}
+            </div>
+          </div>
+        )}
+
+        {/* ── Your Documents ─────────────────────────────── */}
+        {documents.length > 0 && (
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+            <h3 className="text-base font-bold text-gray-900 mb-4" style={s}>Your Documents</h3>
+            <div className="space-y-3">
+              {documents.map(doc => (
+                <div key={doc.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50 gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800" style={s}>{doc.doc_type.replace(/_/g, ' ').toUpperCase()}</p>
+                    <a href={`https://gateway.pinata.cloud/ipfs/${doc.ipfs_cid}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline" style={s}>View Document</a>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {doc.status === 'approved' && <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded">APPROVED</span>}
+                    {doc.status === 'pending' && <span className="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded">PENDING REVIEW</span>}
+                    {doc.status === 'rejected' && (
+                      <div className="flex items-center gap-2">
+                        <span className="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded" title={doc.rejection_reason}>REJECTED</span>
+                        <button type="button" onClick={() => handleDeleteDoc(doc.id)} className="text-[11px] font-bold bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition-colors" style={s}>Delete & Re-upload</button>
+                      </div>
+                    )}
+                  </div>
+                  {doc.status === 'rejected' && doc.rejection_reason && (
+                    <div className="w-full sm:w-auto text-xs text-red-600 bg-red-50 p-2 rounded sm:hidden block mt-1" style={s}>
+                      Reason: {doc.rejection_reason}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Messages ────────────────────────────────────── */}
         {thread.reportId && (
