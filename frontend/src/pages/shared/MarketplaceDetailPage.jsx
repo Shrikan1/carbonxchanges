@@ -280,8 +280,16 @@ export default function MarketplaceDetailPage() {
                 <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-4 flex items-center gap-2">
                   <FiMapPin className="text-gray-400" /> Location Data
                 </h3>
-                <div className="h-[200px] bg-gray-100 mb-4 border border-gray-200">
-                  <LocationMap lat={listing.latitude} lng={listing.longitude} />
+                <div className="h-[200px] border border-gray-200 overflow-hidden">
+                  <LocationMap
+                    markers={[{
+                      lat: Number(listing.latitude),
+                      lng: Number(listing.longitude),
+                      label: listing.project_title
+                    }]}
+                    zoom={11}
+                    height="200px"
+                  />
                 </div>
                 <div className="text-[10px] text-gray-400 font-mono">
                   LAT: {Number(listing.latitude).toFixed(4)} <br/>

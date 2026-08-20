@@ -359,16 +359,6 @@ export default function AgentProjectDetailPage() {
     <AgentLayout title="Project Details" subtitle="Verification workspace">
       <div className="flex flex-col h-full w-full max-w-[1400px] mx-auto pb-12">
         <div className="max-w-5xl mx-auto space-y-6 relative w-full">
-          <button 
-            onClick={() => navigate(-1)} 
-            className="group flex items-center gap-3 text-[#555] hover:text-[#0a0a0a] transition-colors w-fit mb-2"
-          >
-            <div className="w-10 h-10 rounded-full border border-[#e2e8e4] bg-white shadow-sm flex items-center justify-center group-hover:border-[#10b981] group-hover:bg-[#10b981] group-hover:text-white transition-all duration-300">
-              <FiChevronLeft size={20} strokeWidth={2.5} />
-            </div>
-            <span className="text-sm font-bold tracking-wide">Back to Queue</span>
-          </button>
-
           <ProjectStepper status={project.status} />
 
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">

@@ -104,37 +104,108 @@ export default function PublicProjectShowcasePage() {
 
         {/* Project Detailed Stats & Description */}
         {project && (
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-10">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-10 space-y-8">
+
+            {/* About */}
             {project.project_summary && (
-              <div className="mb-8">
+              <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                   <FiInfo className="text-emerald-600" /> About this Project
                 </h3>
                 <p className="text-gray-600 leading-relaxed text-[15px]">{project.project_summary}</p>
               </div>
             )}
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Total Area</div>
-                <div className="text-xl font-black text-gray-900">{project.total_project_area_hectares} <span className="text-sm font-medium text-gray-500">ha</span></div>
-              </div>
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Est. CO₂ Claimed</div>
-                <div className="text-xl font-black text-gray-900">{project.total_co2_claimed} <span className="text-sm font-medium text-gray-500">t</span></div>
-              </div>
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Duration</div>
-                <div className="text-xl font-black text-gray-900">{project.duration_months} <span className="text-sm font-medium text-gray-500">mo</span></div>
-              </div>
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Scale</div>
-                <div className="text-xl font-black text-gray-900 capitalize text-ellipsis overflow-hidden whitespace-nowrap">{project.project_scale?.replace('-', ' ')}</div>
+
+            {/* Key Stats */}
+            <div>
+              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Key Stats</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: 'Total Area', value: project.total_project_area_hectares, unit: 'ha' },
+                  { label: 'Est. CO₂ Claimed', value: project.total_co2_claimed, unit: 't' },
+                  { label: 'Duration', value: project.duration_months, unit: 'mo' },
+                  { label: 'Est. VERs', value: project.estimated_vers ? Number(project.estimated_vers).toLocaleString() : null, unit: '' },
+                  { label: 'Crediting Period', value: project.crediting_period_months, unit: 'mo' },
+                  { label: 'Project Area (eligible)', value: project.eligible_area_hectares, unit: 'ha' },
+                  { label: 'Conservation Set-Aside', value: project.set_aside_conservation_percent, unit: '%' },
+                  { label: 'Scale', value: project.project_scale?.replace('-', ' '), unit: '' },
+                ].filter(s => s.value != null && s.value !== '').map(({ label, value, unit }) => (
+                  <div key={label} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                    <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">{label}</div>
+                    <div className="text-lg font-black text-gray-900 truncate">
+                      {value} {unit && <span className="text-sm font-medium text-gray-500">{unit}</span>}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
+            {/* Land & Environment */}
+            {(project.climate_zone || project.soil_type || project.hydrology_status || project.land_title_status) && (
+              <div className="pt-6 border-t border-gray-100">
+                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Land & Environment</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { label: 'Climate Zone', value: project.climate_zone },
+                    { label: 'Soil Type', value: project.soil_type },
+                    { label: 'Hydrology', value: project.hydrology_status },
+                    { label: 'Land Title', value: project.land_title_status },
+                    { label: 'Land Ownership', value: project.land_ownership_type },
+                    { label: 'Publicly Funded', value: project.publicly_funded === true ? 'Yes' : project.publicly_funded === false ? 'No' : null },
+                  ].filter(i => i.value != null).map(({ label, value }) => (
+                    <div key={label}>
+                      <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</p>
+                      <p className="text-sm font-semibold text-gray-800">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Timeline */}
+            {(project.project_start_date || project.expected_completion_date || project.monitoring_frequency) && (
+              <div className="pt-6 border-t border-gray-100">
+                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Timeline</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {[
+                    { label: 'Start Date', value: project.project_start_date ? new Date(project.project_start_date).toLocaleDateString() : null },
+                    { label: 'Expected Completion', value: project.expected_completion_date ? new Date(project.expected_completion_date).toLocaleDateString() : null },
+                    { label: 'Monitoring Frequency', value: project.monitoring_frequency },
+                  ].filter(i => i.value != null).map(({ label, value }) => (
+                    <div key={label}>
+                      <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</p>
+                      <p className="text-sm font-semibold text-gray-800">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Methodology & Carbon Accounting */}
+            {(project.methodology_applied || project.baseline_scenario || project.additionality_demonstration || project.technologies_measures_description || project.sdg_targets || project.ghg_sources_included) && (
+              <div className="pt-6 border-t border-gray-100">
+                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Methodology & Carbon Accounting</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    { label: 'Methodology Applied', value: project.methodology_applied },
+                    { label: 'GHG Sources Included', value: project.ghg_sources_included },
+                    { label: 'SDG Targets', value: project.sdg_targets },
+                    { label: 'Baseline Scenario', value: project.baseline_scenario },
+                    { label: 'Additionality Demonstration', value: project.additionality_demonstration },
+                    { label: 'Technologies & Measures', value: project.technologies_measures_description },
+                  ].filter(i => i.value != null && i.value !== '').map(({ label, value }) => (
+                    <div key={label} className={label === 'Baseline Scenario' || label === 'Additionality Demonstration' || label === 'Technologies & Measures' ? 'md:col-span-2' : ''}>
+                      <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Type-Specific Metrics */}
             {project.methodology_specific_data && Object.keys(project.methodology_specific_data).length > 0 && (
-              <div className="mt-8 pt-6 border-t border-gray-100">
+              <div className="pt-6 border-t border-gray-100">
                 <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <FiTarget className="text-emerald-600" /> Key Project Metrics
                 </h4>

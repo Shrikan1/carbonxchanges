@@ -9,11 +9,12 @@ import { Select } from '../../components/ui/Select';
 import { Label } from '../../components/ui/Label';
 import FileUploadZone from '../../components/ui/FileUploadZone';
 import SellerLayout from '../../components/layout/SellerLayout';
+import LocationMap from '../../components/LocationMap';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   FiUser, FiCheckCircle, FiAlertCircle,
   FiUpload, FiSend, FiMessageSquare, FiLoader,
-  FiX, FiClock
+  FiX, FiClock, FiMapPin, FiCalendar, FiDroplet, FiInfo
 } from 'react-icons/fi';
 
 const s = {
@@ -183,6 +184,99 @@ export default function ProjectVerificationPage() {
         {uploadSuccess && (
           <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm" style={s}>
             <FiCheckCircle size={16} /> Document uploaded successfully.
+          </div>
+        )}
+
+        {/* ── Full Project Details Card ─────────────────── */}
+        {project && (
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* Header */}
+            <div className="px-6 pt-6 pb-4 border-b border-gray-100">
+              <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">Project CXP-{project.id}</p>
+              <h2 className="text-xl font-black text-gray-900 tracking-tight leading-tight" style={s}>{project.title}</h2>
+              {project.project_summary && (
+                <p className="text-xs text-gray-500 mt-2 leading-relaxed" style={s}>{project.project_summary}</p>
+              )}
+              <div className="flex flex-wrap gap-2 mt-3">
+                {project.project_type && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded">
+                    {project.project_type.replace(/_/g, ' ')}
+                  </span>
+                )}
+                {project.project_scale && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-600 border border-gray-200 px-2 py-0.5 rounded">
+                    {project.project_scale}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Key Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-0 divide-x divide-y divide-gray-100 border-b border-gray-100">
+              {[
+                { label: 'Est. CO₂ Claimed', value: project.total_co2_claimed ? `${Number(project.total_co2_claimed).toLocaleString()} t` : null },
+                { label: 'Est. VERs', value: project.estimated_vers ? Number(project.estimated_vers).toLocaleString() : null },
+                { label: 'Duration', value: project.duration_months ? `${project.duration_months} months` : null },
+                { label: 'Project Area', value: project.total_project_area_hectares ? `${project.total_project_area_hectares} ha` : null },
+                { label: 'Methodology', value: project.methodology_applied },
+                { label: 'Monitoring', value: project.monitoring_frequency },
+              ].map(({ label, value }) => (
+                <div key={label} className="px-4 py-3">
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5" style={s}>{label}</p>
+                  <p className="text-sm font-bold text-gray-900" style={s}>
+                    {value || <span className="text-gray-300 font-normal italic">—</span>}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Location row */}
+            <div className="px-6 py-3 border-b border-gray-100 flex items-center gap-2 text-sm text-gray-600" style={s}>
+              <FiMapPin size={13} className="text-gray-400 shrink-0" />
+              <span className="font-medium">
+                {[project.city, project.state_region, project.country].filter(Boolean).join(', ') || 'Location not provided'}
+              </span>
+              {project.latitude && project.longitude && (
+                <span className="text-[10px] text-gray-400 font-mono ml-2">
+                  ({project.latitude}, {project.longitude})
+                </span>
+              )}
+            </div>
+
+            {/* Inline Map */}
+            {project.latitude && project.longitude && (
+              <div className="relative" style={{ height: 220 }}>
+                <LocationMap
+                  markers={[{ lat: Number(project.latitude), lng: Number(project.longitude), label: project.title }]}
+                  zoom={11}
+                  height="220px"
+                />
+              </div>
+            )}
+
+            {/* Extra fields row */}
+            {(project.baseline_scenario || project.sdg_targets || project.project_start_date) && (
+              <div className="px-6 py-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {project.project_start_date && (
+                  <div>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5" style={s}>Start Date</p>
+                    <p className="text-sm font-medium text-gray-900" style={s}>{new Date(project.project_start_date).toLocaleDateString()}</p>
+                  </div>
+                )}
+                {project.sdg_targets && (
+                  <div>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5" style={s}>SDG Targets</p>
+                    <p className="text-sm font-medium text-gray-900" style={s}>{project.sdg_targets}</p>
+                  </div>
+                )}
+                {project.baseline_scenario && (
+                  <div className="sm:col-span-2">
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5" style={s}>Baseline Scenario</p>
+                    <p className="text-sm font-medium text-gray-900 leading-snug" style={s}>{project.baseline_scenario}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
