@@ -31,12 +31,12 @@ const STEP_BASIC_INFO = {
       ],
     },
     {
-      name: 'duration_years', label: 'Duration (years)', type: 'number', min: 1, max: 100,
-      description: 'Total number of years the project will actively operate and sequester carbon.',
+      name: 'duration_months', label: 'Duration (months)', type: 'number', min: 1, max: 1200, required: true,
+      description: 'Total number of months the project will actively operate and sequester carbon.',
     },
     {
-      name: 'crediting_period_years', label: 'Crediting Period (years)', type: 'number', min: 1, max: 100,
-      description: 'The number of years for which carbon credits will be officially issued.',
+      name: 'crediting_period_months', label: 'Crediting Period (months)', type: 'number', min: 1, max: 1200, required: true,
+      description: 'The number of months for which carbon credits will be officially issued.',
     },
     {
       name: 'project_start_date', label: 'Project Start Date', type: 'date', required: true,

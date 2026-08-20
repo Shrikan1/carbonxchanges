@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-
+import { logout as apiLogout } from '../api/endpoint/Authapi';
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -15,7 +15,14 @@ export const useAuthStore = create((set, get) => ({
   updateUser: (partialUser) =>
     set((state) => ({ user: { ...state.user, ...partialUser } })),
 
-  logout: () => set({ user: null, token: null, isAuthenticated: false, isInitializing: false }),
+  logout: async () => {
+    try {
+      await apiLogout();
+    } catch (err) {
+      console.error('Logout API failed', err);
+    }
+    set({ user: null, token: null, isAuthenticated: false, isInitializing: false });
+  },
 
   finishInitializing: () => set({ isInitializing: false }),
 }));

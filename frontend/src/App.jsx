@@ -45,9 +45,12 @@ import AgentAssignedProjectsPage from './pages/agent/AgentAssignedProjectsPage';
 import AgentProjectDetailPage from './pages/agent/AgentProjectDetailPage';
 import AgentHistoryPage from './pages/agent/AgentHistoryPage';
 
+import { Toaster } from 'react-hot-toast';
+
 const RootLayout = () => (
   <>
     <ScrollRestoration />
+    <Toaster position="top-center" reverseOrder={false} />
     <Outlet />
   </>
 );
@@ -98,7 +101,7 @@ const router = createBrowserRouter([
   },
 
   {
-    path: ~'/forgot-password',
+    path: '/forgot-password',
     element: <ForgotPassword />,
   },
 
@@ -359,9 +362,11 @@ function App() {
     async function restoreSession() {
       try {
         const { data } = await authApi.refreshToken();
+        
+        // Set the token immediately so the interceptor can attach it to the getProfile request
+        useAuthStore.getState().setToken(data.token);
 
-        const { data: profileData } =
-          await authApi.getProfile();
+        const { data: profileData } = await authApi.getProfile();
 
         setSession(
           profileData.user,

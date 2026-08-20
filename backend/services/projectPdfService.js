@@ -93,8 +93,8 @@ async function generateVerificationPdfBuffer(project, initialReport, completionR
       row('Hydrology Status', project.hydrology_status);
       row('Land Title Status', project.land_title_status);
       row('Start Date', project.project_start_date);
-      row('Duration (years)', project.duration_years);
-      row('Crediting Period (years)', project.crediting_period_years);
+      row('Duration (months)', project.duration_months);
+      row('Crediting Period', project.crediting_period_months ? `${project.crediting_period_months} months` : 'N/A');
       row('Expected Completion', project.expected_completion_date);
       doc.moveDown(0.5);
 

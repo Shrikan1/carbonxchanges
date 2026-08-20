@@ -8,7 +8,7 @@ const Verification = require('../../models/Verification');
 // (or the frontend may send the full signed URL — both are accepted here).
 async function submitInitialVerification(req, res) {
   try {
-    const { gps_lat, gps_lng, photo_url, notes } = req.body;
+    const { gps_lat, gps_lng, photo_url, notes, overridden_expected_completion_date } = req.body;
 
     if (gps_lat === undefined || gps_lng === undefined) {
       return res.status(400).json({ error: 'gps_lat and gps_lng are required' });
@@ -17,6 +17,15 @@ async function submitInitialVerification(req, res) {
       return res.status(400).json({
         error: 'photo_url is required — upload a field photo via POST /api/upload/kyc first, then include the returned storagePath as photo_url.',
       });
+    }
+
+    if (overridden_expected_completion_date) {
+      const overrideDate = new Date(overridden_expected_completion_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (overrideDate < today) {
+        return res.status(400).json({ error: 'Overridden completion date cannot be in the past.' });
+      }
     }
 
     const project = await Project.findProjectById(req.params.id);
@@ -31,11 +40,18 @@ async function submitInitialVerification(req, res) {
       });
     }
 
+    const { kyc_docs_status } = project;
+    if (!kyc_docs_status || kyc_docs_status.aadhaar !== 'approved' || kyc_docs_status.land_deed !== 'approved' || kyc_docs_status.live_photo !== 'approved') {
+      return res.status(400).json({
+        error: 'Cannot submit initial verification — all KYC documents (Aadhaar, Land Deed, Live Photo) must be approved first.'
+      });
+    }
+
     const report = await Verification.createVerificationReport(project.id, req.user.id, 'initial', {
       gps_lat, gps_lng, photo_url, notes,
     });
 
-    await Project.setExpectedCompletionDate(project.id);
+    await Project.setExpectedCompletionDate(project.id, overridden_expected_completion_date);
     const updatedProject = await Project.changeProjectStatus(project.id, 'in_progress');
 
     res.status(201).json({
@@ -104,4 +120,49 @@ async function submitCompletionVerification(req, res) {
   }
 }
 
-module.exports = { submitInitialVerification, submitCompletionVerification };
+// POST /api/agent/projects/:id/flag
+// body: { category, description }
+async function flagProject(req, res) {
+  try {
+    const { category, description } = req.body;
+    
+    if (!category || !description) {
+      return res.status(400).json({ error: 'Category and description are required' });
+    }
+
+    const project = await Project.findProjectById(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+
+    if (project.agent_id !== req.user.id) {
+      return res.status(403).json({ error: 'You are not assigned to this project' });
+    }
+
+    // Must be assigned, in_progress, or minted to flag
+    if (!['assigned', 'in_progress', 'minted'].includes(project.status)) {
+      return res.status(400).json({
+        error: `Cannot flag a project with status "${project.status}"`,
+      });
+    }
+
+    const ProjectIssue = require('../../models/ProjectIssue');
+    const issue = await ProjectIssue.createIssue({
+      project_id: project.id,
+      agent_id: req.user.id,
+      category,
+      description
+    });
+
+    const updatedProject = await Project.changeProjectStatus(project.id, 'flagged');
+
+    res.status(201).json({
+      message: 'Project successfully flagged for admin review.',
+      issue,
+      project: updatedProject,
+    });
+  } catch (err) {
+    console.error('Flag project error:', err);
+    res.status(500).json({ error: 'Failed to flag project' });
+  }
+}
+
+module.exports = { submitInitialVerification, submitCompletionVerification, flagProject };

@@ -21,6 +21,8 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
     email: '',
     password: '',
     confirmPassword: '',
+    phone_number: '',
+    address: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -43,7 +45,9 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
       !formData.name.trim() ||
       !formData.email.trim() ||
       !formData.password ||
-      !formData.confirmPassword
+      !formData.confirmPassword ||
+      !formData.phone_number.trim() ||
+      !formData.address.trim()
     ) {
       setError('Please fill all the fields.');
       return;
@@ -62,7 +66,9 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
         formData.email,
         formData.password,
         formData.confirmPassword,
-        roleType  // always send the selected role
+        roleType,
+        formData.phone_number,
+        formData.address
       );
 
       const userId =
@@ -209,6 +215,36 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
               name="email"
               placeholder="aarav@example.com"
               value={formData.email}
+              onChange={handleChange}
+              className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+            />
+          </div>
+
+          {/* Phone Number */}
+          <div>
+            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              name="phone_number"
+              placeholder="+91 9876543210"
+              value={formData.phone_number}
+              onChange={handleChange}
+              className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+            />
+          </div>
+
+          {/* Address */}
+          <div>
+            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">
+              Address
+            </label>
+            <input
+              type="text"
+              name="address"
+              placeholder="123 Green Street, City"
+              value={formData.address}
               onChange={handleChange}
               className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
             />

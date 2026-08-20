@@ -89,5 +89,28 @@ async function getDueForCompletion(req, res) {
     res.status(500).json({ error: 'Failed to fetch due-for-completion projects' });
   }
 }
+// PUT /api/agent/projects/:id/progress
+async function updateReviewProgress(req, res) {
+  try {
+    const { progressJson } = req.body;
+    
+    if (typeof progressJson !== 'object' || progressJson === null) {
+      return res.status(400).json({ error: 'progressJson must be an object' });
+    }
 
-module.exports = { getAssignedProjects, getAssignedProjectDetails, getDueForCompletion };
+    const project = await Project.findProjectById(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+
+    if (project.agent_id !== req.user.id) {
+      return res.status(403).json({ error: 'You are not assigned to this project' });
+    }
+
+    const updatedProject = await Project.updateAgentReviewProgress(project.id, progressJson);
+    res.json({ success: true, agent_review_progress: updatedProject.agent_review_progress });
+  } catch (err) {
+    console.error('Update review progress error:', err);
+    res.status(500).json({ error: 'Failed to update review progress' });
+  }
+}
+
+module.exports = { getAssignedProjects, getAssignedProjectDetails, getDueForCompletion, updateReviewProgress };

@@ -16,4 +16,16 @@ async function findDocumentsByProject(projectId) {
   return result.rows;
 }
 
-module.exports = { createDocument, findDocumentsByProject };
+async function updateDocumentStatus(docId, status, rejectionReason = null) {
+  const result = await query(
+    `UPDATE documents SET status = $1, rejection_reason = $2 WHERE id = $3 RETURNING *`,
+    [status, rejectionReason, docId]
+  );
+  return result.rows[0];
+}
+
+async function deleteDocument(docId) {
+  await query(`DELETE FROM documents WHERE id = $1`, [docId]);
+}
+
+module.exports = { createDocument, findDocumentsByProject, updateDocumentStatus, deleteDocument };

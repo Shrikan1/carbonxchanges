@@ -9,9 +9,9 @@ const { generateToken, generateRefreshToken, verifyToken } = require('../../util
 // POST /api/auth/signup
 async function signup(req, res) {
   try {
-    const { name, email, password, confirmPassword, role_type } = req.body;
+    const { name, email, password, confirmPassword, role_type, phone_number, address } = req.body;
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !phone_number || !address) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -25,15 +25,16 @@ async function signup(req, res) {
       return res.status(400).json({ error: `role_type must be 'seller' or 'buyer'` });
     }
 
-    const existing = await User.findByEmail(email);
-    if (existing) {
-      return res.status(409).json({ error: 'An account with this email already exists' });
+    const existingUser = await User.findByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already registered' });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
+    
     // Every account starts as base 'user'. If role_type was provided at signup,
-    // we immediately set the corresponding flag after account creation.
-    const user = await User.createUser({ name, email, passwordHash });
+    // we record it in pending_role_request to upgrade them after OTP verify.
+    const user = await User.createUser({ name, email, passwordHash, phone_number, address });
     if (role_type === 'seller') await User.setSellerFlag(user.id);
     else if (role_type === 'buyer') await User.setBuyerFlag(user.id);
 

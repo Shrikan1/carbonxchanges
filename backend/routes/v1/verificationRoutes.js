@@ -8,7 +8,9 @@ router.use(requireAuth);
 
 router.get('/:projectId/status', verificationController.getVerificationStatus);
 router.get('/:projectId/agent', verificationController.viewAssignedAgent);
+router.get('/:projectId/documents', verificationController.getProjectDocuments);
 router.post('/:projectId/documents', verificationController.uploadProjectDocuments);
+router.delete('/:projectId/documents/:docId', verificationController.deleteProjectDocument);
 router.put('/reports/:reportId/response', verificationController.submitSellerResponse);
 
 module.exports = router;
