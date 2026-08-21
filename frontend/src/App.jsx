@@ -86,7 +86,11 @@ const router = createBrowserRouter([
 
   {
     path: '/posts/:postId',
-    element: <PostDetail />,
+    element: (
+      <RequireAuth>
+        <PostDetail />
+      </RequireAuth>
+    ),
   },
 
   {
@@ -167,7 +171,11 @@ const router = createBrowserRouter([
 
   {
     path: '/projects/:projectId',
-    element: <PublicProjectShowcasePage />,
+    element: (
+      <RequireAuth>
+        <PublicProjectShowcasePage />
+      </RequireAuth>
+    ),
   },
 
   // Seller project editor
@@ -249,7 +257,11 @@ const router = createBrowserRouter([
 },
 {
   path: '/marketplace/:listingId',
-  element: <MarketplaceDetailPage />,
+  element: (
+    <RequireAuth>
+      <MarketplaceDetailPage />
+    </RequireAuth>
+  ),
 },
 
 // Dashboard

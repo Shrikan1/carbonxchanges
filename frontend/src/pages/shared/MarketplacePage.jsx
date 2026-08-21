@@ -178,16 +178,52 @@ export default function MarketplacePage() {
 
           {/* Project Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="bg-white border border-gray-200 flex flex-col h-[400px] animate-pulse">
-                  <div className="h-48 bg-gray-100 w-full"></div>
-                  <div className="p-5 flex-1 flex flex-col">
-                    <div className="h-3 bg-gray-200 rounded w-1/3 mb-4"></div>
-                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-auto"></div>
-                    <div className="flex justify-between border-t border-gray-100 pt-4">
-                      <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-                      <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} 
+                  className="bg-white text-black flex flex-col sm:flex-row h-full sm:min-h-[280px] relative shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] animate-pulse"
+                  style={{ clipPath: 'polygon(2rem 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%, 0 2rem)' }}
+                >
+                  {/* Left Side: Content Skeleton */}
+                  <div className="w-full sm:w-[55%] p-6 sm:p-8 flex flex-col justify-between relative bg-white z-10">
+                    <div>
+                      {/* Meta */}
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="h-2 bg-gray-200 w-20 rounded"></div>
+                        <span className="text-gray-200 text-[10px]">•</span>
+                        <div className="h-2 bg-gray-200 w-16 rounded"></div>
+                      </div>
+                      
+                      {/* Title */}
+                      <div className="space-y-2 mb-4">
+                        <div className="h-8 sm:h-10 bg-gray-200 w-full rounded-sm"></div>
+                        <div className="h-8 sm:h-10 bg-gray-200 w-4/5 rounded-sm"></div>
+                        <div className="h-8 sm:h-10 bg-gray-200 w-1/2 rounded-sm"></div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4">
+                      {/* Metrics */}
+                      <div className="flex items-end gap-6 mb-5">
+                        <div className="flex flex-col gap-2">
+                          <div className="h-2 bg-gray-200 w-16 rounded"></div>
+                          <div className="h-5 bg-gray-200 w-20 rounded"></div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <div className="h-2 bg-gray-200 w-16 rounded"></div>
+                          <div className="h-6 bg-gray-200 w-24 rounded"></div>
+                        </div>
+                      </div>
+                      
+                      {/* Button */}
+                      <div className="h-[36px] bg-gray-200 w-32 rounded-sm"></div>
+                    </div>
+                  </div>
+
+                  {/* Right Side: Image Skeleton */}
+                  <div className="w-full sm:w-[45%] h-[200px] sm:h-auto bg-gray-100 flex items-center justify-center">
+                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                      <FiActivity className="text-gray-300" size={24} />
                     </div>
                   </div>
                 </div>
@@ -204,7 +240,7 @@ export default function MarketplacePage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {filteredListings.map(listing => (
                 <MarketplaceCard key={listing.id} listing={listing} />
               ))}

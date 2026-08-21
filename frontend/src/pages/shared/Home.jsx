@@ -48,12 +48,10 @@ import img13 from '../../assets/wp2557992.jpg';
 import img14 from '../../assets/wp9161748.jpg';
 
 const projectGalleryItems = [
-  { image: img1, title: 'Western Ghats Rainforest' },
   { image: img2, title: 'Kutch Wind Turbines' },
   { image: img3, title: 'Bhadla Solar Park' },
   { image: img4, title: 'Himalayan Valley' },
   { image: img5, title: 'Andaman Conservation' },
-  { image: img6, title: 'Assam Tea Plantation' },
   { image: img7, title: 'Sundarbans Sunrise' },
   { image: img8, title: 'Delhi Recycling Hub' },
   { image: img9, title: 'Nilgiri Landscape' },
@@ -72,7 +70,7 @@ const testimonials = [
     name: "ANANYA SHARMA",
     role: "Head of Sustainability",
     company: "Tata EcoTech",
-    image: img1
+    image: img5
   },
   {
     id: 2,
@@ -160,7 +158,7 @@ const Home = () => {
 
   const [isFirstVisit] = useState(() => {
     if (shouldReduceMotion) return false;
-    
+
     // If we've already played it this session (so F5 doesn't replay it)
     if (sessionStorage.getItem('playedIntro')) return false;
 
@@ -220,9 +218,9 @@ const Home = () => {
               >
                 <motion.span
                   layoutId="brand-logo"
-                  className="wise-font font-black tracking-tighter text-[clamp(3rem,8vw,6rem)] text-transparent"
+                  className="wise-font font-black uppercase tracking-normal text-[clamp(3rem,8vw,6rem)] text-transparent [text-shadow:1px_1px_0_transparent,2px_2px_0_transparent,3px_3px_0_transparent]"
                   style={{
-                    WebkitTextStroke: '1.5px #bef264'
+                    WebkitTextStroke: '2px #bef264'
                   }}
                   transition={{ layout: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }}
                 >
@@ -243,7 +241,7 @@ const Home = () => {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-[#0c0c0c]/30" />
+        <div className="absolute inset-0 bg-[#0c0c0c]/30 backdrop-blur-[2px]" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-8">
           {/* Headline — word-by-word stagger reveal */}
@@ -294,7 +292,7 @@ const Home = () => {
             >
               <p className="text-[13px] font-mono uppercase tracking-[0.2em] text-[#999]">Our Purpose</p>
               {/* Word-by-word blur reveal on the headline */}
-              <h2 className="text-4xl sm:text-6xl tracking-tighter leading-tight uppercase wise-font font-black [text-shadow:2px_2px_0_#bef264,4px_4px_0_#bef264,6px_6px_0_#bef264]">
+              <h2 className="text-4xl sm:text-6xl tracking-tighter leading-tight uppercase wise-font font-black">
                 {'Empowering Global Climate Action.'.split(' ').map((word, i) => (
                   <motion.span
                     key={i}
@@ -317,11 +315,11 @@ const Home = () => {
 
               <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                  <h4 className="font-bold text-base uppercase tracking-widest mb-2 font-['JetBrains_Mono']">Verified Impact</h4>
+                  <h4 className="font-bold text-base uppercase tracking-widest mb-2 subheading">Verified Impact</h4>
                   <p className="text-[#555] text-sm">Every project is vetted against global standards like Verra and Gold Standard.</p>
                 </div>
                 <div>
-                  <h4 className="font-bold text-base uppercase tracking-widest mb-2 font-['JetBrains_Mono']">Immutable Ledger</h4>
+                  <h4 className="font-bold text-base uppercase tracking-widest mb-2 subheading">Immutable Ledger</h4>
                   <p className="text-[#555] text-sm">Blockchain guarantees credits cannot be double-counted or manipulated.</p>
                 </div>
               </div>
@@ -347,20 +345,40 @@ const Home = () => {
 
       {/* ─── PROJECT GALLERY (DARK & FLOATING GALLERY) ─── */}
       <section id="gallery" className="bg-[#112a14] text-white overflow-hidden py-32 relative">
-        <div className="max-w-[1400px] mx-auto px-6 flex flex-col gap-16">
-          <div className="w-full flex flex-col">
-            <h2 className="text-[14vw] xl:text-[180px] leading-[0.8] font-black tracking-tighter text-[#bef264] uppercase wise-font">
+        <div className="max-w-[1400px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
+          <div className="w-full lg:w-1/3 flex flex-col z-10 relative">
+            <h2 className="text-[8vw] xl:text-[80px] leading-[0.9] font-black tracking-tighter text-[#bef264] uppercase wise-font">
               Explore
             </h2>
-            <h2 className="text-[14vw] xl:text-[180px] leading-[0.8] font-black tracking-tighter text-[#bef264] uppercase wise-font mt-2 lg:mt-0">
+            <h2 className="text-[8vw] xl:text-[80px] leading-[0.9] font-black tracking-tighter text-[#bef264] uppercase wise-font mt-2 lg:mt-0">
               Projects.
             </h2>
             <div className="max-w-2xl mt-8">
-              <p className="text-white/90 text-lg md:text-xl leading-relaxed font-medium">
+              <p className="text-white/90 text-lg leading-relaxed font-medium">
                 A profile, portfolio, and social feed in one place.
                 Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
               </p>
             </div>
+            <div className="mt-10">
+              <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-white text-[#112a14] px-6 py-3 text-[12px] font-black hover:bg-gray-200 transition-all hover:scale-105 shadow-xl">
+                <span>VIEW MARKETPLACE</span>
+                <FaArrowRight className="text-[10px]" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-2/3 h-[400px] lg:h-[550px] relative rounded-3xl overflow-hidden shadow-2xl border-4 border-[#bef264]/20">
+            <DriftWall
+              items={projectGalleryItems}
+              columns={4}
+              tileWidth={240}
+              tileHeight={180}
+              gap={16}
+              speed={35}
+              direction="up"
+              overlayColor="transparent"
+              dim={1.0}
+            />
           </div>
         </div>
       </section>
@@ -412,25 +430,44 @@ const Home = () => {
             )}
           </div>
 
-          <div className="relative h-[600px] flex items-center justify-center">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+          <div className="relative h-full min-h-[500px] flex items-center justify-center w-full">
+            <motion.div
+              className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 }
+                }
+              }}
+            >
               {[
-                { Icon: FaBolt, label: 'Instant Settlement' },
-                { Icon: FaShieldAlt, label: 'Verified Security' },
-                { Icon: FaChartLine, label: 'Scalable Impact' },
-                { Icon: FaFileContract, label: 'Smart Contracts' },
-                { Icon: FaTree, label: 'Reforestation' },
-                { Icon: FaWind, label: 'Wind Energy' },
-                { Icon: FaSolarPanel, label: 'Solar Projects' },
-                { Icon: FaWallet, label: 'Secure Wallet' },
-                { Icon: FaHandshake, label: 'Trustless Audits' }
-              ].map(({ Icon, label }, idx) => (
-                <div key={idx} className="bg-white rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] w-28 h-28 sm:w-36 sm:h-36 flex flex-col items-center justify-center transform transition-transform duration-500 hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
-                  <Icon className={`text-3xl sm:text-5xl mb-2 ${['text-[#10b981]', 'text-[#bef264]', 'text-[#022c22]', 'text-[#059669]', 'text-[#0a0a0a]'][idx % 5]}`} />
-                  <span className="text-[10px] sm:text-xs font-bold text-gray-500 tracking-wider uppercase text-center px-2">{label}</span>
-                </div>
+                { Icon: FaBolt, label: 'Instant Settlement', color: 'text-emerald-500', rotate: '-rotate-2' },
+                { Icon: FaShieldAlt, label: 'Verified Security', color: 'text-gray-900', rotate: 'rotate-3' },
+                { Icon: FaChartLine, label: 'Scalable Impact', color: 'text-lime-500', rotate: '-rotate-1' },
+                { Icon: FaFileContract, label: 'Smart Contracts', color: 'text-emerald-700', rotate: 'rotate-2' },
+                { Icon: FaTree, label: 'Reforestation', color: 'text-green-600', rotate: '-rotate-3' },
+                { Icon: FaWind, label: 'Wind Energy', color: 'text-teal-500', rotate: 'rotate-1' },
+                { Icon: FaSolarPanel, label: 'Solar Projects', color: 'text-yellow-500', rotate: '-rotate-2' },
+                { Icon: FaWallet, label: 'Secure Wallet', color: 'text-gray-900', rotate: 'rotate-2' },
+                { Icon: FaHandshake, label: 'Trustless Audits', color: 'text-emerald-400', rotate: '-rotate-1' }
+              ].map(({ Icon, label, color, rotate }, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={{
+                    hidden: { opacity: 0, y: 30, scale: 0.9 },
+                    visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 200, damping: 15 } }
+                  }}
+                  className={`bg-white border-[3px] border-[#0a0a0a] rounded-xl shadow-[6px_6px_0px_0px_#bef264] w-28 h-28 sm:w-36 sm:h-36 flex flex-col items-center justify-center transform ${rotate} transition-all duration-300 hover:rotate-0 hover:-translate-y-2 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_#bef264] cursor-pointer group`}
+                >
+                  <Icon className={`text-3xl sm:text-5xl mb-3 transition-transform duration-300 group-hover:scale-110 ${color}`} />
+                  <span className="text-[10px] sm:text-[11px] font-black text-[#0a0a0a] uppercase text-center px-2 font-['JetBrains_Mono'] leading-tight">{label}</span>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -473,7 +510,7 @@ const Home = () => {
                     <span className="text-emerald-500 font-bold text-sm">01</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm uppercase tracking-widest mb-1 font-['JetBrains_Mono']">Connect Wallet</h4>
+                    <h4 className="font-bold text-sm uppercase tracking-widest mb-1 subheading">Connect Wallet</h4>
                     <p className="text-[#555] text-sm leading-relaxed">Link your Web3 wallet to authenticate and access the marketplace securely.</p>
                   </div>
                 </div>
@@ -483,7 +520,7 @@ const Home = () => {
                     <span className="text-emerald-500 font-bold text-sm">02</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm uppercase tracking-widest mb-1 font-['JetBrains_Mono']">Browse & Select</h4>
+                    <h4 className="font-bold text-sm uppercase tracking-widest mb-1 subheading">Browse & Select</h4>
                     <p className="text-[#555] text-sm leading-relaxed">Explore audited carbon credit projects filtered by type, region, standard, vintage.</p>
                   </div>
                 </div>
@@ -493,7 +530,7 @@ const Home = () => {
                     <span className="text-[#0a0a0a] font-bold text-sm">03</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm uppercase tracking-widest mb-1 font-['JetBrains_Mono']">Trade & Retire</h4>
+                    <h4 className="font-bold text-sm uppercase tracking-widest mb-1 subheading">Trade & Retire</h4>
                     <p className="text-[#555] text-sm leading-relaxed">Purchase credits via smart contract, hold them, or retire them on-chain.</p>
                   </div>
                 </div>
@@ -605,7 +642,7 @@ const Home = () => {
                 </p>
 
                 <div className="mb-12 flex flex-col items-center justify-center">
-                  <h4 className="font-bold text-xl uppercase tracking-widest text-[#0a0a0a] mb-2 font-['JetBrains_Mono']">{testimonials[activeTestimonial].name}</h4>
+                  <h4 className="font-bold text-xl uppercase tracking-widest text-[#0a0a0a] mb-2 subheading">{testimonials[activeTestimonial].name}</h4>
                   <div className="flex items-center space-x-2 text-[#444] text-sm font-medium">
                     <span>{testimonials[activeTestimonial].role}</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-[#0a0a0a]/30"></span>
@@ -670,7 +707,7 @@ const Home = () => {
       <section className="bg-white border-t border-[#e2e8e4]">
         <div className="max-w-5xl mx-auto px-6 py-24">
           <div className="bg-[#022c22] border border-[#064e3b] p-10 sm:p-16 text-center shadow-2xl rounded-3xl">
-            <p className="text-[12px] font-bold font-['JetBrains_Mono'] uppercase tracking-widest text-[#666] mb-4">For Enterprises</p>
+            <p className="text-[12px] font-bold subheading uppercase tracking-widest text-[#666] mb-4">For Enterprises</p>
             <h2 className="text-3xl sm:text-5xl tracking-tighter text-white mb-6 uppercase wise-font font-black">
               Ready to offset your<br className="hidden sm:block" /> carbon footprint?
             </h2>

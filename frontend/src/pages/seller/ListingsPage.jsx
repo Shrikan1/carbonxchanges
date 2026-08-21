@@ -5,7 +5,7 @@ import { FiPlus, FiTag, FiTrash2, FiAlertCircle, FiCheckCircle } from 'react-ico
 
 export default function ListingsPage() {
   const [listings, setListings] = useState([]);
-  const [form, setForm] = useState({ batch_id: '', price_per_credit: '', amount_listed: '' });
+  const [form, setForm] = useState({ batch_id: '', price_per_credit: '', amount_listed: '', image_url: '' });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -29,12 +29,20 @@ export default function ListingsPage() {
     setError(null);
     setIsSubmitting(true);
     try {
+      let uploadedUrl = form.image_url;
+      
+      if (form.imageFile) {
+        const uploadRes = await marketplaceApi.uploadMedia(form.imageFile);
+        uploadedUrl = uploadRes.data.url;
+      }
+
       await marketplaceApi.createListing({
         batch_id: Number(form.batch_id),
         price_per_credit: Number(form.price_per_credit),
         amount_listed: Number(form.amount_listed),
+        image_url: uploadedUrl || undefined,
       });
-      setForm({ batch_id: '', price_per_credit: '', amount_listed: '' });
+      setForm({ batch_id: '', price_per_credit: '', amount_listed: '', image_url: '', imageFile: null, previewUrl: null });
       await load();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create listing');
@@ -45,8 +53,12 @@ export default function ListingsPage() {
 
   async function handleCancel(id) {
     if (!window.confirm('Cancel this listing?')) return;
-    await marketplaceApi.cancelListing(id);
-    load();
+    try {
+      await marketplaceApi.cancelListing(id);
+      load();
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to cancel listing');
+    }
   }
 
   return (
@@ -109,6 +121,32 @@ export default function ListingsPage() {
                     placeholder="Number of credits"
                   />
                 </div>
+                <div>
+                  <label className="block text-xs font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-1.5">Project Image</label>
+                  <input 
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setForm({ ...form, image_url: '', imageFile: file, previewUrl: URL.createObjectURL(file) });
+                      }
+                    }} 
+                    className="w-full text-sm font-mono file:mr-4 file:py-2.5 file:px-4 file:border-0 file:text-xs file:font-bold file:bg-[#0c0c0c] file:text-white hover:file:bg-[#222] transition-colors cursor-pointer border border-[#0c0c0c] bg-gray-50 h-11"
+                  />
+                  {form.previewUrl && (
+                    <div className="mt-3 relative w-full h-32 border border-[#0c0c0c] overflow-hidden">
+                      <img src={form.previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                      <button 
+                        type="button" 
+                        onClick={() => setForm({ ...form, imageFile: null, previewUrl: null })}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-sm shadow-sm hover:bg-red-600"
+                      >
+                        <FiTrash2 size={14} />
+                      </button>
+                    </div>
+                  )}
+                </div>
                 
                 <button 
                   type="submit" 
@@ -145,16 +183,17 @@ export default function ListingsPage() {
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100 flex-1">
-                  <div className="hidden sm:grid grid-cols-[100px_1fr_100px_100px_60px] px-6 py-3 text-xs font-mono font-bold tracking-wider text-gray-500 uppercase bg-gray-50">
+                  <div className="hidden sm:grid grid-cols-[100px_1fr_100px_100px_100px_60px] px-6 py-3 text-xs font-mono font-bold tracking-wider text-gray-500 uppercase bg-gray-50">
                     <span>Batch ID</span>
                     <span>Listed Date</span>
                     <span>Amount</span>
                     <span>Price</span>
+                    <span>Status</span>
                     <span className="text-right">Action</span>
                   </div>
                   {listings.map((l) => (
                     <div key={l.id} className="group hover:bg-gray-50/50 transition-colors px-6 py-5">
-                      <div className="flex flex-col sm:grid sm:grid-cols-[100px_1fr_100px_100px_60px] gap-3 sm:gap-0 items-start sm:items-center">
+                      <div className="flex flex-col sm:grid sm:grid-cols-[100px_1fr_100px_100px_100px_60px] gap-3 sm:gap-0 items-start sm:items-center">
                         <div className="text-sm font-mono bg-gray-100 text-gray-600 px-2 py-1 rounded w-fit">
                           B-{String(l.batch_id).padStart(4, '0')}
                         </div>
@@ -170,15 +209,28 @@ export default function ListingsPage() {
                         <div className="text-sm font-mono font-bold text-emerald-600">
                           ${l.price_per_credit}
                         </div>
+
+                        <div className="text-xs font-bold uppercase tracking-wider">
+                          <span className={`px-2 py-1 rounded-full ${
+                            l.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
+                            l.status === 'partially_sold' ? 'bg-blue-100 text-blue-700' :
+                            l.status === 'sold_out' ? 'bg-gray-100 text-gray-700' :
+                            'bg-red-100 text-red-700' // cancelled
+                          }`}>
+                            {l.status.replace('_', ' ')}
+                          </span>
+                        </div>
                         
                         <div className="w-full flex justify-end">
-                          <button 
-                            onClick={() => handleCancel(l.id)} 
-                            className="text-gray-400 hover:text-red-600 p-2 rounded hover:bg-red-50 transition-colors"
-                            title="Cancel Listing"
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
+                          {(l.status === 'active' || l.status === 'partially_sold') && (
+                            <button 
+                              onClick={() => handleCancel(l.id)} 
+                              className="text-gray-400 hover:text-red-600 p-2 rounded hover:bg-red-50 transition-colors"
+                              title="Cancel Listing"
+                            >
+                              <FiTrash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>

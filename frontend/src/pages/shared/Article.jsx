@@ -56,7 +56,7 @@ const Article = () => {
         
         {/* Clean Header */}
         <div className="mb-12 text-center pt-8">
-          <div role="heading" aria-level="1" className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4">
+          <div role="heading" aria-level="1" className="text-4xl md:text-5xl wise-font font-black uppercase tracking-tight text-black mb-4 font-['Outfit']">
             Insights & Articles
           </div>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">

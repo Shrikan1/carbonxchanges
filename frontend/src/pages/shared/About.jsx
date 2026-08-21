@@ -3,7 +3,7 @@ import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import { FaCheckCircle, FaArrowRight, FaGlobeAmericas, FaLeaf, FaLink } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import heroImage from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.jpg';
+import heroImage from '../../assets/Mangrove-Forest-Coast-2000x1237-1.jpg';
 
 const About = () => {
   return (

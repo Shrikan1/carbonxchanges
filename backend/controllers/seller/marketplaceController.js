@@ -2,10 +2,10 @@ const { query } = require('../../config/db');
 const Listing = require('../../models/Listing');
 const Credit = require('../../models/Credit');
 const Paginate = require('../../utils/paginate')
-// POST /api/marketplace/listings   body: { batch_id, price_per_credit, amount_listed }
+  // POST /api/marketplace/listings   body: { batch_id, price_per_credit, amount_listed, image_url }
 async function createCreditListing(req, res) {
   try {
-    const { batch_id, price_per_credit, amount_listed } = req.body;
+    const { batch_id, price_per_credit, amount_listed, image_url } = req.body;
     if (!batch_id || !price_per_credit || !amount_listed) {
       return res.status(400).json({ error: 'batch_id, price_per_credit, and amount_listed are required' });
     }
@@ -37,7 +37,7 @@ async function createCreditListing(req, res) {
       });
     }
 
-    const listing = await Listing.createListing(batch_id, req.user.id, price_per_credit, amount_listed);
+    const listing = await Listing.createListing(batch_id, req.user.id, price_per_credit, amount_listed, image_url);
     res.status(201).json({ message: 'Listing created', listing });
   } catch (err) {
     console.error('Create listing error:', err);
@@ -73,7 +73,7 @@ async function cancelListing(req, res) {
     if (listing.seller_id !== req.user.id) {
       return res.status(403).json({ error: 'You do not own this listing' });
     }
-    if (listing.status !== 'active') {
+    if (listing.status !== 'active' && listing.status !== 'partially_sold') {
       return res.status(400).json({ error: `Listing is already ${listing.status}` });
     }
 

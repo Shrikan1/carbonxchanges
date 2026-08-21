@@ -1,11 +1,11 @@
 const { pool, query } = require('../config/db');
 
-async function createListing(batchId, sellerId, pricePerCredit, amountListed) {
+async function createListing(batchId, sellerId, pricePerCredit, amountListed, imageUrl) {
   const result = await query(
-    `INSERT INTO credit_listings (batch_id, seller_id, price_per_credit, amount_listed)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO credit_listings (batch_id, seller_id, price_per_credit, amount_listed, image_url)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [batchId, sellerId, pricePerCredit, amountListed]
+    [batchId, sellerId, pricePerCredit, amountListed, imageUrl || null]
   );
   return result.rows[0];
 }
@@ -105,7 +105,7 @@ async function findActiveListings(filters = {}, { limit = 20, offset = 0 } = {})
 
   const [dataResult, countResult] = await Promise.all([
     query(
-      `SELECT cl.id AS listing_id, cl.price_per_credit, cl.amount_listed, cl.amount_sold,
+      `SELECT cl.id AS listing_id, cl.price_per_credit, cl.amount_listed, cl.amount_sold, cl.image_url,
               (cl.amount_listed - cl.amount_sold) AS amount_available, cl.created_at,
               p.id AS project_id, p.title AS project_title, p.project_type, p.project_scale,
               pd.country, pd.state_region, pd.latitude, pd.longitude,

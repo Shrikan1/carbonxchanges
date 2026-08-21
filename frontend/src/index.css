@@ -148,9 +148,13 @@
   }
 
   /* Headings globally use the wise-font (Outfit) stack per user request */
-  h1, h2, h3, h4, h5, h6, .heading, .subheading {
+  h1, h2, h3, h4, h5, h6, .heading {
     font-family: 'Outfit', sans-serif;
     letter-spacing: -0.02em;
+  }
+
+  p, .subheading, small {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
   /* Hide number input spinners for a cleaner UI */

@@ -5,6 +5,7 @@ import { FiThumbsUp, FiShare2, FiClock, FiActivity, FiArrowUp } from 'react-icon
 import * as projectPostApi from '../../api/endpoint/projectPostApi';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const ExpandableText = ({ text, maxLength = 60, className = "" }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -36,6 +37,7 @@ const Posts = () => {
   const [loading, setLoading] = useState(true);
   const feedRef = useRef(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const { isAuthenticated } = useAuthStore();
 
   const scrollToTop = () => {
     feedRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -60,6 +62,11 @@ const Posts = () => {
   const clickCounts = React.useRef({});
 
   const handleLike = async (postId) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
     clickCounts.current[postId] = (clickCounts.current[postId] || 0) + 1;
     const currentClick = clickCounts.current[postId];
     
@@ -122,6 +129,11 @@ const Posts = () => {
   };
 
   const handleShare = async (post) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
     try {
       // Track share in backend silently
       projectPostApi.shareProjectPost(post.id).catch(console.error);
@@ -160,7 +172,7 @@ const Posts = () => {
             <div className="pt-2">
               {/* Sidebar content */}
               <div className="mb-10 hidden lg:block">
-                <div role="heading" aria-level="1" className="text-3xl font-bold tracking-tight text-gray-900 mb-3">
+                <div role="heading" aria-level="1" className="text-3xl md:text-4xl wise-font font-black uppercase tracking-tight text-black mb-3 font-['Outfit']">
                   Community Updates
                 </div>
                 <p className="text-gray-500 text-[15px] leading-relaxed">
@@ -170,7 +182,7 @@ const Posts = () => {
               
               {/* Mobile Header */}
               <div className="mb-8 block lg:hidden text-center">
-                <div role="heading" aria-level="1" className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+                <div role="heading" aria-level="1" className="text-3xl wise-font font-black uppercase tracking-tight text-black mb-2 font-['Outfit']">
                   Community Updates
                 </div>
                 <p className="text-gray-500 text-[15px] leading-relaxed">
@@ -178,35 +190,12 @@ const Posts = () => {
                 </p>
               </div>
 
-              {/* Professional widget */}
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm mb-8">
-                <h3 className="font-semibold text-gray-900 mb-5 text-[14px]">Global Impact</h3>
-                <div className="space-y-5">
-                  <div className="flex items-center gap-4">
-                     <div className="w-11 h-11 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center">
-                       <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-                     </div>
-                     <div>
-                       <div className="text-[13px] text-gray-500 mb-0.5">Active Projects</div>
-                       <div className="font-bold text-gray-900 text-lg leading-none">1,204</div>
-                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                     <div className="w-11 h-11 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center">
-                       <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
-                     </div>
-                     <div>
-                       <div className="text-[13px] text-gray-500 mb-0.5">CO2 Offset</div>
-                       <div className="font-bold text-gray-900 text-lg leading-none">2.4M Tons</div>
-                     </div>
-                  </div>
-                </div>
-              </div>
+              {/* Global Impact Widget Removed */}
               
               {/* Call to action */}
               <div className="mt-4 hidden lg:block pb-6">
-                <button onClick={() => navigate('/seller/post/new')} className="w-full py-3 bg-gray-900 hover:bg-black text-white text-[14px] font-semibold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <button onClick={() => navigate('/seller/post/new')} className="w-full py-3.5 bg-[#bef264] hover:bg-[#a3e635] border-2 border-black text-black text-[14px] uppercase font-black tracking-wider transition-all shadow-[4px_4px_0_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#000] flex items-center justify-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
                   Create New Post
                 </button>
               </div>
@@ -238,22 +227,41 @@ const Posts = () => {
             {loading ? (
             // Premium Skeleton Loaders
             [...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6 skeleton-glare">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex gap-4 items-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-200"></div>
-                    <div className="space-y-2">
-                      <div className="h-4 w-32 bg-gray-200 rounded"></div>
-                      <div className="h-3 w-24 bg-gray-100 rounded"></div>
+              <div 
+                key={i} 
+                className="group flex flex-col md:flex-row gap-6 bg-white border-2 border-black p-5 sm:p-6 mb-6 shadow-[6px_6px_0_0_#e5e7eb] max-w-full w-full mx-auto animate-pulse"
+              >
+                {/* Media Skeleton */}
+                <div className="w-full md:w-[280px] shrink-0 aspect-video md:aspect-square bg-gray-200 border-2 border-gray-300"></div>
+                
+                {/* Content Skeleton */}
+                <div className="flex flex-col flex-grow min-w-0">
+                  {/* Header */}
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex gap-3 items-center">
+                      <div className="w-12 h-12 bg-gray-200 border-2 border-gray-300 shrink-0"></div>
+                      <div className="flex flex-col gap-2">
+                        <div className="h-5 w-40 bg-gray-200 rounded-sm"></div>
+                        <div className="h-3 w-24 bg-gray-200 rounded-sm"></div>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Content text */}
+                  <div className="mb-6 flex-grow space-y-3 mt-2">
+                    <div className="h-6 sm:h-8 w-3/4 bg-gray-200 rounded-sm mb-4"></div>
+                    <div className="h-4 w-full bg-gray-200 rounded-sm"></div>
+                    <div className="h-4 w-11/12 bg-gray-200 rounded-sm"></div>
+                    <div className="h-4 w-4/5 bg-gray-200 rounded-sm"></div>
+                  </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex items-center gap-6 mt-auto pt-4 border-t-2 border-gray-100">
+                    <div className="h-4 w-20 bg-gray-200 rounded-sm"></div>
+                    <div className="h-4 w-20 bg-gray-200 rounded-sm"></div>
+                    <div className="h-4 w-24 bg-gray-200 rounded-sm ml-auto"></div>
+                  </div>
                 </div>
-                <div className="space-y-3 mb-6">
-                  <div className="h-5 w-3/4 bg-gray-200 rounded"></div>
-                  <div className="h-4 w-full bg-gray-100 rounded"></div>
-                  <div className="h-4 w-5/6 bg-gray-100 rounded"></div>
-                </div>
-                <div className="w-full h-48 sm:h-72 bg-gray-200 rounded-2xl mb-4"></div>
               </div>
             ))
           ) : posts.length === 0 ? (
@@ -270,41 +278,14 @@ const Posts = () => {
             posts.map((post) => (
               <article 
                 key={post.id} 
-                onClick={() => navigate(`/posts/${post.id}`, { state: { post } })}
-                className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 p-5 sm:p-5 cursor-pointer max-w-[380px] mx-auto w-full"
+                onClick={() => {
+                  if (!isAuthenticated) return navigate('/login');
+                  navigate(`/posts/${post.id}`, { state: { post } });
+                }}
+                className="group flex flex-col md:flex-row gap-6 bg-white border-2 border-black p-5 sm:p-6 mb-6 shadow-[6px_6px_0_0_#bef264] hover:shadow-[8px_8px_0_0_#bef264] transition-all duration-300 relative cursor-pointer max-w-full w-full mx-auto"
               >
                 
-                {/* Header */}
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-3 items-center">
-                    {/* Avatar */}
-                    <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-gray-100 shadow-sm border border-gray-200 flex items-center justify-center text-lg font-bold text-gray-400">
-                      {post.seller_avatar ? (
-                        <img src={post.seller_avatar} alt={post.seller_name} className="w-full h-full object-cover" />
-                      ) : (
-                        post.seller_name?.charAt(0).toUpperCase()
-                      )}
-                    </div>
-                    
-                    {/* Author Info */}
-                    <div className="flex flex-col justify-center">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-gray-900 text-[16px] leading-none">{post.seller_name}</span>
-                      </div>
-                      <span className="text-gray-500 text-[14px] mt-1.5 leading-none">
-                        Posted {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content text */}
-                <div className="mb-4">
-                  <ExpandableText text={post.title} className="text-[15px] text-gray-900 leading-relaxed whitespace-pre-wrap" />
-                  {post.description && <ExpandableText text={post.description} className="text-[15px] text-gray-900 leading-relaxed whitespace-pre-wrap mt-2" />}
-                </div>
-
-                {/* Single Media Preview */}
+                {/* Media Section (Left side on desktop) */}
                 {(() => {
                   const media = (post.images?.length > 0) ? { type: 'image', url: post.images[0] } : (post.videos?.length > 0) ? { type: 'video', url: post.videos[0] } : null;
                   if (!media) return null;
@@ -312,60 +293,87 @@ const Posts = () => {
                   const totalMediaCount = (post.images?.length || 0) + (post.videos?.length || 0);
                   
                   return (
-                    <div className="w-full aspect-[4/5] max-h-[400px] bg-gray-100 rounded-[20px] mb-4 overflow-hidden relative group-hover:opacity-95 transition-opacity">
+                    <div className="w-full md:w-[280px] shrink-0 aspect-video md:aspect-square bg-gray-100 border-2 border-black overflow-hidden relative">
                       {media.type === 'image' ? (
-                        <img src={media.url} alt="Post preview" className="w-full h-full object-cover" />
+                        <img src={media.url} alt="Post preview" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
                         <video src={media.url} className="w-full h-full object-cover" muted playsInline />
                       )}
-                      {/* Play icon for video */}
                       {media.type === 'video' && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-white backdrop-blur-sm">
-                            <svg className="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                          </div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                          <svg className="w-12 h-12 text-[#bef264] fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </div>
                       )}
-                      {/* +X more badge */}
                       {totalMediaCount > 1 && (
-                        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-full font-medium border border-white/10">
-                          + {totalMediaCount - 1} more
+                        <div className="absolute top-3 right-3 bg-black text-white text-[10px] px-2 py-1 font-bold uppercase tracking-widest">
+                          + {totalMediaCount - 1} MORE
                         </div>
                       )}
                     </div>
                   );
                 })()}
 
-                {/* Footer Actions */}
-                <div className="flex items-center gap-6 mt-4 pt-1">
-                  {/* Likes */}
-                  <div 
-                    onClick={(e) => { e.stopPropagation(); handleLike(post.id); }}
-                    className={`flex items-center gap-2 font-medium transition-colors cursor-pointer ${post.localLiked ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
-                  >
-                    <img src="/like.png" alt="Like" className={`w-[18px] h-[18px] object-contain transition-all ${post.localLiked ? 'brightness-0 contrast-100' : 'opacity-60 grayscale'}`} />
-                    <span className="text-[14px]">{post.likes_count || 0}</span>
+                {/* Content Section (Right side on desktop) */}
+                <div className="flex flex-col flex-grow min-w-0">
+                  {/* Header */}
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex gap-3 items-center">
+                      <div className="w-12 h-12 rounded-none overflow-hidden shrink-0 bg-gray-100 border-2 border-black flex items-center justify-center text-lg font-black text-gray-400 font-['Outfit'] uppercase">
+                        {post.seller_avatar ? (
+                          <img src={post.seller_avatar} alt={post.seller_name} className="w-full h-full object-cover" />
+                        ) : (
+                          post.seller_name?.charAt(0)
+                        )}
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <span className="font-black text-black text-[18px] uppercase tracking-tight leading-none font-['Outfit']">{post.seller_name}</span>
+                        <span className="text-gray-500 text-[12px] mt-1 font-bold uppercase tracking-wider subheading">
+                          {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Share */}
-                  <div 
-                    onClick={(e) => { e.stopPropagation(); handleShare(post); }}
-                    className="flex items-center gap-2 text-gray-500 font-medium hover:text-gray-700 transition-colors cursor-pointer"
-                  >
-                    <img src="/send.png" alt="Share" className="w-[18px] h-[18px] object-contain opacity-60 grayscale" />
-                    <span className="text-[14px]">Share</span>
+                  {/* Content text */}
+                  <div className="mb-6 flex-grow">
+                    <ExpandableText text={post.title} className="text-[18px] md:text-[22px] font-black leading-tight text-black mb-3 font-['Outfit']" />
+                    {post.description && <ExpandableText text={post.description} className="text-[14px] text-gray-700 leading-relaxed font-mono subheading" />}
                   </div>
 
-                  {/* Explore */}
-                  <div 
-                    onClick={(e) => { e.stopPropagation(); navigate(`/posts/${post.id}`, { state: { post } }); }}
-                    className="flex items-center gap-1.5 text-gray-500 font-medium hover:text-gray-900 transition-colors cursor-pointer ml-auto"
-                  >
-                    <span className="text-[14px]">Explore</span>
-                    <svg className="w-[16px] h-[16px] mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  {/* Footer Actions */}
+                  <div className="flex items-center gap-6 mt-auto pt-4 border-t-2 border-black/10 subheading">
+                    {/* Likes */}
+                    <div 
+                      onClick={(e) => { e.stopPropagation(); handleLike(post.id); }}
+                      className={`flex items-center gap-2 font-bold transition-colors cursor-pointer text-[12px] uppercase tracking-wider ${post.localLiked ? 'text-black' : 'text-gray-400 hover:text-black'}`}
+                    >
+                      <img src="/like.png" alt="Like" className={`w-[20px] h-[20px] object-contain transition-all ${post.localLiked ? 'brightness-0 contrast-100' : 'opacity-40 grayscale'}`} />
+                      <span>{post.likes_count || 0} LIKES</span>
+                    </div>
+
+                    {/* Share */}
+                    <div 
+                      onClick={(e) => { e.stopPropagation(); handleShare(post); }}
+                      className="flex items-center gap-2 text-gray-400 font-bold hover:text-black transition-colors cursor-pointer text-[12px] uppercase tracking-wider"
+                    >
+                      <img src="/send.png" alt="Share" className="w-[20px] h-[20px] object-contain opacity-40 grayscale" />
+                      <span>SHARE</span>
+                    </div>
+
+                    {/* Explore */}
+                    <div 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        if (!isAuthenticated) return navigate('/login');
+                        navigate(`/posts/${post.id}`, { state: { post } }); 
+                      }}
+                      className="flex items-center gap-1.5 text-black font-black hover:text-[#00d084] transition-colors cursor-pointer ml-auto text-[14px] uppercase tracking-widest font-['Outfit']"
+                    >
+                      <span>EXPLORE</span>
+                      <svg className="w-[18px] h-[18px] mb-0.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </div>
                   </div>
                 </div>
-
               </article>
             ))
           )}

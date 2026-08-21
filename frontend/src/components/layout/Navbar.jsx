@@ -13,22 +13,22 @@ import * as authApi from '../../api/endpoint/Authapi';
 
 const roleConfig = {
   seller: {
-    label: 'Seller Dashboard',
+    label: 'Dashboard',
     path: '/dashboard',
   },
 
   buyer: {
-    label: 'Buyer Dashboard',
+    label: 'Dashboard',
     path: '/dashboard',
   },
 
   agent: {
-    label: 'Agent Dashboard',
+    label: 'Dashboard',
     path: '/dashboard',
   },
 
   admin: {
-    label: 'Admin Dashboard',
+    label: 'Dashboard',
     path: '/dashboard',
   },
 };
@@ -172,16 +172,9 @@ const Navbar = ({
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      // 1. Tell backend to invalidate the session tokens completely
-      await authApi.logout();
-    } catch (err) {
-      console.error("Failed to invalidate session on server", err);
+      await logout();
     } finally {
-      // 2. Clear local storage and UI state
-      logout();
       closeMobileMenu();
-      
-      // 3. Force hard redirect to clear protected views from memory
       navigate('/login', { replace: true });
       setIsLoggingOut(false);
     }
@@ -587,7 +580,7 @@ const Navbar = ({
             : {}
         }
 
-        className={`mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] border ${isScrolled ? 'max-w-5xl bg-white border-gray-200 rounded-full px-6 py-1 shadow-lg' : 'max-w-[1400px] bg-transparent border-transparent rounded-full px-6 sm:px-8 py-6 shadow-none'}`}
+        className={`mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] border ${isScrolled ? 'max-w-5xl bg-white border-gray-200 rounded-full px-6 py-0.5 shadow-lg' : 'max-w-[1400px] bg-transparent border-transparent rounded-full px-6 sm:px-8 py-4 shadow-none'}`}
       >
 
         <div className="flex items-center justify-between">
@@ -613,7 +606,7 @@ const Navbar = ({
 
                 data-brand="logo"
 
-                className={`wise-font font-black uppercase tracking-tight text-3xl transition-colors duration-300 ${isScrolled || isLightPage ? 'text-gray-900 [text-shadow:1px_1px_0_#c2ed6d,2px_2px_0_#c2ed6d,3px_3px_0_#c2ed6d]' : 'text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black]'}`}
+                className={`wise-font font-black uppercase tracking-normal text-xl transition-colors duration-300 ${isScrolled || isLightPage ? 'text-gray-900 [text-shadow:1px_1px_0_#c2ed6d,2px_2px_0_#c2ed6d,3px_3px_0_#c2ed6d]' : 'text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black]'}`}
                 transition={
                   animateEntrance
                     ? {
