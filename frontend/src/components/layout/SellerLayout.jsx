@@ -14,6 +14,24 @@ export default function SellerLayout({ children, title, subtitle }) {
   const user = useAuthStore(state => state.user);
   const logout = useAuthStore(state => state.logout);
   const location = useLocation();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const executeLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoggingOut(false);
+      setShowLogoutConfirm(false);
+    }
+  };
 
   const isActive = (path) => {
     if (path === '/dashboard' && location.pathname === '/dashboard') return true;
@@ -28,7 +46,7 @@ export default function SellerLayout({ children, title, subtitle }) {
     { name: 'Dashboard', path: '/dashboard', icon: <FiHome className="w-[18px] h-[18px]" /> },
     { name: 'My Projects', path: '/seller/projects', icon: <FiFolder className="w-[18px] h-[18px]" /> },
     { name: 'Create Project', path: '/seller/projects/new', icon: <FiPlusSquare className="w-[18px] h-[18px]" /> },
-    { name: 'KYC Documents', path: '/seller/kyc', icon: <FiFileText className="w-[18px] h-[18px]" /> },
+    // { name: 'KYC Documents', path: '/seller/kyc', icon: <FiFileText className="w-[18px] h-[18px]" /> },
     { name: 'Credits', path: '/seller/credits', icon: <FiAward className="w-[18px] h-[18px]" /> },
     { name: 'Listings', path: '/seller/listings', icon: <FiTag className="w-[18px] h-[18px]" /> },
     { name: 'Sales', path: '/seller/sales', icon: <FiDollarSign className="w-[18px] h-[18px]" /> },
@@ -46,10 +64,11 @@ export default function SellerLayout({ children, title, subtitle }) {
     return (
       <Link
         to={item.path}
+        draggable="false"
         onClick={() => setMobileMenuOpen(false)}
-        className={`flex items-center gap-3.5 px-4 py-3 transition-all font-mono text-sm font-bold ${
+        className={`flex items-center gap-3.5 w-full px-4 py-3 transition-colors duration-200 font-mono text-sm font-bold rounded-sm select-none outline-none ${
           active
-            ? 'bg-primary shadow-sm'
+            ? 'bg-[#c2ed6d] text-[#0c0c0c]'
             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
         }`}
       >
@@ -69,14 +88,14 @@ export default function SellerLayout({ children, title, subtitle }) {
           <span className="wise-font font-black uppercase tracking-tight text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black] text-[22px] leading-none block truncate pb-1">
             CARBONXPLANET
           </span>
-          <span className="text-[11px] font-bold uppercase tracking-widest text-[#10b981] mt-1.5 block">
+          <span className="text-[11px] font-bold uppercase font-mono tracking-widest text-[#10b981] mt-1.5 block">
             Seller Portal
           </span>
         </Link>
       </div>
 
       {/* Main Nav */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1 scrollbar-hide">
         {navItems.map((item, idx) => (
           <NavLink key={idx} item={item} />
         ))}
@@ -88,13 +107,14 @@ export default function SellerLayout({ children, title, subtitle }) {
           <NavLink key={idx} item={item} />
         ))}
         <button
-          onClick={logout}
-          className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-xl transition-all text-sm font-medium text-red-600 hover:bg-red-50"
+          onClick={handleLogoutClick}
+          disabled={isLoggingOut}
+          className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-xl transition-all text-sm font-mono font-bold text-red-600 hover:bg-red-50 disabled:opacity-50"
         >
           <span className="text-red-400">
             <FiLogOut className="w-[18px] h-[18px]" />
           </span>
-          Logout
+          {isLoggingOut ? 'Logging out...' : 'Logout'}
         </button>
       </div>
     </div>
@@ -138,11 +158,11 @@ export default function SellerLayout({ children, title, subtitle }) {
               <FiMenu className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-xl font-semibold leading-none text-gray-900 tracking-tight">
+              <h1 className="text-xl md:text-2xl font-black uppercase tracking-tight text-[#0c0c0c] font-mono">
                 {title || 'Seller Dashboard'}
               </h1>
               {subtitle && (
-                <p className="text-sm text-gray-500 mt-1 font-medium">
+                <p className="text-[11px] md:text-xs text-gray-500 mt-1 font-mono uppercase tracking-wider font-bold">
                   {subtitle}
                 </p>
               )}
@@ -153,15 +173,15 @@ export default function SellerLayout({ children, title, subtitle }) {
             <NotificationDropdown />
             <div className="h-7 w-px bg-gray-200 hidden sm:block" />
             <Link to="/profile" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center overflow-hidden group-hover:border-emerald-400 transition-colors">
+              <div className="w-9 h-9 rounded-sm bg-[#c2ed6d] border-[2px] border-[#0c0c0c] flex items-center justify-center overflow-hidden transition-all shadow-none group-hover:shadow-[2px_2px_0_0_#0c0c0c] group-hover:-translate-y-px">
                 {user?.profilePicture
                   ? <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
-                  : <FiUser className="w-5 h-5 text-emerald-600 opacity-80" />
+                  : <FiUser className="w-5 h-5 text-[#0c0c0c] opacity-80" />
                 }
               </div>
               <div className="hidden sm:flex flex-col text-left">
-                <span className="text-sm font-semibold text-gray-900 leading-tight">{user?.name || 'Seller'}</span>
-                <span className="text-xs text-gray-500 font-medium">
+                <span className="text-sm font-semibold font-mono text-gray-900 leading-tight">{user?.name || 'Seller'}</span>
+                <span className="text-xs text-gray-500 font-mono font-medium">
                   Project Developer
                 </span>
               </div>
@@ -174,6 +194,34 @@ export default function SellerLayout({ children, title, subtitle }) {
           {children}
         </main>
       </div>
+      
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white border-[3px] border-[#0c0c0c] shadow-[8px_8px_0_0_#0c0c0c] max-w-sm w-full p-6 relative">
+            <h3 className="text-xl wise-font font-black uppercase tracking-tight text-[#0c0c0c] mb-2">Confirm Logout</h3>
+            <p className="text-sm font-mono text-gray-600 mb-8">
+              Are you sure you want to end your current session?
+            </p>
+            <div className="flex items-center gap-3 w-full">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                disabled={isLoggingOut}
+                className="flex-1 px-4 py-2.5 font-mono font-bold text-[#0c0c0c] bg-gray-100 hover:bg-gray-200 border-[2px] border-[#0c0c0c] transition-colors"
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={executeLogout}
+                disabled={isLoggingOut}
+                className="flex-1 px-4 py-2.5 font-mono font-bold text-white bg-red-600 hover:bg-red-700 border-[2px] border-[#0c0c0c] transition-colors flex items-center justify-center disabled:opacity-70"
+              >
+                {isLoggingOut ? 'LOGGING OUT...' : 'LOGOUT'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

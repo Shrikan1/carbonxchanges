@@ -45,15 +45,15 @@ export default function ProjectStepper({ status }) {
   if (activeStep === -1) return null; // Don't show stepper for draft or rejected projects
 
   return (
-    <div className="w-full bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-8 overflow-x-auto">
+    <div className="w-full bg-white rounded-sm p-6 md:p-8 border-[2px] border-[#0c0c0c] mb-8 overflow-x-auto shadow-none">
       <div className="min-w-[600px]">
         <div className="relative flex justify-between">
           {/* Connecting line background */}
-          <div className="absolute top-5 left-0 w-full h-[2px] bg-gray-100 -z-10" />
+          <div className="absolute top-5 left-0 w-full h-[4px] bg-gray-200 -z-10" />
           
           {/* Active connecting line */}
           <div 
-            className="absolute top-5 left-0 h-[2px] bg-brand transition-all duration-500 ease-in-out -z-10" 
+            className="absolute top-5 left-0 h-[4px] bg-[#c2ed6d] border-y-[2px] border-[#0c0c0c] transition-all duration-500 ease-in-out -z-10" 
             style={{ width: `${Math.min((activeStep / (steps.length - 1)) * 100, 100)}%` }}
           />
 
@@ -64,26 +64,26 @@ export default function ProjectStepper({ status }) {
             return (
               <div key={index} className="flex flex-col items-center relative z-10 w-32 text-center group">
                 <div 
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 mb-3 shadow-sm
+                  className={`w-10 h-10 rounded-sm flex items-center justify-center transition-all duration-300 mb-3 border-[2px] border-[#0c0c0c]
                     ${isCompleted 
-                      ? 'bg-brand text-gray-900 ring-4 ring-brand/20' 
-                      : 'bg-white border-2 border-gray-200 text-gray-400'
+                      ? 'bg-[#c2ed6d] text-[#0c0c0c] shadow-[3px_3px_0_0_#0c0c0c]' 
+                      : 'bg-white text-gray-400'
                     }
                   `}
                 >
                   {isCompleted ? (
                     <FiCheck size={20} className="stroke-[3]" />
                   ) : isCurrent ? (
-                    <FiClock size={18} className="text-gray-400" />
+                    <FiClock size={18} className="text-[#0c0c0c]" />
                   ) : (
                     <FiCircle size={14} className="opacity-50" />
                   )}
                 </div>
                 
-                <h4 className={`text-sm font-bold mb-1 transition-colors ${isCompleted ? 'text-gray-900' : 'text-gray-500'}`}>
+                <h4 className={`text-xs font-mono font-bold uppercase tracking-tight mb-1 transition-colors ${isCompleted ? 'text-gray-900' : 'text-gray-500'}`}>
                   {step.title}
                 </h4>
-                <p className={`text-xs font-medium ${isCompleted ? 'text-gray-600' : 'text-gray-400'}`}>
+                <p className={`text-[11px] font-medium font-mono ${isCompleted ? 'text-gray-600' : 'text-gray-400'}`}>
                   {step.description}
                 </p>
               </div>

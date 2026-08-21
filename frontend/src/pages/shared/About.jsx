@@ -16,7 +16,7 @@ const About = () => {
           <p className="text-[13px] font-bold font-['JetBrains_Mono'] uppercase tracking-[0.2em] text-[#84cc16] bg-[#bef264]/10 px-4 py-1.5 rounded-full inline-block">
             Who We Are
           </p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-normal leading-[1.05] tracking-tight text-gray-900 logo-retro max-w-4xl mx-auto">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase leading-[1.05] tracking-tight text-gray-900 wise-font max-w-4xl mx-auto">
             Building a <br className="hidden sm:block" /> Sustainable Future.
           </h1>
           <p className="text-gray-500 leading-relaxed max-w-2xl text-[18px] sm:text-[20px] font-medium mx-auto pt-4">
@@ -63,7 +63,7 @@ const About = () => {
             <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-gray-200 flex items-center justify-center mb-8">
               <FaCheckCircle className="text-2xl text-[#84cc16]" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-normal tracking-tight text-gray-900 logo-retro">Our Mission.</h2>
+            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-gray-900 wise-font">Our Mission.</h2>
             <p className="text-gray-600 leading-relaxed text-[17px]">
               We are here to make environmental action accessible and transparent. Our goal is to build a reliable carbon market that supports global ecosystems and fosters genuine partnerships.
             </p>
@@ -85,7 +85,7 @@ const About = () => {
             <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-gray-200 flex items-center justify-center mb-8">
               <FaLink className="text-2xl text-[#84cc16]" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-normal tracking-tight text-gray-900 logo-retro">Our Vision.</h2>
+            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-gray-900 wise-font">Our Vision.</h2>
             <p className="text-gray-600 leading-relaxed text-[17px]">
               We see a future where environmental action is integrated seamlessly into everyday business. We want to build systems that actively benefit both local communities and the broader environment.
             </p>
@@ -110,7 +110,7 @@ const About = () => {
         <div className="max-w-[1200px] mx-auto bg-gray-900 rounded-[3rem] p-12 sm:p-20 text-center flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-[#bef264] opacity-5 pointer-events-none mix-blend-overlay" />
           
-          <h2 className="text-3xl md:text-5xl font-normal tracking-tight text-white mb-6 logo-retro relative z-10">
+          <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-6 wise-font relative z-10">
             Ready to make an impact?
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto mb-10 text-[18px] relative z-10">

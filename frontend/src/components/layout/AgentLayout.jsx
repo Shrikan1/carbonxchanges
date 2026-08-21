@@ -46,10 +46,11 @@ const AgentLayout = ({ children, title, subtitle }) => {
     return (
       <Link
         to={to}
+        draggable="false"
         onClick={() => setMobileMenuOpen(false)}
-        className={`flex items-center gap-3.5 px-4 py-3 transition-all font-mono text-sm font-bold ${
+        className={`flex items-center gap-3.5 w-full px-4 py-3 transition-colors duration-200 font-mono text-sm font-bold rounded-sm select-none outline-none ${
           active
-            ? 'bg-primary shadow-sm'
+            ? 'bg-[#c2ed6d] text-[#0c0c0c]'
             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
         }`}
       >
@@ -69,14 +70,14 @@ const AgentLayout = ({ children, title, subtitle }) => {
           <span className="wise-font font-black uppercase tracking-tight text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black] text-[22px] leading-none block truncate pb-1">
             CARBONXPLANET
           </span>
-          <span className="text-[11px] font-bold uppercase tracking-widest text-[#10b981] mt-1.5 block">
+          <span className="text-[11px] font-bold uppercase font-mono tracking-widest text-[#10b981] mt-1.5 block">
             Agent Portal
           </span>
         </Link>
       </div>
 
       {/* Primary Nav */}
-      <nav className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-0.5">
+      <nav className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-0.5 scrollbar-hide">
         {navItems.map((item) => <NavLink key={item.name} item={item} />)}
 
         <div className="my-4 border-t border-[#e2e8e4]" />
@@ -139,7 +140,7 @@ const AgentLayout = ({ children, title, subtitle }) => {
                 {title || 'Agent Dashboard'}
               </h1>
               {subtitle && (
-                <p className="text-sm text-gray-500 mt-1 font-medium">
+                <p className="text-sm text-gray-500 mt-1 font-mono font-medium">
                   {subtitle}
                 </p>
               )}
@@ -150,15 +151,15 @@ const AgentLayout = ({ children, title, subtitle }) => {
             <NotificationDropdown />
             <div className="h-7 w-px bg-[#e2e8e4] hidden sm:block" />
             <Link to="/profile" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-full bg-[#f0fdf4] border border-[#10b981]/20 flex items-center justify-center overflow-hidden group-hover:border-[#10b981]/50 transition-colors">
+              <div className="w-9 h-9 rounded-sm bg-[#c2ed6d] border-[2px] border-[#0c0c0c] flex items-center justify-center overflow-hidden transition-all shadow-none group-hover:shadow-[2px_2px_0_0_#0c0c0c] group-hover:-translate-y-px">
                 {user?.profilePicture
                   ? <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
-                  : <img src="/icons/user.png" alt="Agent" className="w-5 h-5 opacity-80 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                  : <FiUser className="w-5 h-5 text-[#0c0c0c] opacity-80" />
                 }
               </div>
               <div className="hidden sm:flex flex-col text-left">
-                <span className="text-sm font-semibold text-gray-900 leading-tight">{user?.name || 'Agent'}</span>
-                <span className="text-xs text-gray-500 font-medium">
+                <span className="text-sm font-semibold font-mono text-gray-900 leading-tight">{user?.name || 'Agent'}</span>
+                <span className="text-xs text-gray-500 font-mono font-medium">
                   Carbon Agent
                 </span>
               </div>

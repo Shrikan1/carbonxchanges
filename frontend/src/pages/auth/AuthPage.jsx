@@ -89,14 +89,14 @@ const AuthPage = () => {
                     transition={{ duration: 0.3, ease: 'easeOut' }}
                     className="absolute inset-0"
                   >
-                    <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 logo-retro-white">
+                    <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 font-bold">
                       {mode === 'login' ? (
-                        <>Trade Carbon,<br />Save Earth.</>
+                        <>TRADE CARBON,<br />SAVE EARTH.</>
                       ) : (
-                        <>Join the Green<br />Revolution.</>
+                        <>JOIN THE GREEN<br />REVOLUTION.</>
                       )}
                     </h2>
-                    <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                    <p className="text-white/60 text-sm leading-relaxed max-w-xs font-mono">
                       {mode === 'login'
                         ? 'Blockchain-powered carbon credit marketplace for a sustainable future.'
                         : 'Build a sustainable future with blockchain-powered carbon credits.'
@@ -117,11 +117,10 @@ const AuthPage = () => {
             <div className="flex items-center space-x-6 shrink-0">
               <button
                 onClick={() => switchMode('login')}
-                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 ${mode === 'login' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
+                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 font-bold ${mode === 'login' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
                   }`}
-                style={{ fontFamily: "'Bungee', cursive" }}
               >
-                Sign In
+                SIGN IN
                 <span
                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0c0c0c] transition-transform duration-300 origin-left"
                   style={{ transform: mode === 'login' ? 'scaleX(1)' : 'scaleX(0)' }}
@@ -129,11 +128,10 @@ const AuthPage = () => {
               </button>
               <button
                 onClick={() => switchMode('signup')}
-                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 ${mode === 'signup' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
+                className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 font-bold ${mode === 'signup' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
                   }`}
-                style={{ fontFamily: "'Bungee', cursive" }}
               >
-                Sign Up
+                SIGN UP
                 <span
                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0c0c0c] transition-transform duration-300 origin-left"
                   style={{ transform: mode === 'signup' ? 'scaleX(1)' : 'scaleX(0)' }}

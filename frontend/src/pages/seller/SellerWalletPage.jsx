@@ -76,10 +76,10 @@ export default function SellerWalletPage() {
           <div className="lg:col-span-2 space-y-8">
             
             <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-lg font-semibold text-gray-900 tracking-tight flex items-center gap-2">
+              <h2 className="text-xl wise-font font-black uppercase text-gray-900 tracking-tight flex items-center gap-2">
                 <FaWallet className="text-emerald-600" /> Web3 Connection
               </h2>
-              <p className="text-sm text-gray-500 mt-1 max-w-lg">
+              <p className="text-sm font-mono text-gray-500 mt-1 max-w-lg">
                 Your wallet is required to sign smart contracts, mint carbon credits on-chain, and receive payments directly from buyers.
               </p>
             </div>
@@ -138,14 +138,14 @@ export default function SellerWalletPage() {
                   <div className="w-12 h-12 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-center text-gray-400 mb-5">
                     <FiLink size={20} />
                   </div>
-                  <h3 className="text-base font-semibold text-gray-900 mb-2">No Wallet Connected</h3>
-                  <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+                  <h3 className="text-lg wise-font font-black uppercase text-gray-900 mb-2">No Wallet Connected</h3>
+                  <p className="text-sm font-mono text-gray-500 mb-6 leading-relaxed">
                     You cannot publish projects or receive marketplace payouts until a compatible Web3 wallet is connected to your account.
                   </p>
                   <button
                     onClick={handleConnect}
                     disabled={loading}
-                    className="bg-[#10b981] hover:bg-emerald-600 text-white font-medium px-6 py-2.5 rounded-lg transition-colors shadow-sm flex items-center gap-2.5 text-sm"
+                    className="bg-primary hover:bg-[#a3e635] text-[#0c0c0c] font-mono font-bold uppercase tracking-wider px-6 py-2.5 transition-colors shadow-[4px_4px_0_0_#0c0c0c] border border-[#0c0c0c] flex items-center gap-2.5 text-sm"
                   >
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-4 h-4" />
                     {loading ? 'Connecting...' : 'Connect MetaMask'}
@@ -159,14 +159,14 @@ export default function SellerWalletPage() {
           {/* Sidebar Area (Right) */}
           <div className="lg:col-span-1">
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 text-sm">
-              <div className="flex items-center gap-2 font-semibold text-gray-900 mb-3">
+              <div className="flex items-center gap-2 font-mono font-bold uppercase tracking-wider text-gray-900 mb-3">
                 <FiShield className="text-emerald-600" />
                 Security Notice
               </div>
-              <p className="text-gray-600 leading-relaxed mb-3">
+              <p className="text-sm font-mono text-gray-600 leading-relaxed mb-4">
                 CarbonXPlanet never has access to your private keys. We only request your public address to route payments and link on-chain assets to your profile.
               </p>
-              <a href="https://metamask.io" target="_blank" rel="noreferrer" className="text-emerald-600 font-medium hover:underline text-[13px]">
+              <a href="https://metamask.io" target="_blank" rel="noreferrer" className="text-emerald-600 font-mono font-bold uppercase tracking-wider hover:underline text-[11px]">
                 Learn more about Web3 security &rarr;
               </a>
             </div>

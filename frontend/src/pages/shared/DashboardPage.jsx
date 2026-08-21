@@ -92,7 +92,7 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold uppercase logo-retro tracking-tighter text-gray-900 mb-2">
+            <h1 className="text-3xl font-black uppercase wise-font tracking-tighter text-gray-900 mb-2">
               {user?.role === 'admin' && 'Admin '}
               {user?.role === 'agent' && 'Agent '}
               {user?.is_seller && !user?.role && 'Seller '}

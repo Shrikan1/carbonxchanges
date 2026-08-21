@@ -74,7 +74,7 @@ export default function FormField({ field, value, onChange, error }) {
 
         {/* Description */}
         {description && (
-          <p className="text-xs text-gray-500 mt-0.5 mb-2 leading-relaxed">{description}</p>
+          <p className="text-xs font-mono text-gray-500 mt-0.5 mb-2 leading-relaxed">{description}</p>
         )}
 
         {/* Hint (format / size) */}
@@ -145,7 +145,7 @@ export default function FormField({ field, value, onChange, error }) {
               {label}
             </span>
             {description && (
-              <p className="text-[13px] text-gray-500 mt-0.5 leading-relaxed">{description}</p>
+              <p className="text-[13px] font-mono text-gray-500 mt-0.5 leading-relaxed">{description}</p>
             )}
           </div>
         </label>
@@ -166,7 +166,7 @@ export default function FormField({ field, value, onChange, error }) {
 
       {/* Description — shows below label, above the input */}
       {description && (
-        <p className="text-xs text-gray-500 mt-0.5 mb-2 leading-relaxed">{description}</p>
+        <p className="text-xs font-mono text-gray-500 mt-0.5 mb-2 leading-relaxed">{description}</p>
       )}
 
       {/* Input */}

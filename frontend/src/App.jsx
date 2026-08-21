@@ -13,6 +13,7 @@ import PostDetail from './pages/shared/PostDetail';
 
 import ProjectListPage from './pages/seller/ProjectListPage';
 import ProjectFormPage from './pages/seller/ProjectFormPage';
+import SellerProjectDetailPage from './pages/seller/SellerProjectDetailPage';
 
 import RequireAuth from './components/RequireAuth';
 import ProfilePage from './pages/shared/ProfilePage';
@@ -150,6 +151,16 @@ const router = createBrowserRouter([
     element: (
       <RequireAuth requireSeller={true}>
         <ProjectFormPage />
+      </RequireAuth>
+    ),
+  },
+
+  // Seller Project Detail View
+  {
+    path: '/seller/projects/:id/details',
+    element: (
+      <RequireAuth requireSeller={true}>
+        <SellerProjectDetailPage />
       </RequireAuth>
     ),
   },

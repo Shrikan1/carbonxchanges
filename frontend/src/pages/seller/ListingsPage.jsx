@@ -63,8 +63,8 @@ export default function ListingsPage() {
                   <FiPlus size={18} />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold text-gray-900 tracking-tight">New Listing</h2>
-                  <p className="text-xs text-gray-500 mt-0.5">List batch credits for sale</p>
+                  <h2 className="text-base wise-font font-black uppercase text-gray-900 tracking-tight">New Listing</h2>
+                  <p className="text-xs font-mono text-gray-500 mt-0.5">List batch credits for sale</p>
                 </div>
               </div>
 
@@ -77,35 +77,35 @@ export default function ListingsPage() {
 
               <form onSubmit={handleCreate} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Batch ID</label>
+                  <label className="block text-xs font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-1.5">Batch ID</label>
                   <input 
                     value={form.batch_id} 
                     onChange={(e) => setForm({ ...form, batch_id: e.target.value })} 
                     required 
-                    className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                    className="w-full h-11 bg-gray-50 border border-[#0c0c0c] px-4 font-mono text-sm focus:bg-white focus:outline-none transition-all"
                     placeholder="e.g. 12"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Price per Credit ($)</label>
+                  <label className="block text-xs font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-1.5">Price per Credit ($)</label>
                   <input 
                     type="number" 
                     step="0.01" 
                     value={form.price_per_credit} 
                     onChange={(e) => setForm({ ...form, price_per_credit: e.target.value })} 
                     required 
-                    className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                    className="w-full h-11 bg-gray-50 border border-[#0c0c0c] px-4 font-mono text-sm focus:bg-white focus:outline-none transition-all"
                     placeholder="0.00"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Amount to List</label>
+                  <label className="block text-xs font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-1.5">Amount to List</label>
                   <input 
                     type="number" 
                     value={form.amount_listed} 
                     onChange={(e) => setForm({ ...form, amount_listed: e.target.value })} 
                     required 
-                    className="w-full h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
+                    className="w-full h-11 bg-gray-50 border border-[#0c0c0c] px-4 font-mono text-sm focus:bg-white focus:outline-none transition-all"
                     placeholder="Number of credits"
                   />
                 </div>
@@ -113,7 +113,7 @@ export default function ListingsPage() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full mt-2 h-11 bg-[#10b981] hover:bg-emerald-600 disabled:opacity-50 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full mt-2 h-11 bg-primary hover:bg-[#a3e635] disabled:opacity-50 text-[#0c0c0c] font-mono font-bold transition-colors flex items-center justify-center gap-2 border border-[#0c0c0c] shadow-[4px_4px_0_0_#0c0c0c]"
                 >
                   {isSubmitting ? 'Creating...' : 'Create Listing'}
                 </button>
@@ -126,7 +126,7 @@ export default function ListingsPage() {
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex-1 flex flex-col">
               <div className="px-6 py-5 border-b border-gray-200 flex items-center gap-2">
                 <FiTag className="text-emerald-600" />
-                <h2 className="text-base font-semibold text-gray-900 tracking-tight">Active Listings</h2>
+                <h2 className="text-base wise-font font-black uppercase text-gray-900 tracking-tight">Active Listings</h2>
               </div>
 
               {loading ? (
@@ -140,12 +140,12 @@ export default function ListingsPage() {
                   <div className="w-16 h-16 bg-gray-50 text-gray-400 rounded-full flex items-center justify-center mb-4">
                     <FiTag className="w-8 h-8" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">No active listings</h3>
-                  <p className="text-sm text-gray-500 max-w-sm">Use the form to list your batch credits on the marketplace.</p>
+                  <h3 className="text-lg wise-font font-black uppercase text-gray-900 mb-1">No active listings</h3>
+                  <p className="text-sm font-mono text-gray-500 max-w-sm">Use the form to list your batch credits on the marketplace.</p>
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100 flex-1">
-                  <div className="hidden sm:grid grid-cols-[100px_1fr_100px_100px_60px] px-6 py-3 text-xs font-semibold tracking-wider text-gray-500 uppercase bg-gray-50">
+                  <div className="hidden sm:grid grid-cols-[100px_1fr_100px_100px_60px] px-6 py-3 text-xs font-mono font-bold tracking-wider text-gray-500 uppercase bg-gray-50">
                     <span>Batch ID</span>
                     <span>Listed Date</span>
                     <span>Amount</span>
@@ -159,15 +159,15 @@ export default function ListingsPage() {
                           B-{String(l.batch_id).padStart(4, '0')}
                         </div>
                         
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm font-mono text-gray-500">
                           {new Date(l.created_at).toLocaleDateString()}
                         </div>
                         
-                        <div className="text-sm font-bold text-gray-900">
+                        <div className="text-sm font-mono font-bold text-gray-900">
                           {l.amount_listed} <span className="text-xs font-medium text-gray-500">tCO2e</span>
                         </div>
                         
-                        <div className="text-sm font-bold text-emerald-600">
+                        <div className="text-sm font-mono font-bold text-emerald-600">
                           ${l.price_per_credit}
                         </div>
                         

@@ -16,7 +16,7 @@ const Footer = () => {
                   CARBONXPLANET
                 </span>
               </Link>
-              <p className="text-[#888] text-[13px] leading-relaxed mb-8 max-w-sm font-medium">
+              <p className="text-[#888] text-[13px] font-mono leading-relaxed mb-8 max-w-sm">
                 CarbonXplanet empowers teams to transform environmental impact into clear, compelling action making carbon offsetting easier to share, understand, and act on.
               </p>
               
@@ -41,32 +41,32 @@ const Footer = () => {
             <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 pt-2">
 
               <div>
-                <h4 className="text-white font-semibold mb-6 text-[14px]">Platform</h4>
+                <h4 className="text-white wise-font font-black uppercase tracking-widest mb-6 text-[15px]">Platform</h4>
                 <ul className="space-y-4">
-                  <li><Link to="/" className="text-[#888] hover:text-white text-[13px] transition-colors">Home</Link></li>
-                  <li><Link to="/marketplace" className="text-[#888] hover:text-white text-[13px] transition-colors">Marketplace</Link></li>
-                  <li><Link to="/posts" className="text-[#888] hover:text-white text-[13px] transition-colors">Posts</Link></li>
-                  <li><Link to="/article" className="text-[#888] hover:text-white text-[13px] transition-colors">Article</Link></li>
+                  <li><Link to="/" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Home</Link></li>
+                  <li><Link to="/marketplace" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Marketplace</Link></li>
+                  <li><Link to="/posts" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Posts</Link></li>
+                  <li><Link to="/article" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Article</Link></li>
                 </ul>
               </div>
 
               <div>
-                <h4 className="text-white font-semibold mb-6 text-[14px]">Resources</h4>
+                <h4 className="text-white wise-font font-black uppercase tracking-widest mb-6 text-[15px]">Resources</h4>
                 <ul className="space-y-4">
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] transition-colors">Documentation</a></li>
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] transition-colors">Tutorials</a></li>
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] transition-colors">Help Center</a></li>
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] transition-colors">Support</a></li>
+                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Documentation</a></li>
+                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Tutorials</a></li>
+                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Help Center</a></li>
+                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Support</a></li>
                 </ul>
               </div>
 
               <div>
-                <h4 className="text-white font-semibold mb-6 text-[14px]">Company</h4>
+                <h4 className="text-white wise-font font-black uppercase tracking-widest mb-6 text-[15px]">Company</h4>
                 <ul className="space-y-4">
-                  <li><Link to="/about" className="text-[#888] hover:text-white text-[13px] transition-colors">About</Link></li>
-                  <li><Link to="/contact" className="text-[#888] hover:text-white text-[13px] transition-colors">Contact</Link></li>
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] transition-colors">Careers</a></li>
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] transition-colors">Partners</a></li>
+                  <li><Link to="/about" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">About</Link></li>
+                  <li><Link to="/contact" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Contact</Link></li>
+                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Careers</a></li>
+                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Partners</a></li>
                 </ul>
               </div>
 
@@ -74,10 +74,10 @@ const Footer = () => {
           </div>
 
           <div className="border-t border-[#222] pt-8 flex flex-col md:flex-row justify-between items-center relative z-10">
-            <p className="text-[#666] text-[13px] mb-4 md:mb-0">
+            <p className="text-[#666] text-[13px] font-mono mb-4 md:mb-0">
               © {new Date().getFullYear()} CarbonXplanet. All rights reserved.
             </p>
-            <div className="flex space-x-6 text-[13px]">
+            <div className="flex space-x-6 text-[13px] font-mono">
               <a href="#" className="text-[#666] hover:text-[#aaa] transition-colors underline decoration-[#333] underline-offset-4">Privacy Policy</a>
               <a href="#" className="text-[#666] hover:text-[#aaa] transition-colors underline decoration-[#333] underline-offset-4">Terms of Service</a>
               <a href="#" className="text-[#666] hover:text-[#aaa] transition-colors underline decoration-[#333] underline-offset-4">Cookies Settings</a>
@@ -85,7 +85,7 @@ const Footer = () => {
           </div>
 
           {/* Subtle large background text like the image (watermark effect) */}
-          <div className="absolute -bottom-[20%] left-1/2 transform -translate-x-1/2 text-[15vw] font-black tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
+          <div className="absolute -bottom-[20%] left-1/2 transform -translate-x-1/2 text-[15vw] wise-font font-black uppercase tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
             CarbonXplanet
           </div>
 

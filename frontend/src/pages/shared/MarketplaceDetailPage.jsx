@@ -85,7 +85,7 @@ export default function MarketplaceDetailPage() {
               <img src={listing.image_url} alt={listing.project_title} className="w-full h-full object-cover absolute inset-0" />
             ) : (
               <div className={`absolute inset-0 bg-gradient-to-br ${getGradient(listing.project_id || listing.id)} flex items-center justify-center`}>
-                <span className="text-white/20 font-black text-8xl uppercase tracking-tighter mix-blend-overlay logo-retro">
+                <span className="text-white/20 font-black text-8xl uppercase tracking-tighter mix-blend-overlay wise-font">
                   CXP
                 </span>
               </div>

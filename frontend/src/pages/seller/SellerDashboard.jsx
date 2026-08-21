@@ -66,7 +66,7 @@ export default function SellerDashboard({ data, isLoading }) {
         {/* KEY METRICS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">Total Projects</p>
+            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Total Projects</p>
             {isLoading ? (
               <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
@@ -75,7 +75,7 @@ export default function SellerDashboard({ data, isLoading }) {
           </div>
           
           <div className="bg-[#022c22] border border-[#022c22] rounded-2xl p-6 relative overflow-hidden group hover:shadow-lg transition-all">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#bef264] mb-4">Pending Verification</p>
+            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-[#bef264] mb-4">Pending Verification</p>
             {isLoading ? (
               <div className="h-12 w-20 bg-white/10 rounded animate-pulse" />
             ) : (
@@ -84,7 +84,7 @@ export default function SellerDashboard({ data, isLoading }) {
           </div>
 
           <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">Credits Issued</p>
+            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Credits Issued</p>
             {isLoading ? (
               <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
@@ -93,7 +93,7 @@ export default function SellerDashboard({ data, isLoading }) {
           </div>
 
           <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">Credits Sold</p>
+            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Credits Sold</p>
             {isLoading ? (
               <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
@@ -108,8 +108,8 @@ export default function SellerDashboard({ data, isLoading }) {
           {/* LEFT: Project Overview */}
           <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
             <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-gray-900 tracking-tight">Project Overview</h2>
-              <Link to="/seller/projects" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
+              <h2 className="text-base wise-font font-black uppercase text-gray-900 tracking-tight">Project Overview</h2>
+              <Link to="/seller/projects" className="text-sm font-medium font-mono text-emerald-600 hover:text-emerald-700">
                 View All
               </Link>
             </div>
@@ -134,7 +134,7 @@ export default function SellerDashboard({ data, isLoading }) {
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100">
-                  <div className="hidden md:grid grid-cols-[1fr_120px_100px_80px] px-6 py-3 text-xs font-semibold tracking-wider text-gray-500 uppercase bg-gray-50">
+                  <div className="hidden md:grid grid-cols-[1fr_120px_100px_80px] px-6 py-3 text-xs font-semibold font-mono tracking-wider text-gray-500 uppercase bg-gray-50">
                     <span>Project</span>
                     <span>ID</span>
                     <span>Status</span>
@@ -185,7 +185,7 @@ export default function SellerDashboard({ data, isLoading }) {
           {/* RIGHT: Verification Progress */}
           <div className="lg:col-span-1 bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
             <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-gray-900 tracking-tight">Verification Progress</h2>
+              <h2 className="text-base wise-font font-black uppercase text-gray-900 tracking-tight">Verification Progress</h2>
             </div>
             <div className="p-6 flex-1 bg-gray-50/30">
               {recentProjects.length === 0 ? (
@@ -197,7 +197,7 @@ export default function SellerDashboard({ data, isLoading }) {
                 <div className="space-y-6">
                   {latestProject && (
                     <div className="mb-6 pb-4 border-b border-gray-200">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tracking Latest Project</p>
+                      <p className="text-xs font-semibold font-mono text-gray-500 uppercase tracking-wider mb-1">Tracking Latest Project</p>
                       <p className="text-sm font-medium text-gray-900 truncate">{latestProject.title}</p>
                     </div>
                   )}
@@ -219,12 +219,12 @@ export default function SellerDashboard({ data, isLoading }) {
                             'bg-gray-300'
                           }`} />
                           <div>
-                            <p className={`text-sm font-semibold tracking-wide ${
+                            <p className={`text-sm font-semibold font-mono tracking-wide ${
                               isCompleted || isCurrent ? 'text-gray-900' : 'text-gray-400'
                             }`}>
                               {stage.label}
                             </p>
-                            <p className="text-xs text-gray-500 mt-0.5">{stage.desc}</p>
+                            <p className="text-xs font-mono text-gray-500 mt-0.5">{stage.desc}</p>
                           </div>
                         </div>
                       );
@@ -240,10 +240,10 @@ export default function SellerDashboard({ data, isLoading }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 flex flex-col sm:flex-row items-center gap-4 bg-emerald-50 border border-emerald-100 rounded-2xl p-6">
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-emerald-900">Start a new project</h3>
-              <p className="text-sm text-emerald-700 mt-1">Register your carbon offset initiative to begin verification and minting.</p>
+              <h3 className="text-lg wise-font font-black uppercase text-emerald-900">Start a new project</h3>
+              <p className="text-sm font-mono text-emerald-700 mt-1">Register your carbon offset initiative to begin verification and minting.</p>
             </div>
-            <Link to="/seller/projects/new" className="shrink-0 bg-[#10b981] hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2">
+            <Link to="/seller/projects/new" className="shrink-0 bg-primary hover:bg-[#a3e635] text-[#0c0c0c] px-6 py-3.5 font-mono font-bold transition-colors shadow-[4px_4px_0_0_#0c0c0c] border border-[#0c0c0c] flex items-center gap-2">
               <FiPlus /> Create New Project
             </Link>
           </div>

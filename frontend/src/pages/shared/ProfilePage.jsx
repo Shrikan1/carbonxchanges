@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { FiArrowLeft, FiUser, FiMail, FiLock, FiShield, FiCheck, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/layout/Navbar';
+import SellerLayout from '../../components/layout/SellerLayout';
+import AgentLayout from '../../components/layout/AgentLayout';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -56,20 +58,16 @@ export default function ProfilePage() {
     }
   }
 
-  return (
-    <>
-      <Navbar />
-      <div className="min-h-screen w-full flex flex-col items-center bg-[#f8f9fa] text-gray-900 pt-24 pb-12 font-sans">
-        <div className="w-full max-w-2xl px-4 md:px-8">
-        
-        <motion.div 
+  const profileContent = (
+    <div className="w-full max-w-2xl px-4 md:px-8 mx-auto pb-12 pt-8">
+      <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="w-full"
         >
           <div className="mb-10 flex flex-col items-center text-center">
-            <h1 className="text-3xl text-gray-900 mb-2 uppercase logo-retro tracking-tighter">Profile Settings</h1>
+            <h1 className="text-3xl text-gray-900 mb-2 uppercase wise-font font-black tracking-tighter">Profile Settings</h1>
             <p className="text-gray-500 text-sm">Manage your account details and security preferences.</p>
           </div>
           <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
@@ -82,7 +80,7 @@ export default function ProfilePage() {
                   <div className="w-8 h-8 rounded-full bg-[#bef264]/20 text-[#84cc16] flex items-center justify-center">
                     <FiUser size={16} />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wider">
+                  <h3 className="text-lg wise-font font-black text-gray-900 uppercase tracking-wider">
                     Account Details
                   </h3>
                 </div>
@@ -102,27 +100,27 @@ export default function ProfilePage() {
                     <div className="pt-6">
                       <form onSubmit={handleNameSubmit} className="space-y-5 flex-1 flex flex-col">
                 <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-gray-500 text-xs font-bold uppercase tracking-wider">Email Address</Label>
+                  <Label htmlFor="email" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">Email Address</Label>
                   <div className="relative">
                     <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input 
                       id="email" 
                       value={user?.email || ''} 
                       disabled 
-                      className="pl-10 bg-gray-50 border-gray-200 text-gray-500 h-11 rounded-xl text-sm cursor-not-allowed shadow-none"
+                      className="pl-10 bg-gray-50 border-[#0c0c0c] text-gray-500 h-11 font-mono text-sm cursor-not-allowed shadow-none"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="name" className="text-gray-500 text-xs font-bold uppercase tracking-wider">Full Name</Label>
+                  <Label htmlFor="name" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">Full Name</Label>
                   <div className="relative">
                     <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input 
                       id="name" 
                       value={name} 
                       onChange={(e) => setName(e.target.value)} 
-                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all shadow-none"
+                      className="pl-10 bg-white border-[#0c0c0c] text-gray-900 h-11 font-mono text-sm focus:border-gray-900 focus:outline-none transition-all shadow-none"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -141,7 +139,7 @@ export default function ProfilePage() {
                   <Button 
                     type="submit" 
                     disabled={isSubmittingName || name === user?.name}
-                    className="h-11 px-6 bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] text-sm font-bold uppercase tracking-wider rounded-xl transition-colors disabled:opacity-50 shadow-sm"
+                    className="h-11 px-6 bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] text-sm font-mono font-bold uppercase tracking-wider border-[2px] border-[#0c0c0c] transition-colors disabled:opacity-50 shadow-none hover:shadow-none"
                   >
                     {isSubmittingName ? 'Saving...' : 'Save Changes'}
                   </Button>
@@ -163,7 +161,7 @@ export default function ProfilePage() {
                   <div className="w-8 h-8 rounded-full bg-[#bef264]/20 text-[#84cc16] flex items-center justify-center">
                     <FiShield size={16} />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wider">
+                  <h3 className="text-lg wise-font font-black text-gray-900 uppercase tracking-wider">
                     Security
                   </h3>
                 </div>
@@ -183,7 +181,7 @@ export default function ProfilePage() {
                     <div className="pt-6">
                       <form onSubmit={handlePasswordSubmit} className="space-y-5 flex-1 flex flex-col">
                 <div className="space-y-1.5">
-                  <Label htmlFor="current_password" className="text-gray-500 text-xs font-bold uppercase tracking-wider">Current Password</Label>
+                  <Label htmlFor="current_password" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">Current Password</Label>
                   <div className="relative">
                     <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input
@@ -192,14 +190,14 @@ export default function ProfilePage() {
                       required
                       value={passwords.current_password}
                       onChange={(e) => setPasswords({ ...passwords, current_password: e.target.value })}
-                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all shadow-none"
+                      className="pl-10 bg-white border-[#0c0c0c] text-gray-900 h-11 font-mono text-sm focus:border-gray-900 focus:outline-none transition-all shadow-none"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="new_password" className="text-gray-500 text-xs font-bold uppercase tracking-wider">New Password</Label>
+                  <Label htmlFor="new_password" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">New Password</Label>
                   <div className="relative">
                     <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <Input
@@ -209,7 +207,7 @@ export default function ProfilePage() {
                       minLength={8}
                       value={passwords.new_password}
                       onChange={(e) => setPasswords({ ...passwords, new_password: e.target.value })}
-                      className="pl-10 bg-white border-gray-200 text-gray-900 h-11 rounded-xl text-sm focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all shadow-none"
+                      className="pl-10 bg-white border-[#0c0c0c] text-gray-900 h-11 font-mono text-sm focus:border-gray-900 focus:outline-none transition-all shadow-none"
                       placeholder="••••••••"
                     />
                   </div>
@@ -228,7 +226,7 @@ export default function ProfilePage() {
                   <Button 
                     type="submit" 
                     disabled={isSubmittingPassword || !passwords.current_password || !passwords.new_password}
-                    className="h-11 px-6 bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] text-sm font-bold uppercase tracking-wider rounded-xl transition-colors disabled:opacity-50 shadow-sm"
+                    className="h-11 px-6 bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] text-sm font-mono font-bold uppercase tracking-wider border-[2px] border-[#0c0c0c] transition-colors disabled:opacity-50 shadow-none hover:shadow-none"
                   >
                     {isSubmittingPassword ? 'Updating...' : 'Update Password'}
                   </Button>
@@ -241,8 +239,31 @@ export default function ProfilePage() {
             </div>
           </div>
         </motion.div>
-      </div>
     </div>
+  );
+
+  if (user?.is_seller) {
+    return (
+      <SellerLayout title="Profile" subtitle="Manage your account details and security preferences">
+        {profileContent}
+      </SellerLayout>
+    );
+  }
+
+  if (user?.role === 'agent') {
+    return (
+      <AgentLayout title="Profile" subtitle="Manage your account details and security preferences">
+        {profileContent}
+      </AgentLayout>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <div className="min-h-screen w-full flex flex-col items-center bg-[#f8f9fa] text-gray-900 pt-24 pb-12 font-sans">
+        {profileContent}
+      </div>
     </>
   );
 }

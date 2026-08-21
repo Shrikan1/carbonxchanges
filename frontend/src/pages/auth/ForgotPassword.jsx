@@ -75,14 +75,14 @@ const ForgotPassword = () => {
       <div className="relative z-10 w-full max-w-[500px] mx-4 md:mx-8 bg-white p-8 sm:p-12 shadow-2xl rounded-none border border-[#222]">
         
         {/* Back link */}
-        <Link to="/login" className="inline-flex items-center text-[#666] hover:text-[#0c0c0c] text-sm font-medium transition-colors mb-8 group">
+        <Link to="/login" className="inline-flex items-center text-[#666] hover:text-[#0c0c0c] text-sm font-mono font-medium transition-colors mb-8 group">
           <FaArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Login
         </Link>
 
-        <h2 className="text-2xl tracking-tight text-[#0c0c0c] mb-2 uppercase" style={{ fontFamily: "'Bungee', cursive" }}>
+        <h2 className="text-2xl tracking-tight text-[#0c0c0c] mb-2 uppercase wise-font font-black">
           {step === 1 ? 'Reset Password' : 'Enter OTP'}
         </h2>
-        <p className="text-[#666] text-sm leading-relaxed mb-8">
+        <p className="text-[#666] text-sm leading-relaxed mb-8 font-mono">
           {step === 1 
             ? "Enter the email address associated with your account and we'll send you a secure code to reset your password." 
             : `We've sent a 6-digit code to ${email}. Enter it below along with your new password.`}
@@ -116,7 +116,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#0c0c0c] text-white font-semibold py-4 text-[14px] tracking-wide hover:bg-[#222] transition-colors disabled:opacity-60 flex items-center justify-center mt-4"
+              className="w-full bg-primary font-mono font-bold text-[#0c0c0c] py-4 text-[14px] tracking-wide hover:bg-[#a3e635] transition-colors disabled:opacity-60 flex items-center justify-center mt-4"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
@@ -164,7 +164,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#0c0c0c] text-white font-semibold py-4 text-[14px] tracking-wide hover:bg-[#222] transition-colors disabled:opacity-60 flex items-center justify-center mt-4"
+              className="w-full bg-primary font-mono font-bold text-[#0c0c0c] py-4 text-[14px] tracking-wide hover:bg-[#a3e635] transition-colors disabled:opacity-60 flex items-center justify-center mt-4"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">

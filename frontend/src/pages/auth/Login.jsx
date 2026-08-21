@@ -113,13 +113,13 @@ const Login = ({ isEmbedded }) => {
             </div>
           </div>
           <div className="flex items-center justify-end pt-1">
-            <Link to="/forgot-password" className="text-[13px] text-[#666] hover:text-[#0c0c0c] transition-colors">Forgot Password?</Link>
+            <Link to="/forgot-password" className="text-[13px] font-mono text-[#666] hover:text-[#0c0c0c] transition-colors">Forgot Password?</Link>
           </div>
           <div className="w-full pr-1 pb-1 mt-2">
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary font-semibold py-3.5 text-[14px] tracking-wide disabled:opacity-60 flex items-center justify-center"
+              className="w-full bg-primary font-mono font-bold py-3.5 text-[14px] tracking-wide disabled:opacity-60 flex items-center justify-center"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
@@ -136,7 +136,7 @@ const Login = ({ isEmbedded }) => {
           </div>
         </form>
 
-        <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] text-[#999]">
+        <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] font-mono text-[#999]">
           Don't have an account?{' '}
           <Link to="/signup" className="text-[#0c0c0c] font-semibold hover:underline">
             Sign Up
@@ -165,7 +165,7 @@ const Login = ({ isEmbedded }) => {
                 <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 wise-font font-black uppercase">
                   Trade Carbon,<br />Save Earth.
                 </h2>
-                <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                <p className="text-white/60 text-sm leading-relaxed max-w-xs font-mono">
                   Blockchain-powered carbon credit marketplace for a sustainable future.
                 </p>
                 <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">

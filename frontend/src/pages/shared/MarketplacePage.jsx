@@ -70,7 +70,7 @@ export default function MarketplacePage() {
           {/* Marketplace Header */}
           <div className="relative rounded-none shadow-md border border-gray-200/50 mb-4 bg-white flex flex-col justify-center px-6 py-10 md:px-12 md:py-12 overflow-hidden min-h-[240px]">
             <div className="relative z-10 max-w-xl md:max-w-2xl">
-              <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-3 uppercase tracking-tighter logo-retro drop-shadow-sm">
+              <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-3 uppercase tracking-tighter wise-font drop-shadow-sm">
                 Carbon Credit Marketplace
               </h1>
               <p className="text-gray-800 text-base md:text-lg font-medium max-w-xl leading-snug">

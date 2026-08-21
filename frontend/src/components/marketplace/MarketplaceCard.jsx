@@ -25,7 +25,7 @@ export default function MarketplaceCard({ listing }) {
           <img src={imageUrl} alt={listing.project_title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${getGradient(listing.project_id || listing.id)} flex flex-col items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity duration-500`}>
-             <span className="text-white/20 font-black text-6xl uppercase tracking-tighter mix-blend-overlay logo-retro">
+             <span className="text-white/20 font-black text-6xl uppercase tracking-tighter mix-blend-overlay wise-font">
                 CXP
              </span>
           </div>

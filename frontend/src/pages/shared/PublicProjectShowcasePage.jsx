@@ -5,6 +5,9 @@ import * as sellerApi from '../../api/endpoint/Sellerapi';
 import LocationMap from '../../components/LocationMap';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
+import SellerLayout from '../../components/layout/SellerLayout';
+import AgentLayout from '../../components/layout/AgentLayout';
+import { useAuthStore } from '../../store/useAuthStore';
 import { FiThumbsUp, FiShare2, FiClock, FiMapPin, FiArrowLeft, FiTarget, FiInfo, FiActivity } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import ProjectStepper from '../../components/ProjectStepper';
@@ -15,6 +18,10 @@ export default function PublicProjectShowcasePage() {
   const [posts, setPosts] = useState([]);
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuthStore();
+
+  const isDashboardLayout = user?.is_seller || user?.role === 'agent';
+  const LayoutWrapper = user?.is_seller ? SellerLayout : (user?.role === 'agent' ? AgentLayout : ({children}) => <>{children}</>);
 
   useEffect(() => {
     async function load() {
@@ -73,24 +80,24 @@ export default function PublicProjectShowcasePage() {
   const projTitle = project?.title || (posts.length > 0 ? posts[0].project_title : 'Project Showcase');
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      <Navbar />
-      <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-24">
+    <LayoutWrapper title={isDashboardLayout ? "Project Showcase" : undefined} subtitle={isDashboardLayout ? "Detailed view of the project" : undefined}>
+    <div className={`min-h-screen bg-white ${isDashboardLayout ? '' : 'flex flex-col'}`}>
+      {!isDashboardLayout && <Navbar />}
+      
+      <main className={`flex-1 ${isDashboardLayout ? 'py-8' : 'pt-24 pb-16'}`}>
+        <div className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="mb-8">
-          <Link to="/posts" className="inline-flex items-center text-sm font-medium text-emerald-600 hover:text-emerald-700 mb-6 transition-colors">
-            <FiArrowLeft className="mr-2" /> Back to Updates
-          </Link>
-          <h1 className="text-3xl md:text-4xl text-gray-900 mb-4 uppercase logo-retro tracking-tighter">{projTitle}</h1>
+          <h1 className="text-2xl md:text-3xl text-gray-900 mb-4 uppercase font-mono font-black tracking-tight border-b-[2px] border-[#0c0c0c] pb-4">{projTitle}</h1>
           <div className="flex items-center text-gray-500 text-sm gap-4">
             {lat && lng && (
-              <span className="flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
-                <FiMapPin className="text-gray-400" />
+              <span className="flex items-center gap-1.5 bg-[#c2ed6d] px-3 py-1.5 rounded-sm font-bold border-[2px] border-[#0c0c0c] text-[11px] uppercase tracking-wider text-[#0c0c0c]">
+                <FiMapPin className="text-[#0c0c0c]" />
                 {project?.state_region || posts[0]?.state_region ? `${project?.state_region || posts[0]?.state_region}, ` : ''}{project?.country || posts[0]?.country || 'Location Available'}
               </span>
             )}
-            <span className="font-medium bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full">
+            <span className="font-bold bg-white text-[#0c0c0c] border-[2px] border-[#0c0c0c] px-3 py-1.5 rounded-sm text-[11px] uppercase tracking-wider">
               {project?.project_type?.replace(/_/g, ' ') || 'Carbon Project'}
             </span>
           </div>
@@ -104,13 +111,13 @@ export default function PublicProjectShowcasePage() {
 
         {/* Project Detailed Stats & Description */}
         {project && (
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-10 space-y-8">
+          <div className="bg-white rounded-sm border-[2px] border-[#0c0c0c] p-6 sm:p-8 mb-10 space-y-8">
 
             {/* About */}
             {project.project_summary && (
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <FiInfo className="text-emerald-600" /> About this Project
+                <h3 className="text-lg font-black font-mono uppercase tracking-tight text-[#0c0c0c] mb-3 flex items-center gap-2">
+                  <FiInfo className="text-[#c2ed6d] stroke-[3]" /> About this Project
                 </h3>
                 <p className="text-gray-600 leading-relaxed text-[15px]">{project.project_summary}</p>
               </div>
@@ -118,7 +125,7 @@ export default function PublicProjectShowcasePage() {
 
             {/* Key Stats */}
             <div>
-              <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Key Stats</h4>
+              <h4 className="text-sm font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-3">Key Stats</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                   { label: 'Total Area', value: project.total_project_area_hectares, unit: 'ha' },
@@ -130,9 +137,9 @@ export default function PublicProjectShowcasePage() {
                   { label: 'Conservation Set-Aside', value: project.set_aside_conservation_percent, unit: '%' },
                   { label: 'Scale', value: project.project_scale?.replace('-', ' '), unit: '' },
                 ].filter(s => s.value != null && s.value !== '').map(({ label, value, unit }) => (
-                  <div key={label} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                    <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider">{label}</div>
-                    <div className="text-lg font-black text-gray-900 truncate">
+                  <div key={label} className="bg-gray-50 rounded-sm p-4 border-[2px] border-[#0c0c0c]">
+                    <div className="text-[11px] text-gray-500 font-bold mb-1 uppercase tracking-wider font-mono">{label}</div>
+                    <div className="text-lg font-black text-gray-900 truncate font-mono">
                       {value} {unit && <span className="text-sm font-medium text-gray-500">{unit}</span>}
                     </div>
                   </div>
@@ -142,8 +149,8 @@ export default function PublicProjectShowcasePage() {
 
             {/* Land & Environment */}
             {(project.climate_zone || project.soil_type || project.hydrology_status || project.land_title_status) && (
-              <div className="pt-6 border-t border-gray-100">
-                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Land & Environment</h4>
+              <div className="pt-6 border-t-[2px] border-[#0c0c0c]">
+                <h4 className="text-sm font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-3">Land & Environment</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[
                     { label: 'Climate Zone', value: project.climate_zone },
@@ -164,8 +171,8 @@ export default function PublicProjectShowcasePage() {
 
             {/* Timeline */}
             {(project.project_start_date || project.expected_completion_date || project.monitoring_frequency) && (
-              <div className="pt-6 border-t border-gray-100">
-                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Timeline</h4>
+              <div className="pt-6 border-t-[2px] border-[#0c0c0c]">
+                <h4 className="text-sm font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-3">Timeline</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {[
                     { label: 'Start Date', value: project.project_start_date ? new Date(project.project_start_date).toLocaleDateString() : null },
@@ -183,8 +190,8 @@ export default function PublicProjectShowcasePage() {
 
             {/* Methodology & Carbon Accounting */}
             {(project.methodology_applied || project.baseline_scenario || project.additionality_demonstration || project.technologies_measures_description || project.sdg_targets || project.ghg_sources_included) && (
-              <div className="pt-6 border-t border-gray-100">
-                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Methodology & Carbon Accounting</h4>
+              <div className="pt-6 border-t-[2px] border-[#0c0c0c]">
+                <h4 className="text-sm font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-3">Methodology & Carbon Accounting</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     { label: 'Methodology Applied', value: project.methodology_applied },
@@ -195,8 +202,8 @@ export default function PublicProjectShowcasePage() {
                     { label: 'Technologies & Measures', value: project.technologies_measures_description },
                   ].filter(i => i.value != null && i.value !== '').map(({ label, value }) => (
                     <div key={label} className={label === 'Baseline Scenario' || label === 'Additionality Demonstration' || label === 'Technologies & Measures' ? 'md:col-span-2' : ''}>
-                      <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</p>
-                      <p className="text-sm text-gray-700 leading-relaxed">{value}</p>
+                      <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-1 font-mono">{label}</p>
+                      <p className="text-sm text-gray-800 leading-relaxed font-mono">{value}</p>
                     </div>
                   ))}
                 </div>
@@ -205,17 +212,17 @@ export default function PublicProjectShowcasePage() {
 
             {/* Type-Specific Metrics */}
             {project.methodology_specific_data && Object.keys(project.methodology_specific_data).length > 0 && (
-              <div className="pt-6 border-t border-gray-100">
-                <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FiTarget className="text-emerald-600" /> Key Project Metrics
+              <div className="pt-6 border-t-[2px] border-[#0c0c0c]">
+                <h4 className="text-sm font-bold font-mono text-[#0c0c0c] uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <FiTarget className="text-[#c2ed6d] stroke-[3]" /> Key Project Metrics
                 </h4>
                 <div className="flex flex-wrap gap-3">
                   {Object.entries(project.methodology_specific_data).map(([key, value]) => {
                     const cleanKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                     if(typeof value === 'object') return null;
                     return (
-                      <div key={key} className="inline-flex items-center gap-2 bg-emerald-50/50 border border-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg text-[13px]">
-                        <span className="font-semibold">{cleanKey}:</span>
+                      <div key={key} className="inline-flex items-center gap-2 bg-[#c2ed6d] border-[2px] border-[#0c0c0c] text-[#0c0c0c] px-3 py-1.5 rounded-sm text-[13px] font-mono">
+                        <span className="font-bold">{cleanKey}:</span>
                         <span className="font-black">{value}</span>
                       </div>
                     );
@@ -228,111 +235,14 @@ export default function PublicProjectShowcasePage() {
 
         {/* Location Map */}
         {lat && lng && (
-          <div className="mb-12 rounded-3xl overflow-hidden shadow-sm border border-gray-100 h-80 bg-white relative">
+          <div className="mb-12 rounded-sm overflow-hidden border-[2px] border-[#0c0c0c] h-80 bg-white relative">
             <LocationMap markers={[{ lat, lng, label: projTitle }]} />
           </div>
         )}
-
-        {/* Posts Feed Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <FiActivity className="text-gray-400 text-xl" />
-          <h2 className="text-2xl font-black text-gray-900">Project Updates</h2>
-        </div>
-
-        {/* Posts Feed */}
-        <div className="space-y-8">
-          {posts.length === 0 ? (
-             <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-white rounded-3xl shadow-sm border border-gray-100">
-               <h3 className="text-lg font-bold text-gray-900 mb-1">No updates yet</h3>
-               <p className="text-gray-500 max-w-sm">
-                 This project hasn't posted any updates or milestones yet.
-               </p>
-             </div>
-          ) : posts.map((post) => (
-            <article 
-              key={post.id} 
-              onClick={() => navigate(`/posts/${post.id}`, { state: { post } })}
-              className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 hover:shadow-md transition-shadow cursor-pointer"
-            >
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex gap-4 items-center">
-                  <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-gray-100 border border-gray-200 flex items-center justify-center text-xl font-bold text-gray-400">
-                    {post.seller_avatar ? (
-                      <img src={post.seller_avatar} alt={post.seller_name} className="w-full h-full object-cover" />
-                    ) : (
-                      post.seller_name?.charAt(0).toUpperCase()
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-bold text-gray-900 text-[15px]">{post.seller_name}</span>
-                    <span className="text-xs text-gray-500 mt-0.5 font-medium">Project Developer</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 text-gray-400 text-[11px] sm:text-xs font-medium">
-                  <FiClock />
-                  {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="font-black text-2xl text-gray-900 mb-3 leading-tight">{post.title}</h3>
-                {post.description && <p className="text-[16px] text-gray-600 mb-4 leading-relaxed">{post.description}</p>}
-                {post.story && <p className="text-[15px] text-gray-500 whitespace-pre-wrap leading-relaxed">{post.story}</p>}
-                {post.how_it_works && (
-                  <div className="mt-6 bg-gray-50 p-5 rounded-2xl border border-gray-100">
-                    <h4 className="text-sm font-black text-gray-900 mb-2 uppercase tracking-wider">How It Works</h4>
-                    <p className="text-[14px] text-gray-600 whitespace-pre-wrap leading-relaxed">{post.how_it_works}</p>
-                  </div>
-                )}
-              </div>
-
-              {((post.images && post.images.length > 0) || (post.videos && post.videos.length > 0)) && (
-                <div className={`grid gap-3 mb-6 ${
-                  ((post.images?.length || 0) + (post.videos?.length || 0)) > 1 ? 'grid-cols-2' : 'grid-cols-1'
-                }`}>
-                  {post.images && post.images.map((imgUrl, idx) => (
-                    <div key={`img-${idx}`} className="w-full rounded-2xl overflow-hidden bg-gray-100 border border-gray-100 shadow-sm relative pt-[60%] group">
-                      <img 
-                        src={imgUrl.startsWith('http') ? imgUrl : `https://gateway.pinata.cloud/ipfs/${imgUrl}`} 
-                        alt="Post attachment" 
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                        onError={(e) => { e.target.style.display = 'none'; }}
-                      />
-                    </div>
-                  ))}
-                  {post.videos && post.videos.map((vidUrl, idx) => (
-                    <div key={`vid-${idx}`} className="w-full rounded-2xl overflow-hidden bg-gray-100 border border-gray-100 shadow-sm relative pt-[60%]">
-                      <video 
-                        src={vidUrl.startsWith('http') ? vidUrl : `https://gateway.pinata.cloud/ipfs/${vidUrl}`} 
-                        controls 
-                        className="absolute inset-0 w-full h-full object-cover bg-black" 
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="pt-5 border-t border-gray-100 flex gap-6 items-center text-gray-500">
-                <button 
-                  onClick={() => handleLike(post.id)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-emerald-50 hover:text-emerald-600 transition-colors font-semibold"
-                >
-                  <FiThumbsUp className="text-lg" />
-                  <span className="text-sm">{post.likes_count}</span>
-                </button>
-                <button 
-                  onClick={() => handleShare(post)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors font-semibold"
-                >
-                  <FiShare2 className="text-lg" />
-                  <span className="text-sm">Share</span>
-                </button>
-              </div>
-            </article>
-          ))}
         </div>
       </main>
-      <Footer />
+      {!isDashboardLayout && <Footer />}
     </div>
+    </LayoutWrapper>
   );
 }

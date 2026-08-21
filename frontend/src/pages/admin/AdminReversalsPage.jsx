@@ -37,7 +37,7 @@ export default function AdminReversalsPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl uppercase logo-retro tracking-tighter">Reversal Queue</h1>
+      <h1 className="text-2xl uppercase wise-font font-black tracking-tighter">Reversal Queue</h1>
       <p className="text-sm text-muted-foreground">
         Flagged by agent re-inspections. Resolving cancels buffer pool credits only — never a buyer's holdings.
       </p>

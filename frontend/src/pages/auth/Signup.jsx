@@ -332,7 +332,7 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
               type="checkbox"
               className="w-[14px] h-[14px] mt-0.5 border-[#ccc] rounded-none accent-[#0c0c0c]"
             />
-            <span className="text-[13px] text-[#666] leading-snug">
+            <span className="text-[13px] font-mono text-[#666] leading-snug">
               I agree to the{' '}
               <Link to="/terms" className="text-[#0c0c0c] font-semibold hover:underline">
                 Terms &amp; Conditions
@@ -345,7 +345,7 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary font-semibold py-3.5 text-[14px] tracking-wide disabled:opacity-60 flex items-center justify-center"
+              className="w-full bg-primary font-mono font-bold py-3.5 text-[14px] tracking-wide disabled:opacity-60 flex items-center justify-center"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
@@ -363,7 +363,7 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
 
         </form>
 
-        <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] text-[#999]">
+        <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] font-mono text-[#999]">
           Already have an account?{' '}
           <Link to="/login" className="text-[#0c0c0c] font-semibold hover:underline">
             Sign In
@@ -391,7 +391,7 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
                 <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 wise-font font-black uppercase">
                   Join the Green<br />Revolution.
                 </h2>
-                <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                <p className="text-white/60 text-sm leading-relaxed max-w-xs font-mono">
                   Build a sustainable future with blockchain-powered carbon credits.
                 </p>
                 <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">

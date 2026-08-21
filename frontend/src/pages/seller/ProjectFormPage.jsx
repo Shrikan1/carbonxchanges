@@ -10,7 +10,7 @@ import FormField from '../../components/seller/FormField';
 import { useSellerStore } from '../../store/useSellerStore';
 import * as sellerApi from '../../api/endpoint/Sellerapi';
 import { Button } from '../../components/ui/Button';
-import { FiArrowLeft, FiArrowRight, FiSave, FiAlertCircle } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiSave,FiCheck , FiAlertCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import SellerLayout from '../../components/layout/SellerLayout';
 
@@ -209,7 +209,7 @@ export default function ProjectFormPage() {
       <div className="min-h-screen w-full flex items-center justify-center bg-[#f4f7f5]">
         <div className="flex flex-col items-center gap-3">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500" />
-          <p className="text-sm text-gray-500 font-medium">Loading project...</p>
+          <p className="text-sm font-mono text-gray-500 font-medium">Loading project...</p>
         </div>
       </div>
     );
@@ -223,38 +223,57 @@ export default function ProjectFormPage() {
       <div className="w-full flex flex-col items-center pb-12 font-sans relative">
 
       {/* Sticky Progress Bar */}
-      <div className="sticky top-0 z-40 w-full flex flex-col items-center bg-[#f4f7f5]/95 backdrop-blur-md shadow-sm border-b border-gray-200/50 py-4 mb-8">
+      <div className="sticky top-0 z-40 w-full flex flex-col items-center bg-[#f4f7f5]/95 backdrop-blur-md shadow-sm border-b border-gray-200/50 py-6 mb-8 pt-10">
         <div className="w-full max-w-[800px] px-4 md:px-8 mx-auto">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+          
+          <div className="relative flex justify-between items-center w-full">
+            {/* Background line */}
+            <div className="absolute top-1/2 left-0 w-full h-[3px] bg-gray-200 -translate-y-1/2 z-0 rounded-full"></div>
+            
+            {/* Active progress line */}
+            <div 
+              className="absolute top-1/2 left-0 h-[3px] bg-[#0c0c0c] -translate-y-1/2 z-0 transition-all duration-500 rounded-full"
+              style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+            ></div>
+
+            {steps.map((s) => {
+              const isCompleted = s.step < currentStep;
+              const isCurrent = s.step === currentStep;
+              const isActive = isCompleted || isCurrent;
+              
+              return (
+                <div key={s.step} className="relative z-10 flex flex-col items-center">
+                  {/* Label (above) */}
+                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap hidden sm:block">
+                    <span className={`text-[10px] font-mono font-bold uppercase tracking-widest ${isActive ? 'text-[#0c0c0c]' : 'text-gray-400'}`}>
+                      {s.title}
+                    </span>
+                  </div>
+                  
+                  {/* Node */}
+                  <div className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center transition-all duration-300 border-[2px] sm:border-[2.5px] ${
+                    isCompleted 
+                      ? 'bg-[#0c0c0c] border-[#0c0c0c] text-[#c2ed6d]' 
+                      : isCurrent
+                      ? 'bg-[#c2ed6d] border-[#0c0c0c] text-[#0c0c0c]'
+                      : 'bg-white border-gray-200 text-gray-400'
+                  }`}>
+                    {isCompleted ? <FiCheck strokeWidth={3.5} size={15} /> : <span className="font-mono text-[10px] sm:text-[11px] font-bold">{s.step}</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 flex justify-between items-center w-full">
+            <span className="text-[10px] font-bold font-mono text-gray-400 uppercase tracking-widest">
               Step {currentStep} of {steps.length}
             </span>
-            <div className="flex items-center gap-2">
-              {stepConfig.typeSpecific && (
-                <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">
-                  {formData.project_type ? formData.project_type.replace(/_/g, ' ') : 'type-specific'}
-                </span>
-              )}
-              <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
-                {stepConfig.title}
-              </span>
-            </div>
+            <span className="text-[10px] font-mono font-bold text-gray-900 uppercase tracking-widest">
+              {progressPercent}% Complete
+            </span>
           </div>
-          <div className="flex gap-1.5">
-            {steps.map((s) => (
-              <div
-                key={s.step}
-                className={`h-2 flex-1 rounded-full transition-all duration-500 ${
-                  s.step < currentStep
-                    ? 'bg-emerald-500'
-                    : s.step === currentStep
-                    ? 'bg-emerald-400'
-                    : 'bg-gray-200'
-                }`}
-              />
-            ))}
-          </div>
-          <div className="mt-1.5 text-xs text-gray-400 text-right">{progressPercent}% complete</div>
+
         </div>
       </div>
 
@@ -303,9 +322,9 @@ export default function ProjectFormPage() {
 
           {/* Form Card */}
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">{stepConfig.title}</h2>
+            <h2 className="text-xl wise-font font-black uppercase text-gray-900 mb-1">{stepConfig.title}</h2>
             {stepConfig.typeSpecific && formData.project_type && (
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="text-sm font-mono text-gray-500 mb-6">
                 These fields are specific to <strong className="capitalize">{formData.project_type.replace(/_/g, ' ')}</strong> projects.
               </p>
             )}
@@ -339,8 +358,8 @@ export default function ProjectFormPage() {
               variant="outline"
               onClick={handleBack}
               disabled={currentStep === 1}
-              className={`h-11 px-6 rounded-xl font-semibold transition-all ${
-                currentStep === 1 ? 'opacity-0 pointer-events-none' : 'opacity-100 hover:bg-gray-100 bg-white'
+              className={`h-11 px-6 font-mono font-bold border border-[#0c0c0c] bg-white text-[#0c0c0c] shadow-[4px_4px_0_0_#0c0c0c] hover:bg-gray-50 transition-all flex items-center gap-2 ${
+                currentStep === 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             >
               <FiArrowLeft className="mr-2" />
@@ -352,8 +371,7 @@ export default function ProjectFormPage() {
               <Button
                 onClick={handleSaveDraft}
                 disabled={saving}
-                variant="outline"
-                className="h-11 px-6 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold shadow-sm flex items-center gap-2"
+                className="h-11 px-6 bg-white hover:bg-gray-100 text-[#0c0c0c] font-mono font-bold border-[2px] border-[#0c0c0c] transition-colors flex items-center gap-2"
               >
                 <FiSave size={15} />
                 {saving ? 'Saving...' : 'Save Draft'}
@@ -362,7 +380,7 @@ export default function ProjectFormPage() {
               {!isLastStep && (
                 <Button
                   onClick={handleNext}
-                  className="h-11 px-8 rounded-xl bg-gray-900 hover:bg-black text-white font-bold shadow-sm"
+                  className="h-11 px-8 bg-primary hover:bg-[#a3e635] text-[#0c0c0c] font-mono font-bold shadow-[4px_4px_0_0_#0c0c0c] border border-[#0c0c0c] flex items-center justify-center gap-2"
                 >
                   Next
                   <FiArrowRight className="ml-2" />

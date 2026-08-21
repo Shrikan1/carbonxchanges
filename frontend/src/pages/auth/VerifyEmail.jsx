@@ -115,16 +115,14 @@ const VerifyEmail = () => {
 
             <div className="relative z-10 h-full flex flex-col justify-end p-10">
               <div>
-                <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 logo-retro-white">
+                <h2 className="text-white text-4xl leading-[1.05] tracking-tight mb-4 wise-font font-black uppercase">
 
                   Verify Your<br />Email.
                 </h2>
-                <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                <p className="text-white/60 text-sm leading-relaxed max-w-xs font-mono">
                   We've sent a code to your inbox. Enter it here to complete your registration.
                 </p>
-                <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">
-                  © 2026 CarbonXplanet. All rights reserved.
-                </div>
+
               </div>
             </div>
           </div>
@@ -133,8 +131,8 @@ const VerifyEmail = () => {
 
           <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start min-h-[600px]">
             <div className="mb-10">
-              <h1 className="text-[#0c0c0c] text-2xl mb-2 uppercase logo-retro tracking-tighter">Check your email</h1>
-              <p className="text-[#666] text-[15px]">
+              <h1 className="text-[#0c0c0c] text-2xl mb-2 uppercase wise-font font-black tracking-tighter">Check your email</h1>
+              <p className="text-[#666] text-[15px] font-mono">
                 We sent a 6-digit verification code to <span className="font-semibold text-[#111]">{email}</span>.
               </p>
             </div>
@@ -174,20 +172,20 @@ const VerifyEmail = () => {
                 type="submit"
 
                 disabled={loading}
-                className="w-full bg-[#0c0c0c] text-white font-semibold py-3.5 text-[14px] tracking-wide hover:bg-[#222] transition-colors mt-8 disabled:opacity-60"
+                className="w-full bg-primary font-mono font-bold py-3.5 text-[14px] tracking-wide disabled:opacity-60 flex items-center justify-center mt-8"
               >
                 {loading ? 'Verifying...' : 'Verify & Continue'}
               </button>
             </form>
 
-            <p className="mt-8 text-center text-[13px] text-[#999]">
+            <p className="mt-8 text-center text-[13px] font-mono text-[#999]">
               Didn't receive the code?{' '}
-              <button className="text-[#0c0c0c] font-semibold hover:underline">
+              <button className="text-[#0c0c0c] font-bold hover:underline">
                 Resend
               </button>
             </p>
             
-            <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px]">
+            <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] font-mono">
                <Link to="/login" className="text-[#666] hover:text-[#0c0c0c] transition-colors">
                   Back to Sign In
                </Link>
