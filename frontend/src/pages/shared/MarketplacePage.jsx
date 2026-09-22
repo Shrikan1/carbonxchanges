@@ -181,49 +181,49 @@ export default function MarketplacePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {[1, 2, 3, 4].map(i => (
                 <div key={i} 
-                  className="bg-white text-black flex flex-col sm:flex-row h-full sm:min-h-[280px] relative shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] animate-pulse"
-                  style={{ clipPath: 'polygon(2rem 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%, 0 2rem)' }}
+                  className="bg-white flex flex-col sm:flex-row h-full sm:min-h-[250px] relative overflow-hidden rounded-md border border-[#e5ebe6] shadow-[0_5px_18px_rgba(25,57,38,0.06)] animate-pulse"
                 >
                   {/* Left Side: Content Skeleton */}
-                  <div className="w-full sm:w-[55%] p-6 sm:p-8 flex flex-col justify-between relative bg-white z-10">
+                  <div className="w-full sm:w-[58%] px-5 py-5 flex flex-col justify-between relative bg-white z-10 order-2 sm:order-1">
                     <div>
                       {/* Meta */}
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="h-2 bg-gray-200 w-20 rounded"></div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="h-2 bg-[#e8eeea] w-20 rounded"></div>
                         <span className="text-gray-200 text-[10px]">•</span>
-                        <div className="h-2 bg-gray-200 w-16 rounded"></div>
+                        <div className="h-2 bg-[#e8eeea] w-16 rounded"></div>
                       </div>
                       
                       {/* Title */}
                       <div className="space-y-2 mb-4">
-                        <div className="h-8 sm:h-10 bg-gray-200 w-full rounded-sm"></div>
-                        <div className="h-8 sm:h-10 bg-gray-200 w-4/5 rounded-sm"></div>
-                        <div className="h-8 sm:h-10 bg-gray-200 w-1/2 rounded-sm"></div>
+                        <div className="h-6 bg-[#e8eeea] w-full rounded-sm"></div>
+                        <div className="h-6 bg-[#e8eeea] w-4/5 rounded-sm"></div>
+                        <div className="h-2.5 bg-[#eef2ef] w-full rounded"></div>
                       </div>
                     </div>
                     
-                    <div className="mt-4">
+                    <div className="mt-auto pt-5">
                       {/* Metrics */}
-                      <div className="flex items-end gap-6 mb-5">
+                      <div className="flex items-end gap-5 mb-4">
                         <div className="flex flex-col gap-2">
-                          <div className="h-2 bg-gray-200 w-16 rounded"></div>
-                          <div className="h-5 bg-gray-200 w-20 rounded"></div>
+                          <div className="h-2 bg-[#e8eeea] w-16 rounded"></div>
+                          <div className="h-4 bg-[#e8eeea] w-20 rounded"></div>
                         </div>
                         <div className="flex flex-col gap-2">
-                          <div className="h-2 bg-gray-200 w-16 rounded"></div>
-                          <div className="h-6 bg-gray-200 w-24 rounded"></div>
+                          <div className="h-2 bg-[#e8eeea] w-16 rounded"></div>
+                          <div className="h-4 bg-[#e8eeea] w-24 rounded"></div>
                         </div>
                       </div>
                       
                       {/* Button */}
-                      <div className="h-[36px] bg-gray-200 w-32 rounded-sm"></div>
+                      <div className="h-[38px] bg-[#dce9df] w-32 rounded-full"></div>
                     </div>
                   </div>
 
                   {/* Right Side: Image Skeleton */}
-                  <div className="w-full sm:w-[45%] h-[200px] sm:h-auto bg-gray-100 flex items-center justify-center">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                      <FiActivity className="text-gray-300" size={24} />
+                  <div className="w-full sm:w-[42%] h-[190px] sm:h-auto bg-[#dfe9df] relative flex items-center justify-center order-1 sm:order-2">
+                    <div className="absolute top-3 right-3 h-6 w-20 rounded bg-[#cbdccc]"></div>
+                    <div className="w-16 h-16 bg-[#cbdccc] rounded-full flex items-center justify-center">
+                      <FiActivity className="text-[#b1c8b5]" size={24} />
                     </div>
                   </div>
                 </div>

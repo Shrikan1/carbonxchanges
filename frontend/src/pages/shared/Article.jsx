@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import { FiBookOpen, FiCheck } from 'react-icons/fi';
+import { FiArrowUpRight, FiCalendar, FiClock, FiSearch } from 'react-icons/fi';
 import img1 from '../../assets/os-x-mavericks-3840x2160-24079.jpg';
-import img2 from '../../assets/pexels-adnan-atasoy-261355608-12644453.jpg';
-import img3 from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
-import img4 from '../../assets/18297.jpg';
-import img5 from '../../assets/Mangrove-Forest-Coast-2000x1237-1.jpg';
+import heroForest from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.jpg';
 
 const Article = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fallbackImage = img1;
 
@@ -48,67 +46,107 @@ const Article = () => {
     fetchArticles();
   }, []);
 
+  const visibleArticles = articles.filter((article) => {
+    const content = `${article.webTitle || ''} ${article.fields?.trailText || ''}`.toLowerCase();
+    return content.includes(searchQuery.toLowerCase());
+  });
+
   return (
-    <div className="bg-gray-50 text-gray-900 min-h-screen font-sans overflow-x-hidden flex flex-col">
+    <div className="bg-[#f8faf6] text-[#14352a] min-h-screen font-sans overflow-x-hidden flex flex-col">
       <Navbar />
 
-      <main className="flex-grow max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-24">
+      <main className="flex-grow pt-20 pb-24">
         
-        {/* Clean Header */}
-        <div className="mb-12 text-center pt-8">
-          <div role="heading" aria-level="1" className="text-4xl md:text-5xl wise-font font-black uppercase tracking-tight text-black mb-4 font-['Outfit']">
-            Insights & Articles
+        {/* Editorial hero */}
+        <section className="border-y border-[#e1e8df] bg-[#fbfcf9] overflow-hidden">
+          <div className="max-w-[1440px] mx-auto min-h-[250px] px-5 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-[60%_40%] items-center">
+            <div className="py-10 lg:py-11 relative z-10">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="h-px w-10 bg-[#9ebda3]" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.27em] text-[#6b8575]">Insights &amp; Articles</span>
+              </div>
+              <h1 className="max-w-[620px] text-3xl sm:text-4xl xl:text-[3.35rem] font-black uppercase leading-[0.94] tracking-[-0.055em] text-[#123328] wise-font">
+                Stories for a<br className="hidden sm:block" /> brighter tomorrow
+              </h1>
+              <p className="mt-4 max-w-xl text-[15px] sm:text-[16px] leading-relaxed text-[#63756a]">
+                Deep dives into climate tech, Web3 carbon markets, and the future of verifiable sustainability.
+              </p>
+            </div>
+            <div className="hidden lg:block relative self-stretch min-h-[250px]">
+              <div className="absolute inset-y-0 right-[-4vw] w-[115%] overflow-hidden rounded-bl-[46%] bg-[#e3eddf]">
+                <img src={heroForest} alt="Forest canopy" className="h-full w-full object-cover object-center" />
+              </div>
+              <p className="absolute right-2 bottom-8 max-w-[115px] rotate-[-8deg] text-[11px] font-bold uppercase leading-relaxed tracking-[0.13em] text-[#5f8d6f]">A cleaner planet together</p>
+            </div>
           </div>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Deep dives into climate tech, Web3 carbon markets, and the future of verifiable sustainability.
-          </p>
-        </div>
+        </section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <section className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 pt-8 sm:pt-10">
+          <div className="flex items-center">
+            <label className="relative block w-full xl:max-w-[520px]">
+              <FiSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-[#7c8d83]" size={18} />
+              <input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search articles, topics, or keywords..."
+                className="w-full rounded-md border border-[#e1e8df] bg-white py-4 pl-12 pr-5 text-sm text-[#254638] outline-none transition-colors placeholder:text-[#a0aba3] focus:border-[#8cae92]"
+              />
+            </label>
+          </div>
+        </section>
+
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 mt-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {loading ? (
             [...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white border border-gray-200 border-b-[5px] border-b-gray-300 rounded-3xl skeleton-glare flex flex-col overflow-hidden shadow-sm">
-                <div className="w-full aspect-[4/5] sm:aspect-square bg-gray-200"></div>
-                <div className="p-5 sm:p-6 flex flex-col">
-                  <div className="h-7 bg-gray-200 rounded w-3/4 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              <div key={i} className="bg-white border border-[#e1e8df] skeleton-glare flex flex-col overflow-hidden shadow-[0_4px_12px_rgba(29,62,43,0.04)]">
+                <div className="w-full aspect-[16/10] bg-[#e5ece5]"></div>
+                <div className="p-5 flex flex-col gap-3">
+                  <div className="h-3 bg-[#e8eee8] rounded w-1/3"></div>
+                  <div className="h-5 bg-[#e8eee8] rounded w-11/12"></div>
+                  <div className="h-5 bg-[#e8eee8] rounded w-3/4"></div>
+                  <div className="h-3 bg-[#eef2ee] rounded w-full"></div>
+                  <div className="h-3 bg-[#eef2ee] rounded w-2/3"></div>
                 </div>
               </div>
             ))
           ) : (
-            articles.map((article) => (
-              <a href={article.webUrl} target="_blank" rel="noopener noreferrer" key={article.id} className="group flex flex-col bg-white border border-gray-200 border-b-[5px] border-b-gray-300 hover:border-b-gray-400 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+            visibleArticles.map((article) => (
+              <a href={article.webUrl} target="_blank" rel="noopener noreferrer" key={article.id} className="group flex flex-col bg-white border border-[#e1e8df] overflow-hidden shadow-[0_4px_12px_rgba(29,62,43,0.04)] hover:border-[#b6cdb9] hover:shadow-[0_10px_22px_rgba(29,62,43,0.09)] transition-all duration-300 hover:-translate-y-1">
                 
                 {/* Image Section */}
-                <div className="w-full aspect-[4/5] sm:aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
+                <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#e5ece5] flex-shrink-0">
                   <img 
                     src={article.fields?.thumbnail || fallbackImage} 
                     alt={article.webTitle} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
+                  <span className="absolute left-4 top-4 rounded-full bg-[#f9fbf7]/95 px-3 py-1 text-[9px] font-bold uppercase tracking-wide text-[#24523b]">{article.sectionName || 'Climate Science'}</span>
                 </div>
                 
                 {/* Content Section */}
-                <div className="flex flex-col p-5 sm:p-6 bg-white flex-grow">
+                <div className="flex flex-col p-5 bg-white flex-grow">
                   
                   {/* Title */}
                   <h2 
-                    className="text-[22px] font-medium text-gray-900 tracking-tight leading-snug line-clamp-3 mb-2 group-hover:text-emerald-600 transition-colors"
+                    className="text-[20px] font-bold text-[#18372b] tracking-[-0.035em] leading-[1.12] line-clamp-3 mb-3 group-hover:text-[#397554] transition-colors"
                     dangerouslySetInnerHTML={{ __html: article.webTitle }}
                   />
                   
                   {/* Description */}
                   {article.fields?.trailText && (
                     <p 
-                      className="text-sm text-gray-500 line-clamp-3 font-normal leading-relaxed"
+                      className="text-[14px] text-[#718177] line-clamp-3 font-normal leading-relaxed"
                       dangerouslySetInnerHTML={{ __html: article.fields.trailText }}
                     />
                   )}
                   
-                  {/* Date */}
-                  <div className="mt-auto pt-4 flex items-center text-xs text-gray-400 font-medium uppercase tracking-wider">
-                    <span>{new Date(article.webPublicationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  {/* Editorial metadata */}
+                  <div className="mt-auto pt-5 flex items-center justify-between gap-3 text-[11px] text-[#77867d] font-medium">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1.5"><FiCalendar size={13} />{new Date(article.webPublicationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      <span className="flex items-center gap-1.5"><FiClock size={13} />{Math.max(3, Math.ceil(`${article.webTitle || ''} ${article.fields?.trailText || ''}`.split(' ').length / 45))} min</span>
+                    </div>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#edf4ea] text-[#24523b] transition-colors group-hover:bg-[#dcebd8]"><FiArrowUpRight size={15} /></span>
                   </div>
                 </div>
               </a>

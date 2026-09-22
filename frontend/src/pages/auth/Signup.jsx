@@ -194,11 +194,10 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
               placeholder={emptyFields.includes('name') ? 'Please fill all the fields.' : 'Aarav Sharma'}
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${
-                emptyFields.includes('name')
+              className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${emptyFields.includes('name')
                   ? 'border-red-500 placeholder:text-red-500/70 text-red-500'
                   : 'border-[#ddd] placeholder:text-[#888] text-[#0c0c0c] focus:border-[#0c0c0c]'
-              }`}
+                }`}
             />
           </div>
 
@@ -213,11 +212,10 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
               placeholder={emptyFields.includes('email') ? 'Please fill all the fields.' : 'aarav@example.com'}
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${
-                emptyFields.includes('email')
+              className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${emptyFields.includes('email')
                   ? 'border-red-500 placeholder:text-red-500/70 text-red-500'
                   : 'border-[#ddd] placeholder:text-[#888] text-[#0c0c0c] focus:border-[#0c0c0c]'
-              }`}
+                }`}
             />
           </div>
 
@@ -234,11 +232,10 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
                 placeholder={emptyFields.includes('phone_number') ? 'Please fill all the fields.' : '+91 9876543210'}
                 value={formData.phone_number}
                 onChange={handleChange}
-                className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${
-                  emptyFields.includes('phone_number')
+                className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${emptyFields.includes('phone_number')
                     ? 'border-red-500 placeholder:text-red-500/70 text-red-500'
                     : 'border-[#ddd] placeholder:text-[#888] text-[#0c0c0c] focus:border-[#0c0c0c]'
-                }`}
+                  }`}
               />
             </div>
 
@@ -253,11 +250,10 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
                 placeholder={emptyFields.includes('address') ? 'Please fill all the fields.' : '123 Green Street, City'}
                 value={formData.address}
                 onChange={handleChange}
-                className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${
-                  emptyFields.includes('address')
+                className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors ${emptyFields.includes('address')
                     ? 'border-red-500 placeholder:text-red-500/70 text-red-500'
                     : 'border-[#ddd] placeholder:text-[#888] text-[#0c0c0c] focus:border-[#0c0c0c]'
-                }`}
+                  }`}
               />
             </div>
           </div>
@@ -276,11 +272,10 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
                   placeholder={emptyFields.includes('password') ? 'Please fill all the fields.' : '••••••••••'}
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors pr-10 ${
-                    emptyFields.includes('password')
+                  className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors pr-10 ${emptyFields.includes('password')
                       ? 'border-red-500 placeholder:text-red-500/70 text-red-500'
                       : 'border-[#ddd] placeholder:text-[#888] text-[#0c0c0c] focus:border-[#0c0c0c]'
-                  }`}
+                    }`}
                 />
                 <button
                   type="button"
@@ -304,11 +299,10 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
                   placeholder={emptyFields.includes('confirmPassword') ? 'Please fill all the fields.' : '••••••••••'}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors pr-10 ${
-                    emptyFields.includes('confirmPassword')
+                  className={`w-full px-0 py-3.5 bg-transparent border-0 border-b text-[16px] focus:outline-none transition-colors pr-10 ${emptyFields.includes('confirmPassword')
                       ? 'border-red-500 placeholder:text-red-500/70 text-red-500'
                       : 'border-[#ddd] placeholder:text-[#888] text-[#0c0c0c] focus:border-[#0c0c0c]'
-                  }`}
+                    }`}
                 />
                 <button
                   type="button"

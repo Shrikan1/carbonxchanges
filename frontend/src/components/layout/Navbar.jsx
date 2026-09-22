@@ -46,19 +46,9 @@ const Navbar = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] =
     useState(false);
 
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const location = useLocation();
   const navigate = useNavigate();
-  const isLightPage = ['/posts', '/article', '/seller', '/admin', '/buyer', '/profile', '/marketplace', '/about'].some(p => location.pathname.startsWith(p));
+  const isLightPage = ['/', '/posts', '/article', '/seller', '/admin', '/buyer', '/profile', '/marketplace', '/about'].some(p => p === '/' ? location.pathname === '/' : location.pathname.startsWith(p));
 
 
   // ===================================================
@@ -222,29 +212,23 @@ const Navbar = ({
     if (isAuthenticated) {
 
       return (
-        <div className={`hidden lg:flex items-center space-x-1.5 p-1 rounded-full transition-all duration-300 ${isScrolled || isLightPage ? 'bg-white shadow-sm border border-gray-200' : 'bg-black/20 backdrop-blur-md border border-white/10 hover:bg-black/30'}`}>
-
-
+        <div className="hidden lg:flex items-center space-x-1.5 p-1 rounded-full bg-white shadow-sm border border-gray-200">
 
           {dashboardLinks.map((dash, idx) => (
             <Link
               key={idx}
               to={dash.path}
-              className={`group px-6 py-2 text-[14px] font-bold font-mono uppercase tracking-wider flex items-center justify-center transition-colors rounded-full ${isScrolled || isLightPage ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100' : 'text-gray-200 hover:text-white hover:bg-white/10'}`}
+              className="group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider flex items-center justify-center transition-colors rounded-full text-gray-700 hover:text-gray-900 hover:bg-gray-100"
             >
               <span className="relative overflow-hidden block leading-tight">
-                <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
-                  {dash.label}
-                </span>
-                <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                <span className="block">
                   {dash.label}
                 </span>
               </span>
             </Link>
           ))}
 
-
-          <div className={`w-px h-8 mx-2 ${isScrolled || isLightPage ? 'bg-gray-200' : 'bg-white/20'}`}></div>
+          <div className="w-px h-5 mx-1.5 bg-gray-200"></div>
 
           {/* ------------------------------------------
               PROFILE DROPDOWN
@@ -253,12 +237,12 @@ const Navbar = ({
             <button
               type="button"
               onClick={toggleProfileDropdown}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border overflow-hidden focus:outline-none transition-all duration-300 ${isScrolled || isLightPage ? 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50' : 'border-white/20 hover:border-white/40 text-white bg-white/5'}`}
+              className="flex items-center justify-center w-7 h-7 rounded-full border overflow-hidden focus:outline-none border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50 text-[12px] font-bold"
             >
               {user?.profileImage ? (
                 <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <div className={`w-full h-full flex items-center justify-center text-base font-bold uppercase`}>
+                <div className="w-full h-full flex items-center justify-center text-[11px] font-bold uppercase">
                   {user?.name ? user.name.charAt(0) : 'U'}
                 </div>
               )}
@@ -418,12 +402,12 @@ const Navbar = ({
     // ================================================
 
     return (
-      <div className="hidden lg:flex items-center space-x-4">
+      <div className="hidden lg:flex items-center space-x-3">
 
         {/* Login */}
         <Link
           to="/login"
-          className={`text-[15px] font-mono font-medium transition-colors ${isScrolled || isLightPage ? 'text-gray-600 hover:text-gray-900' : 'text-white/90 hover:text-white drop-shadow-md'}`}
+          className="text-[12px] font-medium text-gray-600 hover:text-gray-900 transition-colors"
         >
           SIGN IN
         </Link>
@@ -431,7 +415,7 @@ const Navbar = ({
         {/* Sign Up — primary CTA for guests */}
         <Link
           to="/signup"
-          className="px-7 py-3 bg-[#bef264] text-[#0a0a0a] text-[15px] font-mono font-bold rounded-full hover:bg-[#a3e635] transition-all shadow-sm hover:shadow-md"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#1a3a22] text-white text-[12px] font-semibold rounded-full hover:bg-[#0f2a17] transition-colors"
         >
           GET STARTED
         </Link>
@@ -465,7 +449,7 @@ const Navbar = ({
               key={idx}
               to={dash.path}
               onClick={closeMobileMenu}
-              className="block w-full px-4 py-3 text-center text-[#888] text-xs font-mono font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+              className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
             >
               {dash.label}
             </Link>
@@ -479,7 +463,7 @@ const Navbar = ({
           <button
             type="button"
             onClick={handleLogout}
-            className="block w-full px-4 py-3 text-center bg-[#222] text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#333] transition-colors"
+            className="block w-full px-4 py-3 text-center bg-[#222] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333] transition-colors"
           >
             Logout
           </button>
@@ -501,7 +485,7 @@ const Navbar = ({
         <Link
           to="/login"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center text-[#888] text-xs font-mono font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+          className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
         >
           LOGIN
         </Link>
@@ -512,7 +496,7 @@ const Navbar = ({
         <Link
           to="/signup"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#eee] transition-colors"
+          className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-xs font-bold uppercase tracking-wider hover:bg-[#eee] transition-colors"
         >
           SIGN UP
         </Link>
@@ -535,53 +519,17 @@ const Navbar = ({
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <p className="text-white text-lg font-mono uppercase tracking-[0.2em] animate-pulse">Logging out...</p>
+            <p className="text-white text-lg uppercase tracking-[0.2em] animate-pulse">Logging out...</p>
           </div>
         </div>
       )}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? 'px-4 sm:px-6 pt-4' : 'px-0 pt-0'}`}>
-
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#eef0eb] border-b border-[#dde0d8]">
 
       {/* =================================================
           NAVBAR
       ================================================= */}
 
-      <motion.div
-        initial={
-          animateEntrance
-            ? {
-              opacity: 0,
-              y: -20,
-            }
-            : false
-        }
-
-        animate={
-          animateEntrance
-            ? {
-              opacity: 1,
-              y: 0,
-            }
-            : false
-        }
-
-        transition={
-          animateEntrance
-            ? {
-              duration: 1.2,
-              ease: [
-                0.16,
-                1,
-                0.3,
-                1,
-              ],
-              delay: 1.6,
-            }
-            : {}
-        }
-
-        className={`mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] border ${isScrolled ? 'max-w-5xl bg-white border-gray-200 rounded-full px-6 py-0.5 shadow-lg' : 'max-w-[1400px] bg-transparent border-transparent rounded-full px-6 sm:px-8 py-4 shadow-none'}`}
-      >
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-1.5">
 
         <div className="flex items-center justify-between">
 
@@ -592,43 +540,15 @@ const Navbar = ({
 
           <Link
             to="/"
-            className="flex items-center px-4 py-1.5 rounded-full transition-all duration-300 bg-transparent hover:opacity-80"
+            className="flex items-center hover:opacity-80 transition-opacity"
           >
 
-            {!hideLogo && (
-
-              <motion.span
-                layoutId={
-                  animateEntrance
-                    ? 'brand-logo'
-                    : undefined
-                }
-
+            <span
                 data-brand="logo"
-
-                className={`wise-font font-black uppercase tracking-normal text-xl transition-colors duration-300 ${isScrolled || isLightPage ? 'text-gray-900 [text-shadow:1px_1px_0_#c2ed6d,2px_2px_0_#c2ed6d,3px_3px_0_#c2ed6d]' : 'text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black]'}`}
-                transition={
-                  animateEntrance
-                    ? {
-                      layout: {
-                        duration: 1.0,
-                        ease: [
-                          0.16,
-                          1,
-                          0.3,
-                          1,
-                        ],
-                      },
-                    }
-                    : {}
-                }
+                className="wise-font font-black uppercase tracking-normal text-[17px] text-[#1a3a22]"
               >
-
                 CarbonXplanet
-
-              </motion.span>
-
-            )}
+              </span>
 
           </Link>
 
@@ -637,7 +557,7 @@ const Navbar = ({
               DESKTOP NAVIGATION
           ================================================= */}
 
-          <nav className="hidden lg:flex items-center space-x-1.5 bg-gray-100/80 backdrop-blur-sm rounded-full px-1.5 py-1">
+          <nav className="hidden lg:flex items-center space-x-0.5 bg-gray-100/90 backdrop-blur-sm rounded-full px-1 py-0.5">
 
             {navLinks.map((link) => {
 
@@ -648,9 +568,9 @@ const Navbar = ({
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`group px-6 py-2 text-[14px] font-mono font-bold uppercase tracking-wider rounded-full transition-all duration-300 flex items-center justify-center ${isActive
+                  className={`group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider rounded-full transition-all duration-200 flex items-center justify-center ${isActive
                     ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
+                    : 'text-gray-500 hover:text-gray-800 hover:bg-white/60'
                     }`}
                 >
                   <span className="relative overflow-hidden block leading-tight">
@@ -684,7 +604,7 @@ const Navbar = ({
           <button
             type="button"
             onClick={toggleMobileMenu}
-            className={`lg:hidden p-2 transition-colors ${isScrolled ? 'text-gray-900' : 'text-gray-900'}`}
+            className="lg:hidden p-2 text-gray-900 transition-colors"
             aria-label="Toggle menu"
           >
 
@@ -698,7 +618,7 @@ const Navbar = ({
 
         </div>
 
-      </motion.div>
+      </div>
 
 
       {/* =================================================
@@ -758,7 +678,7 @@ const Navbar = ({
                   to={link.path}
                   onClick={closeMobileMenu}
 
-                  className={`px-4 py-3 text-xs font-mono font-bold uppercase tracking-wider transition-colors ${isActive
+                  className={`px-4 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${isActive
                     ? 'text-white'
                     : 'text-[#888] hover:text-white'
                     }`}
