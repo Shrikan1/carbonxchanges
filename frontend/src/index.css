@@ -59,6 +59,68 @@
     z-index: 10;
     pointer-events: none;
   }
+
+  /* ── Hero terrain image mask (mobile) ──────────────*/
+  .hero-terrain-mobile {
+    width: 100%;
+    height: 56vw;
+    max-height: 260px;
+    min-height: 160px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero-terrain-mobile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  }
+
+  /* ── Our Purpose image mask ──────────────*/
+  .purpose-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/5;
+    max-width: 600px;
+    margin-left: auto;
+  }
+  
+  .purpose-image-bg {
+    position: absolute;
+    top: 5%;
+    right: -5%;
+    width: 95%;
+    height: 90%;
+    background-color: #b3e669; /* lime green */
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%, 0 45%, 5% 20%);
+    z-index: 1;
+  }
+
+  .purpose-image-mask {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    overflow: hidden;
+    clip-path: path('M120,0 C250,10 400,-20 600,0 L600,800 C400,820 200,800 100,750 C-10,680 -20,500 10,400 C40,300 80,150 120,0 Z');
+    /* We'll use an SVG clipPath instead for better responsiveness */
+  }
+
+  .editorial-text-vertical {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  /* ── Universal body font override ──────────────────
+     Remap font-mono to Inter so all components that
+     use font-mono render in the same body font.      */
+  .font-mono {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  }
 }
 
 @theme {
@@ -131,7 +193,7 @@
   }
 
   body {
-    /* Base typography is handled by Tailwind's sans stack */
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: #f8fafc;
     color: #0f172a;
   }
@@ -148,13 +210,21 @@
   }
 
   /* Headings globally use the wise-font (Outfit) stack per user request */
-  h1, h2, h3, h4, h5, h6, .heading {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .heading {
     font-family: 'Outfit', sans-serif;
     letter-spacing: -0.02em;
   }
 
-  p, .subheading, small {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  p,
+  .subheading,
+  small {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
   /* Hide number input spinners for a cleaner UI */
