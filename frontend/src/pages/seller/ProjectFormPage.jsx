@@ -244,7 +244,7 @@ export default function ProjectFormPage() {
               return (
                 <div key={s.step} className="relative z-10 flex flex-col items-center">
                   {/* Label (above) */}
-                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap hidden sm:block">
+                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap hidden md:block">
                     <span className={`text-[10px] font-mono font-bold uppercase tracking-widest ${isActive ? 'text-[#0c0c0c]' : 'text-gray-400'}`}>
                       {s.title}
                     </span>
@@ -321,7 +321,7 @@ export default function ProjectFormPage() {
           )}
 
           {/* Form Card */}
-          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-6">
+          <div className="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-gray-100 mb-6 w-full">
             <h2 className="text-xl wise-font font-black uppercase text-gray-900 mb-1">{stepConfig.title}</h2>
             {stepConfig.typeSpecific && formData.project_type && (
               <p className="text-sm font-mono text-gray-500 mb-6">
@@ -353,25 +353,25 @@ export default function ProjectFormPage() {
           </div>
 
           {/* Navigation Controls */}
-          <div className="flex justify-between items-center mt-8">
+          <div className="flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center mt-8 gap-4 sm:gap-0">
             <Button
               variant="outline"
               onClick={handleBack}
               disabled={currentStep === 1}
-              className={`h-11 px-6 font-mono font-bold border border-[#0c0c0c] bg-white text-[#0c0c0c] shadow-[4px_4px_0_0_#0c0c0c] hover:bg-gray-50 transition-all flex items-center gap-2 ${
-                currentStep === 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+              className={`h-11 px-6 w-full sm:w-auto font-mono font-bold border border-[#0c0c0c] bg-white text-[#0c0c0c] sm:shadow-[4px_4px_0_0_#0c0c0c] hover:bg-gray-50 transition-all flex items-center justify-center gap-2 ${
+                currentStep === 1 ? 'hidden sm:flex opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             >
               <FiArrowLeft className="mr-2" />
               Previous
             </Button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
               {/* Always-visible Save Draft button */}
               <Button
                 onClick={handleSaveDraft}
                 disabled={saving}
-                className="h-11 px-6 bg-white hover:bg-gray-100 text-[#0c0c0c] font-mono font-bold border-[2px] border-[#0c0c0c] transition-colors flex items-center gap-2"
+                className="h-11 px-6 w-full sm:w-auto bg-white hover:bg-gray-100 text-[#0c0c0c] font-mono font-bold border-[2px] border-[#0c0c0c] transition-colors flex items-center justify-center gap-2"
               >
                 <FiSave size={15} />
                 {saving ? 'Saving...' : 'Save Draft'}
@@ -380,7 +380,7 @@ export default function ProjectFormPage() {
               {!isLastStep && (
                 <Button
                   onClick={handleNext}
-                  className="h-11 px-8 bg-primary hover:bg-[#a3e635] text-[#0c0c0c] font-mono font-bold shadow-[4px_4px_0_0_#0c0c0c] border border-[#0c0c0c] flex items-center justify-center gap-2"
+                  className="h-11 px-8 w-full sm:w-auto bg-primary hover:bg-[#a3e635] text-[#0c0c0c] font-mono font-bold shadow-[4px_4px_0_0_#0c0c0c] border border-[#0c0c0c] flex items-center justify-center gap-2"
                 >
                   Next
                   <FiArrowRight className="ml-2" />

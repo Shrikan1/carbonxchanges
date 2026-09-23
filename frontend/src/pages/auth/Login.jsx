@@ -58,68 +58,66 @@ const Login = ({ isEmbedded }) => {
   const formContent = (
     <div className="w-full h-full flex flex-col">
       {!isEmbedded && (
-        <>
-          <div className="flex items-center space-x-6 shrink-0 mb-8">
-            <span className="text-[#0c0c0c] text-2xl font-black uppercase wise-font tracking-tight border-b-2 border-[#0c0c0c] pb-2">
-              Sign In
-            </span>
-            <Link to="/signup" className="text-[#999] text-2xl font-black uppercase wise-font tracking-tight pb-2 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors">
-              Sign Up
-            </Link>
-          </div>
-        </>
+        <div className="flex items-center space-x-4 sm:space-x-6 shrink-0 mb-5">
+          <span className="text-[#0c0c0c] text-xl sm:text-2xl font-black uppercase wise-font tracking-tight border-b-2 border-[#0c0c0c] pb-1.5">
+            Sign In
+          </span>
+          <Link to="/signup" className="text-[#999] text-xl sm:text-2xl font-black uppercase wise-font tracking-tight pb-1.5 border-b-2 border-transparent hover:text-[#0c0c0c] transition-colors">
+            Sign Up
+          </Link>
+        </div>
       )}
 
       <div className="flex-1 flex flex-col justify-center">
         {successMessage && (
-          <div className="mb-4 bg-green-50 text-green-700 text-[13px] font-medium p-3 border border-green-100 rounded">
+          <div className="mb-4 bg-green-50 text-green-700 text-[12px] font-medium p-2.5 border border-green-100 rounded">
             {successMessage}
           </div>
         )}
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 text-red-500 text-[13px] font-medium p-3 border border-red-100">
+            <div className="bg-red-50 text-red-500 text-[12px] font-medium p-2.5 border border-red-100">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">Email</label>
+            <label className="block text-[11px] font-mono font-bold text-[#111] uppercase tracking-[0.1em] mb-1">Email</label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="aarav@example.com"
-              className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
+              className="w-full px-0 py-2.5 sm:py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[14px] sm:text-[15px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors"
             />
           </div>
           <div>
-            <label className="block text-[14px] font-mono font-bold text-[#111] uppercase tracking-[0.12em] mb-2">Password</label>
+            <label className="block text-[11px] font-mono font-bold text-[#111] uppercase tracking-[0.1em] mb-1">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="••••••••••"
-                className="w-full px-0 py-3.5 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[16px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-10"
+                placeholder="••••••••"
+                className="w-full px-0 py-2.5 sm:py-3 bg-transparent border-0 border-b border-[#ddd] text-[#0c0c0c] text-[14px] sm:text-[15px] placeholder:text-[#888] focus:outline-none focus:border-[#0c0c0c] transition-colors pr-8"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#0c0c0c] transition-colors"
               >
-                {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+                {showPassword ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
               </button>
             </div>
           </div>
           <div className="flex items-center justify-end pt-1">
-            <Link to="/forgot-password" className="text-[13px] font-mono text-[#666] hover:text-[#0c0c0c] transition-colors">Forgot Password?</Link>
+            <Link to="/forgot-password" className="text-[12px] sm:text-[13px] font-mono text-[#666] hover:text-[#0c0c0c] transition-colors">Forgot Password?</Link>
           </div>
-          <div className="w-full pr-1 pb-1 mt-2">
+          <div className="w-full mt-2">
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary font-mono font-bold py-3.5 text-[14px] tracking-wide disabled:opacity-60 flex items-center justify-center"
+              className="w-full bg-primary font-mono font-bold py-3 sm:py-3.5 text-[12px] sm:text-[13px] tracking-wide disabled:opacity-60 flex items-center justify-center"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
@@ -136,7 +134,7 @@ const Login = ({ isEmbedded }) => {
           </div>
         </form>
 
-        <div className="mt-6 pt-5 border-t border-[#eee] text-center text-[13px] font-mono text-[#999]">
+        <div className="mt-4 pt-4 border-t border-[#eee] text-center text-[12px] font-mono text-[#999]">
           Don't have an account?{' '}
           <Link to="/signup" className="text-[#0c0c0c] font-semibold hover:underline">
             Sign Up
@@ -151,11 +149,11 @@ const Login = ({ isEmbedded }) => {
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#0c0c0c] relative font-sans">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
-      <div className="absolute inset-0 bg-black/70" />
-      <div className="relative z-10 w-full max-w-[1060px] mx-4 md:mx-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#0c0c0c] border border-[#222] overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center overflow-x-hidden bg-white sm:bg-[#0c0c0c] relative font-sans">
+      <div className="absolute inset-0 bg-cover bg-center hidden sm:block" style={{ backgroundImage: `url(${authBg})` }} />
+      <div className="absolute inset-0 bg-black/70 hidden sm:block" />
+      <div className="relative z-10 w-full sm:max-w-[1060px] mx-0 sm:mx-4 md:mx-8 min-h-screen sm:min-h-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 bg-white sm:bg-[#0c0c0c] sm:border sm:border-[#222] overflow-hidden min-h-screen sm:min-h-[500px]">
           <div className="relative hidden lg:block min-h-[500px]">
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${authBg})` }} />
             <div className="absolute inset-0 bg-black/40" />
@@ -174,7 +172,7 @@ const Login = ({ isEmbedded }) => {
               </div>
             </div>
           </div>
-          <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start min-h-[500px]">
+          <div className="bg-white px-5 py-8 sm:p-10 lg:p-12 flex flex-col justify-start">
             {formContent}
           </div>
         </div>

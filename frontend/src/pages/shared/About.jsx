@@ -11,23 +11,23 @@ const About = () => {
       <Navbar />
 
       {/* ─── HERO SECTION ─── */}
-      <section className="pt-32 sm:pt-40 pb-20 px-6 max-w-[1200px] mx-auto text-center relative z-10">
+      <section className="pt-28 sm:pt-40 pb-16 sm:pb-20 px-6 max-w-[1200px] mx-auto text-center relative z-10">
         <div className="space-y-6 flex flex-col items-center">
           <p className="text-[13px] font-bold font-['JetBrains_Mono'] uppercase tracking-[0.2em] text-[#84cc16] bg-[#bef264]/10 px-4 py-1.5 rounded-full inline-block">
             Who We Are
           </p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase leading-[1.05] tracking-tight text-gray-900 wise-font max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase leading-[1.05] tracking-tight text-gray-900 wise-font max-w-4xl mx-auto">
             Building a <br className="hidden sm:block" /> Sustainable Future.
           </h1>
-          <p className="text-gray-500 leading-relaxed max-w-2xl text-[18px] sm:text-[20px] font-medium mx-auto pt-4">
+          <p className="text-gray-500 leading-relaxed max-w-2xl text-[16px] sm:text-[20px] font-medium mx-auto pt-4">
             At CarbonXplanet, we believe in the power of blockchain to achieve outstanding environmental results. We work hand-in-hand with our partners to bring green ideas to life.
           </p>
         </div>
       </section>
 
       {/* ─── SINGLE HERO IMAGE ─── */}
-      <section className="px-4 sm:px-6 max-w-[1400px] mx-auto pb-24">
-        <div className="relative w-full h-[400px] sm:h-[600px] rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 group">
+      <section className="px-4 sm:px-6 max-w-[1400px] mx-auto pb-16 sm:pb-24">
+        <div className="relative w-full h-[300px] sm:h-[600px] rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 group">
           <img
             src={heroImage}
             alt="Wind turbines connecting the globe"
@@ -47,7 +47,7 @@ const About = () => {
       </section>
 
       {/* ─── INTRO QUOTE ─── */}
-      <section className="py-24 px-6 max-w-4xl mx-auto text-center border-t border-gray-100">
+      <section className="py-16 sm:py-24 px-6 max-w-4xl mx-auto text-center border-t border-gray-100">
         <FaLeaf className="text-[#84cc16] text-4xl mx-auto mb-8 opacity-40" />
         <h2 className="text-2xl sm:text-4xl font-medium leading-[1.5] tracking-tight text-gray-800">
           We are reshaping the carbon credit market with practical, sustainable, and transparent solutions. We combine <span className="text-black font-bold border-b-4 border-[#bef264]">cutting-edge technology</span> with trusted verification to ensure every project delivers real environmental impact.
@@ -55,8 +55,8 @@ const About = () => {
       </section>
 
       {/* ─── MISSION & VISION GRID ─── */}
-      <section className="bg-gray-50 py-32 border-t border-b border-gray-100">
-        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24">
+      <section className="bg-gray-50 py-16 sm:py-32 border-t border-b border-gray-100">
+        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16 lg:gap-24">
           
           {/* Mission */}
           <div className="space-y-6">
@@ -106,8 +106,8 @@ const About = () => {
       </section>
 
       {/* ─── CTA SECTION ─── */}
-      <section className="bg-white py-32 px-6">
-        <div className="max-w-[1200px] mx-auto bg-gray-900 rounded-[3rem] p-12 sm:p-20 text-center flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
+      <section className="bg-white py-16 sm:py-32 px-4 sm:px-6">
+        <div className="max-w-[1200px] mx-auto bg-gray-900 rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-20 text-center flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-[#bef264] opacity-5 pointer-events-none mix-blend-overlay" />
           
           <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-6 wise-font relative z-10">

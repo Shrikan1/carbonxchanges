@@ -241,8 +241,8 @@ export default function MarketplacePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {filteredListings.map(listing => (
-                <MarketplaceCard key={listing.id} listing={listing} />
+              {filteredListings.map((listing, idx) => (
+                <MarketplaceCard key={listing.id || listing._id || idx} listing={listing} />
               ))}
             </div>
           )}

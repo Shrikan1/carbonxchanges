@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaHome, FaLeaf, FaUsers, FaFileAlt, FaInfoCircle, FaUser } from 'react-icons/fa';
 import { motion } from 'motion/react';
 
 import { useAuthStore } from '../../store/useAuthStore';
@@ -598,111 +598,30 @@ const Navbar = ({
 
 
           {/* =================================================
-              MOBILE TOGGLE
+              MOBILE TOP AUTH
           ================================================= */}
 
-          <button
-            type="button"
-            onClick={toggleMobileMenu}
-            className="lg:hidden p-2 text-gray-900 transition-colors"
-            aria-label="Toggle menu"
-          >
-
-            {isMobileMenuOpen ? (
-              <FaTimes size={20} />
-            ) : (
-              <FaBars size={20} />
+          <div className="lg:hidden flex items-center space-x-2 ml-2">
+            {isAuthenticated && (
+              <Link
+                to="/dashboard"
+                className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
+                aria-label="Dashboard Sidebar"
+              >
+                <FaBars size={13} />
+              </Link>
             )}
-
-          </button>
-
-        </div>
-
-      </div>
-
-
-      {/* =================================================
-          MOBILE MENU
-      ================================================= */}
-
-      <div
-        className={`fixed top-0 right-0 h-full w-72 bg-[#0c0c0c]/70 backdrop-blur-xl border-l border-[#222]/50 z-50 transform transition-transform duration-300 lg:hidden ${isMobileMenuOpen
-          ? 'translate-x-0'
-          : 'translate-x-full'
-          }`}
-      >
-
-        <div className="flex flex-col h-full p-6">
-
-
-          {/* =================================================
-              MOBILE HEADER
-          ================================================= */}
-
-          <div className="flex items-center justify-between pb-6 border-b border-[#222]">
-
-            <span className="text-white text-sm font-bold">
-              Menu
-            </span>
-
-            <button
-              type="button"
-              onClick={toggleMobileMenu}
-              className="p-2 text-[#888] hover:text-white transition-colors"
-              aria-label="Close menu"
+            <Link
+              to={isAuthenticated ? "/profile" : "/login"}
+              className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
+              aria-label="Profile"
             >
-
-              <FaTimes size={18} />
-
-            </button>
-
-          </div>
-
-
-          {/* =================================================
-              MOBILE LINKS
-          ================================================= */}
-
-          <div className="flex flex-col space-y-1 py-6">
-
-            {navLinks.map((link) => {
-
-              const isActive =
-                location.pathname ===
-                link.path;
-
-              return (
-
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  onClick={closeMobileMenu}
-
-                  className={`px-4 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${isActive
-                    ? 'text-white'
-                    : 'text-[#888] hover:text-white'
-                    }`}
-                >
-
-                  {link.name}
-
-                </Link>
-
-              );
-
-            })}
-
-          </div>
-
-
-          {/* =================================================
-              MOBILE AUTH
-          ================================================= */}
-
-          <div className="mt-auto space-y-3 pt-6 border-t border-[#222]">
-
-            {renderMobileAuth()}
-
+              {isAuthenticated && user?.profileImage ? (
+                <img src={user.profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />
+              ) : (
+                <FaUser size={14} />
+              )}
+            </Link>
           </div>
 
         </div>
@@ -711,17 +630,51 @@ const Navbar = ({
 
 
       {/* =================================================
-          MOBILE OVERLAY
+          MOBILE FLOATING BOTTOM NAV
       ================================================= */}
 
-      {isMobileMenuOpen && (
+      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-max z-50 lg:hidden">
+        <div className="bg-black/65 backdrop-blur-2xl border border-white/10 rounded-full shadow-2xl flex items-center justify-center p-1.5 gap-1">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+            const label = link.name === 'Marketplace' ? 'Market' : link.name;
+            
+            let IconComponent;
+            switch(link.name) {
+              case 'Home': IconComponent = FaHome; break;
+              case 'Marketplace': IconComponent = FaLeaf; break;
+              case 'Social': IconComponent = FaUsers; break;
+              case 'Article': IconComponent = FaFileAlt; break;
+              case 'About': IconComponent = FaInfoCircle; break;
+              default: IconComponent = FaHome;
+            }
 
-        <div
-          onClick={toggleMobileMenu}
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
-        />
+            return (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`relative flex flex-col items-center justify-center px-4 h-[3rem] transition-colors duration-200 z-10 ${isActive 
+                  ? 'text-white' 
+                  : 'hover:bg-white/5 text-white/50 rounded-full'
+                }`}
+              >
+                {isActive && (
+                  <motion.div 
+                    layoutId="dockSlider"
+                    className="absolute inset-0 bg-white/20 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)] rounded-full -z-10"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <IconComponent size={18} className="mb-0.5" />
+                <span className="text-[10px] font-medium tracking-wide">
+                  {label}
+                </span>
+              </Link>
+            );
+          })}
 
-      )}
+        </div>
+      </nav>
 
     </header>
     </>

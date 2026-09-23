@@ -61,43 +61,43 @@ export default function SellerDashboard({ data, isLoading }) {
 
   return (
     <SellerLayout title="Seller Dashboard" subtitle="Manage your projects, verification progress and carbon credits.">
-      <div className="p-6 lg:p-8 max-w-[1400px] mx-auto w-full space-y-6">
+      <div className="p-4 md:p-6 lg:p-8 max-w-[1400px] mx-auto w-full space-y-6">
         
         {/* KEY METRICS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
             <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Total Projects</p>
             {isLoading ? (
-              <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-5xl font-light tracking-tight text-gray-900 leading-none">{total_projects}</span>
+              <span className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 leading-none">{total_projects}</span>
             )}
           </div>
           
           <div className="bg-[#022c22] border border-[#022c22] rounded-2xl p-6 relative overflow-hidden group hover:shadow-lg transition-all">
             <p className="text-xs font-semibold uppercase font-mono tracking-wider text-[#bef264] mb-4">Pending Verification</p>
             {isLoading ? (
-              <div className="h-12 w-20 bg-white/10 rounded animate-pulse" />
+              <div className="h-10 md:h-12 w-20 bg-white/10 rounded animate-pulse" />
             ) : (
-              <span className="text-5xl font-light tracking-tight text-white leading-none">{pending_projects}</span>
+              <span className="text-4xl md:text-5xl font-light tracking-tight text-white leading-none">{pending_projects}</span>
             )}
           </div>
 
           <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
             <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Credits Issued</p>
             {isLoading ? (
-              <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-5xl font-light tracking-tight text-gray-900 leading-none">{credits_issued.toLocaleString()}</span>
+              <span className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 leading-none">{credits_issued.toLocaleString()}</span>
             )}
           </div>
 
           <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
             <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Credits Sold</p>
             {isLoading ? (
-              <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-5xl font-light tracking-tight text-gray-900 leading-none">{credits_sold.toLocaleString()}</span>
+              <span className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 leading-none">{credits_sold.toLocaleString()}</span>
             )}
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function SellerDashboard({ data, isLoading }) {
                     <Link
                       key={p.id}
                       to={`/seller/projects/${p.id}/edit`}
-                      className="grid grid-cols-1 md:grid-cols-[1fr_120px_100px_80px] items-center px-6 py-4 hover:bg-gray-50 transition-colors group gap-3 md:gap-0"
+                      className="flex flex-col md:grid md:grid-cols-[1fr_120px_100px_80px] md:items-center px-6 py-4 hover:bg-gray-50 transition-colors group gap-3 md:gap-0 border-b md:border-b-0 border-gray-100"
                     >
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-900 group-hover:text-emerald-600 transition-colors truncate">
@@ -155,22 +155,24 @@ export default function SellerDashboard({ data, isLoading }) {
                         </p>
                       </div>
                       
-                      <div className="text-sm text-gray-500 font-mono text-[11px]">
-                        CXP-{String(p.id).substring(0,6).toUpperCase()}
+                      <div className="flex items-center justify-between md:contents">
+                        <div className="text-sm text-gray-500 font-mono text-[11px]">
+                          CXP-{String(p.id).substring(0,6).toUpperCase()}
+                        </div>
+
+                        <div>
+                          <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border ${
+                            p.status === 'draft' ? 'bg-gray-100 text-gray-600 border-gray-200' :
+                            p.status === 'pending' || p.status === 'under_review' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                            p.status === 'approved' || p.status === 'minted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            'bg-blue-50 text-blue-700 border-blue-200'
+                          }`}>
+                            {p.status?.replace('_', ' ')}
+                          </span>
+                        </div>
                       </div>
 
-                      <div>
-                        <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border ${
-                          p.status === 'draft' ? 'bg-gray-100 text-gray-600 border-gray-200' :
-                          p.status === 'pending' || p.status === 'under_review' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                          p.status === 'approved' || p.status === 'minted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                          'bg-blue-50 text-blue-700 border-blue-200'
-                        }`}>
-                          {p.status?.replace('_', ' ')}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-end">
+                      <div className="hidden md:flex justify-end">
                         <span className="text-sm font-medium text-gray-400 group-hover:text-emerald-600 flex items-center gap-1 transition-colors">
                           Open <FiArrowRight className="w-4 h-4" />
                         </span>

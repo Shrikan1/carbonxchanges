@@ -45,27 +45,26 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#0c0c0c] relative font-sans">
+    <div className="min-h-screen w-full flex items-center justify-center overflow-x-hidden bg-white sm:bg-[#0c0c0c] relative font-sans">
 
       {/* Full-screen background */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center hidden sm:block"
         style={{ backgroundImage: `url(${authBg})` }}
       />
-      <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-black/70 hidden sm:block" />
 
       {/* Back button */}
       <Link
         to="/"
-        className="fixed top-6 left-6 lg:top-10 lg:left-10 z-50 flex items-center space-x-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white transition-all backdrop-blur-md group shadow-lg"
+        className="fixed top-6 left-6 sm:top-6 sm:left-6 lg:top-10 lg:left-10 z-50 flex items-center justify-center text-gray-900 sm:text-white/70 hover:text-black sm:hover:text-white transition-colors"
       >
-        <FaArrowLeft className="text-xs group-hover:-translate-x-1 transition-transform" />
-        <span className="text-[11px] font-bold uppercase tracking-widest">Home</span>
+        <FaArrowLeft className="text-xl sm:text-[14px]" />
       </Link>
 
       {/* Main container */}
-      <div className="relative z-10 w-full max-w-[1060px] mx-4 md:mx-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#0c0c0c] border border-[#222] overflow-hidden">
+      <div className="relative z-10 w-full sm:max-w-[1060px] mx-0 sm:mx-4 md:mx-8 min-h-screen sm:min-h-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 bg-white sm:bg-[#0c0c0c] sm:border sm:border-[#222] overflow-hidden min-h-screen sm:min-h-[680px]">
 
           {/* Left Panel — Image + Branding */}
           <div className="relative hidden lg:block overflow-hidden h-[680px]">
@@ -109,12 +108,12 @@ const AuthPage = () => {
           </div>
 
           {/* Right Panel — Auth Form */}
-          <div className="bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-start h-[680px] overflow-hidden">
+          <div className="bg-white px-6 pt-20 pb-12 sm:p-10 lg:p-12 flex flex-col justify-start min-h-screen sm:min-h-[680px] sm:h-[680px] overflow-hidden">
 
             {/* Mobile logo removed */}
 
             {/* Tab Navigation */}
-            <div className="flex items-center space-x-6 shrink-0">
+            <div className="flex items-center space-x-6 shrink-0 mt-6 sm:mt-0">
               <button
                 onClick={() => switchMode('login')}
                 className={`relative text-xl tracking-tight pb-2 transition-colors duration-300 font-bold ${mode === 'login' ? 'text-[#0c0c0c]' : 'text-[#999] hover:text-[#666]'
@@ -140,7 +139,7 @@ const AuthPage = () => {
             </div>
 
             {/* Animated Form Container */}
-            <div className="relative flex-1 flex flex-col justify-center">
+            <div className="relative flex-1 flex flex-col justify-start sm:justify-center mt-6 sm:mt-0 pb-10 sm:pb-0 overflow-y-auto sm:overflow-visible">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={mode}
