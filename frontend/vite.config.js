@@ -17,4 +17,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 3000,
+    rolldownOptions: {
+      onwarn(warning, warn) {
+        if (warning.code === 'EVAL' && warning.loc?.file?.includes('lottie')) {
+          return;
+        }
+        warn(warning);
+      },
+    },
+  },
 });

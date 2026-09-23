@@ -168,7 +168,7 @@ const Posts = () => {
         <div className="flex flex-col lg:flex-row h-full min-h-0 pt-2">
           
           {/* Left Side: Scrollable Sidebar */}
-          <div className="lg:w-[350px] shrink-0 h-full overflow-y-auto lg:border-r lg:border-gray-200 lg:pr-10 pb-24 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
+          <div className="lg:w-[350px] shrink-0 h-auto lg:h-full overflow-y-auto lg:border-r lg:border-gray-200 lg:pr-10 pb-4 lg:pb-24 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
             <div className="pt-2">
               {/* Sidebar content */}
               <div className="mb-10 hidden lg:block">

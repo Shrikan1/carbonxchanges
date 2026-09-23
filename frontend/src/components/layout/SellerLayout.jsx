@@ -162,7 +162,7 @@ export default function SellerLayout({ children, title, subtitle }) {
                 {title || 'Seller Dashboard'}
               </h1>
               {subtitle && (
-                <p className="text-[11px] md:text-xs text-gray-500 mt-1 font-mono uppercase tracking-wider font-bold">
+                <p className="hidden md:block text-xs text-gray-500 mt-1 font-mono uppercase tracking-wider font-bold">
                   {subtitle}
                 </p>
               )}

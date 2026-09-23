@@ -171,25 +171,59 @@ const Home = () => {
 
         {/* ── Left content ── */}
         <div className="relative z-10 w-full max-w-[1360px] mx-auto px-6 lg:px-12 xl:px-16 flex items-center h-full" style={{ minHeight: 'min(780px, calc(100vh - 48px))' }}>
-          <div className="w-full lg:w-[52%] py-16 lg:py-0 flex flex-col justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", staggerChildren: 0.15 }}
+            className="w-full lg:w-[52%] py-16 lg:py-0 flex flex-col justify-center"
+          >
 
-            <h1
-              className="wise-font font-black text-[#17351f] leading-[0.98] tracking-[-0.055em] mb-6 uppercase"
-              style={{ fontSize: 'clamp(2.75rem, 5.3vw, 5rem)' }}
+            {/* Mobile hero image (Moved to top of content) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+              className="relative w-full flex justify-center pb-10 lg:hidden"
+            >
+              <div className="w-[85vw] max-w-[320px] aspect-square rounded-[2rem] overflow-hidden shadow-2xl mx-auto ring-1 ring-black/5">
+                <img
+                  src={img8}
+                  alt="Dark Jungle"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+              className="wise-font font-black text-[#17351f] leading-[0.95] tracking-[-0.04em] mb-4 sm:mb-6 uppercase"
+              style={{ fontSize: 'clamp(2.25rem, 8vw, 4.5rem)' }}
             >
               Pioneering<br />
               Global Climate<br />
               Action
-            </h1>
+            </motion.h1>
 
             {/* Subtitle */}
-            <p className="text-[#51665a] text-[16px] leading-relaxed max-w-[410px] mb-8 font-normal">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+              className="text-[#51665a] text-[14px] sm:text-[16px] leading-relaxed max-w-[410px] mb-6 sm:mb-8 font-normal"
+            >
               A decentralized marketplace where verified carbon credits
               meet transparent blockchain infrastructure.
-            </p>
+            </motion.p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-3 mb-14">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+              className="flex flex-wrap items-center gap-3 mb-14"
+            >
               <Link
                 to="/marketplace"
                 className="inline-flex items-center gap-2.5 bg-[#173d25] text-white px-6 py-3 rounded-full text-[13px] font-semibold hover:bg-[#0f2f1b] transition-colors"
@@ -197,31 +231,45 @@ const Home = () => {
                 Explore Marketplace
                 <FaArrowRight className="text-[10px]" />
               </Link>
-            </div>
+            </motion.div>
 
             {/* Impact Stats */}
-            <div className="grid grid-cols-3 max-w-[470px] border-t border-[#ccd9cd] pt-5">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+              className="flex flex-col sm:flex-row gap-5 sm:gap-0 sm:grid sm:grid-cols-3 max-w-[470px] border-t border-[#ccd9cd] pt-6"
+            >
               {[
                 { value: '500+', label: 'Verified Projects' },
                 { value: '1.2M+', label: 'tCO₂ Credits' },
                 { value: '50+', label: 'Global Contributors' },
-              ].map((stat) => (
-                <div key={stat.label} className="border-r last:border-r-0 border-[#d7e1d7] first:pr-3 px-3 first:pl-0">
-                  <p className="wise-font font-black text-[1.7rem] text-[#17351f] leading-none mb-1">
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + (i * 0.1), ease: "easeOut" }}
+                  className="sm:border-r sm:last:border-r-0 border-[#d7e1d7] sm:first:pr-3 sm:px-3 sm:first:pl-0 flex flex-col items-start"
+                >
+                  <p className="wise-font font-black text-[2rem] sm:text-[1.7rem] text-[#17351f] leading-none mb-1">
                     {stat.value}
                   </p>
-                  <p className="text-[10px] text-[#6a7e70] font-semibold tracking-wide uppercase">
+                  <p className="text-[11px] sm:text-[10px] text-[#6a7e70] font-semibold tracking-wide uppercase">
                     {stat.label}
                   </p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
         </div>
 
         {/* ── Right: Large circular image ── */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="absolute hidden lg:block overflow-hidden"
           style={{
             width: 'clamp(490px, 48vw, 740px)',
@@ -239,34 +287,11 @@ const Home = () => {
           />
           <div className="absolute inset-0 bg-[#16391f]/10" />
           <p className="absolute bottom-8 right-9 max-w-[116px] -rotate-6 text-[10px] font-bold uppercase leading-[1.55] tracking-[0.16em] text-[#e1efd9]">A cleaner planet, together</p>
-        </div>
-
-        {/* Mobile hero: image + content card */}
-        <div className="lg:hidden flex flex-col">
-
-          {/* Circular image — top of mobile hero */}
-          <div className="relative w-full flex justify-center pt-6 pb-2">
-            <div
-              style={{
-                width: '78vw',
-                maxWidth: '280px',
-                aspectRatio: '4 / 3',
-                borderRadius: '140px 140px 0 0',
-                overflow: 'hidden',
-              }}
-            >
-              <img
-                src={heroBg}
-                alt="Forest"
-                className="w-full h-full object-cover"
-                style={{ objectPosition: 'center 35%' }}
-              />
-            </div>
-          </div>
-
-        </div>
+        </motion.div>
 
       </section>
+
+
 
       {/* ─── OUR PURPOSE ─── */}
       <section className="bg-[#eef0eb] text-[#1a2e1a] py-20 lg:py-28 relative overflow-hidden">
@@ -283,7 +308,7 @@ const Home = () => {
                 </p>
               </div>
 
-              <h2 className="text-3xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] tracking-tight leading-[1.08] uppercase wise-font font-black text-[#1a2e1a] break-words">
+              <h2 className="text-[2.25rem] sm:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] tracking-tight leading-[1.05] uppercase wise-font font-black text-[#1a2e1a] break-words">
                 Empowering<br className="hidden sm:inline" />
                 {" "}Global<br className="hidden sm:inline" />
                 {" "}Climate<br className="hidden sm:inline" />
@@ -322,16 +347,16 @@ const Home = () => {
             </div>
 
             {/* Right Content - Rectangular Video Card */}
-            <div className="w-full lg:col-span-7 flex justify-center lg:justify-end mt-4 lg:mt-0">
+            <div className="w-full lg:col-span-7 flex justify-center lg:justify-end mt-8 lg:mt-0 px-2 sm:px-0">
               <div className="relative w-full max-w-[760px]">
                 {/* Offset Lime Green Background (Shadow effect) */}
                 <div
-                  className="absolute top-3 left-3 sm:top-4 sm:left-4 w-[calc(100%-12px)] sm:w-[calc(100%-16px)] h-full bg-[#b6d77e] rounded-2xl sm:rounded-3xl pointer-events-none"
+                  className="absolute top-2 left-2 sm:top-4 sm:left-4 w-full h-full bg-[#b6d77e] rounded-2xl sm:rounded-3xl pointer-events-none"
                 />
 
                 {/* Video Container with Thin Green Outline / Border */}
                 <div
-                  className="relative w-[calc(100%-12px)] sm:w-[calc(100%-16px)] aspect-video border border-[#2d6a4f] rounded-2xl sm:rounded-3xl bg-[#1a2e1a] overflow-hidden z-10 shadow-sm"
+                  className="relative w-full aspect-video border border-[#2d6a4f] rounded-2xl sm:rounded-3xl bg-[#1a2e1a] overflow-hidden z-10 shadow-sm"
                 >
                   <video
                     autoPlay
@@ -352,48 +377,56 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ─── PROJECT GALLERY (DARK & FLOATING GALLERY) ─── */}
-      <section id="gallery" className="bg-[#183a24] text-white overflow-hidden py-20 lg:py-24 relative">
-        <div className="max-w-[1360px] mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-12">
-          <div className="w-full lg:w-1/3 flex flex-col z-10 relative">
-            <h2 className="text-5xl xl:text-6xl leading-[0.92] font-black tracking-[-0.05em] text-[#eaf6df] uppercase wise-font">
-              Explore
+      {/* ─── PROJECT GALLERY (FULL BLEED SPLIT SCREEN) ─── */}
+      <section id="gallery" className="bg-[#0f2416] text-white overflow-hidden relative flex flex-col lg:flex-row min-h-[500px] lg:h-[80vh] lg:min-h-[700px]">
+        
+        {/* Left Content (Aligned with container) */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-center py-12 lg:py-0 z-10 relative bg-[#0f2416]">
+          {/* Inner container pushes to the right, max width half of 1360 (680) */}
+          <div className="w-full max-w-[680px] ml-auto px-6 lg:pl-12 lg:pr-16">
+            <h2 className="text-4xl sm:text-5xl xl:text-7xl leading-[0.95] font-black tracking-[-0.04em] text-[#eaf6df] uppercase wise-font">
+              Explore<br />Projects.
             </h2>
-            <h2 className="text-5xl xl:text-6xl leading-[0.92] font-black tracking-[-0.05em] text-[#eaf6df] uppercase wise-font mt-1">
-              Projects.
-            </h2>
-            <div className="max-w-2xl mt-8">
-              <p className="text-white/75 text-[16px] leading-relaxed font-normal">
+            <div className="max-w-md mt-8">
+              <p className="text-[#a4c2b0] text-[17px] leading-relaxed font-medium">
                 A profile, portfolio, and social feed in one place.
+              </p>
+              <p className="text-[#83a390] text-[15px] leading-relaxed mt-4">
                 Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
               </p>
             </div>
-            <div className="mt-10">
-              <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-white text-[#183a24] px-5 py-3 text-[12px] font-bold hover:bg-[#edf5e8] transition-colors">
+            <div className="mt-12">
+              <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-[#bef264] text-[#0f2416] px-8 py-4 text-[13px] font-black hover:bg-white transition-colors tracking-wide">
                 <span>VIEW MARKETPLACE</span>
-                <FaArrowRight className="text-[10px]" />
+                <FaArrowRight className="text-[12px]" />
               </Link>
             </div>
           </div>
+        </div>
 
-          <div className="w-full lg:w-2/3 h-[360px] lg:h-[470px] relative overflow-hidden border border-white/15">
-            <DriftWall
-              items={projectGalleryItems}
-              columns={4}
-              tileWidth={240}
-              tileHeight={180}
-              gap={16}
-              speed={35}
-              direction="up"
-              overlayColor="transparent"
-              dim={1.0}
-            />
-          </div>
+        {/* Right Gallery (Full Bleed) */}
+        <div className="w-full lg:w-1/2 relative h-[380px] sm:h-[450px] lg:h-full bg-[#0a170e]">
+          {/* Smooth shadow overlays for seamless blending */}
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0f2416] to-transparent z-10 pointer-events-none hidden lg:block"></div>
+          <div className="absolute inset-x-0 top-0 h-16 sm:h-24 bg-gradient-to-b from-[#0f2416] to-transparent z-10 pointer-events-none lg:hidden"></div>
+          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-[#0f2416] to-transparent z-10 pointer-events-none"></div>
+          
+          <DriftWall
+            items={projectGalleryItems}
+            columns={3}
+            tileWidth={260}
+            tileHeight={200}
+            gap={16}
+            speed={25}
+            direction="up"
+            overlayColor="transparent"
+            dim={1.0}
+          />
         </div>
       </section>
 
       {/* ─── PLATFORM FEATURES (WHITE & FLOATING ICONS) ─── */}
-      <section className="bg-[#f8faf6] text-[#17351f] overflow-hidden py-20 lg:py-24 relative">
+      <section className="bg-[#f8faf6] text-[#17351f] overflow-hidden py-24 lg:py-32 relative min-h-[80vh] xl:min-h-[85vh] flex items-center w-full">
         {/* Animated Background TextLoop */}
         <div className="hidden absolute inset-0 flex items-center justify-center opacity-[0.25] pointer-events-none select-none scale-[1.5] sm:scale-[2]">
           <TextLoop
@@ -415,9 +448,9 @@ const Home = () => {
           />
         </div>
 
-        <div className="max-w-[1360px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+        <div className="w-full max-w-[1360px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
           <div className="max-w-xl lg:pr-10 z-10">
-            <h2 className="text-4xl sm:text-5xl tracking-[-0.05em] mb-6 leading-[0.98] text-[#17351f] uppercase wise-font font-black">
+            <h2 className="text-[2.25rem] sm:text-5xl tracking-[-0.05em] mb-4 sm:mb-6 leading-[1.05] sm:leading-[0.98] text-[#17351f] uppercase wise-font font-black">
               Why CarbonXplanet.
             </h2>
             <p className="text-[#4a6052] text-[17px] leading-relaxed mb-5 font-medium">
@@ -439,9 +472,9 @@ const Home = () => {
             )}
           </div>
 
-          <div className="relative h-full min-h-[390px] flex items-center justify-center w-full">
+          <div className="relative flex items-center justify-center w-full mt-10 lg:mt-0 pb-6 sm:pb-0">
             <motion.div
-              className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
+              className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 w-full"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-50px" }}
@@ -470,7 +503,7 @@ const Home = () => {
                     hidden: { opacity: 0, y: 30, scale: 0.9 },
                     visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 200, damping: 15 } }
                   }}
-                  className="bg-white border border-[#d9e4da] w-28 h-28 sm:w-32 sm:h-32 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:border-[#96b99c] hover:shadow-[0_10px_20px_rgba(27,66,39,0.08)] cursor-pointer group"
+                  className="bg-white border border-[#d9e4da] w-full aspect-square max-w-[150px] sm:max-w-none sm:w-32 sm:h-32 mx-auto flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:border-[#96b99c] hover:shadow-[0_10px_20px_rgba(27,66,39,0.08)] cursor-pointer group"
                 >
                   <Icon className={`text-3xl sm:text-5xl mb-3 transition-transform duration-300 group-hover:scale-110 ${color}`} />
                   <span className="text-[10px] font-bold text-[#294633] uppercase text-center px-2 leading-tight">{label}</span>
@@ -482,7 +515,7 @@ const Home = () => {
       </section>
 
       {/* ─── HOW IT WORKS (DARK MODE) ─── */}
-      <section ref={howItWorksRef} className="bg-[#123020] text-white overflow-hidden py-20 lg:py-24 relative">
+      <section ref={howItWorksRef} className="bg-[#123020] text-white overflow-hidden py-24 lg:py-32 relative min-h-[80vh] xl:min-h-[85vh] flex items-center w-full">
         {/* Massive Parallax Watermark */}
         <div className="absolute inset-0 flex items-end pb-10 justify-center opacity-[0.05] pointer-events-none overflow-hidden select-none">
           <motion.span
@@ -493,9 +526,9 @@ const Home = () => {
           </motion.span>
         </div>
 
-        <div className="max-w-[1360px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+        <div className="w-full max-w-[1360px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
           <div className="max-w-xl">
-            <h2 className="text-4xl sm:text-5xl tracking-[-0.05em] mb-6 leading-[0.98] text-[#e6f0de] uppercase wise-font font-black">
+            <h2 className="text-[2.25rem] sm:text-5xl tracking-[-0.05em] mb-4 sm:mb-6 leading-[1.05] sm:leading-[0.98] text-[#e6f0de] uppercase wise-font font-black">
               A carbon market<br />that doesn't<br />manipulate you.
             </h2>
             <p className="text-white/80 text-[17px] leading-relaxed mb-5 font-medium">
@@ -552,13 +585,19 @@ const Home = () => {
 
       {/* ─── GLOBAL IMPACT (BRIGHT LIME TESTIMONIAL) ─── */}
       <section className="bg-[#bef264] text-[#0a0a0a] overflow-hidden py-16 sm:py-20 lg:py-24 relative">
-        {/* Massive Watermark */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.08] pointer-events-none overflow-hidden select-none -rotate-6 scale-125">
-          <div className="flex flex-col space-y-2 font-black text-[17vw] leading-[0.8] whitespace-nowrap wise-font">
-            <span>IMPACT IMPACT</span>
-            <span>IMPACT IMPACT</span>
-            <span>IMPACT IMPACT</span>
+        {/* Aesthetic Background Pattern */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Clean grid pattern */}
+          <div className="absolute inset-0 opacity-[0.05]"
+            style={{
+              backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)',
+              backgroundSize: '40px 40px'
+            }}>
           </div>
+          {/* Organic glowing orbs for a premium feel */}
+          <div className="absolute top-[-20%] left-[-10%] w-[40%] h-[60%] bg-[#d9f99d] rounded-full mix-blend-multiply filter blur-[120px] opacity-60"></div>
+          <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[70%] bg-[#65a30d] rounded-full mix-blend-multiply filter blur-[120px] opacity-20"></div>
+          <div className="absolute top-[10%] left-[40%] w-[30%] h-[30%] bg-[#f4fce3] rounded-full mix-blend-screen filter blur-[100px] opacity-40"></div>
         </div>
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
