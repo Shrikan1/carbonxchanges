@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiX, FiCheckCircle, FiLoader, FiAlertTriangle, FiArrowRight } from 'react-icons/fi';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useBuyerStore } from '../../store/useBuyerStore';
 
 export default function PurchaseModal({ listing, onClose }) {
-  // States: 'select_quantity' | 'review' | 'processing' | 'success' | 'error'
+  // States: 'select_quantity' | 'review' | 'processing' | 'success' | 'error' | 'auth_required'
   const [step, setStep] = useState('select_quantity');
   const [quantity, setQuantity] = useState(1);
+  const [errorMsg, setErrorMsg] = useState(null);
+  
+  const user = useAuthStore((s) => s.user);
+  const { requestPurchase } = useBuyerStore();
+  const navigate = useNavigate();
   
   const pricePerTon = Number(listing?.price_per_credit || 0);
   const maxAvailable = Number(listing?.amount_available || 0);
@@ -15,19 +23,23 @@ export default function PurchaseModal({ listing, onClose }) {
     else if (step === 'review') handlePurchase();
   };
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
+    if (!user) {
+      setStep('auth_required');
+      return;
+    }
     setStep('processing');
-    
-    // MOCK TRANSACTION FLOW
-    // In a real implementation, this would trigger wallet connection, sign transaction, and hit the backend API.
-    setTimeout(() => {
-      // Fake 90% success rate for demonstration
-      if (Math.random() > 0.1) {
-        setStep('success');
-      } else {
-        setStep('error');
-      }
-    }, 3500);
+    try {
+      await requestPurchase(listing.listing_id || listing.id, quantity);
+      setStep('success');
+      setTimeout(() => {
+        onClose();
+        navigate('/buyer/orders');
+      }, 2000);
+    } catch (err) {
+      setErrorMsg(err.response?.data?.error || 'Failed to process purchase');
+      setStep('error');
+    }
   };
 
   return (
@@ -175,46 +187,14 @@ export default function PurchaseModal({ listing, onClose }) {
             </div>
           )}
 
-          {step === 'processing' && (
-            <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in zoom-in-95 duration-500">
-              <div className="relative w-20 h-20 mb-8">
-                <div className="absolute inset-0 rounded-full border-4 border-gray-100"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
-                <FiLoader className="absolute inset-0 m-auto text-emerald-600 opacity-0" size={24} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Processing Transaction</h3>
-              <p className="text-sm text-gray-500 max-w-xs">
-                Please wait while we interact with the smart contract and verify your purchase on the blockchain.
-              </p>
-            </div>
-          )}
-
-          {step === 'success' && (
+          {step === 'auth_required' && (
             <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in zoom-in-95 duration-500">
-              <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 mb-6 border border-emerald-100">
+              <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 mb-6 border border-blue-100">
                 <FiCheckCircle size={40} />
               </div>
-              <h3 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Purchase Successful</h3>
+              <h3 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Buyer Account Required</h3>
               <p className="text-sm text-gray-600 mb-8 max-w-sm">
-                You have successfully purchased and retired <strong className="text-gray-900">{quantity.toLocaleString()} tCO₂e</strong> from {listing.project_title}.
-              </p>
-              <button 
-                onClick={onClose}
-                className="bg-gray-900 hover:bg-black text-white font-bold py-3 px-12 transition-colors"
-              >
-                Return to Marketplace
-              </button>
-            </div>
-          )}
-
-          {step === 'error' && (
-            <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in zoom-in-95 duration-500">
-              <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 mb-6 border border-red-100">
-                <FiAlertTriangle size={40} />
-              </div>
-              <h3 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Transaction Failed</h3>
-              <p className="text-sm text-gray-600 mb-8 max-w-sm">
-                There was an issue processing your transaction. This might be due to insufficient funds or a network error.
+                To purchase carbon credits from <strong>{listing.project_title}</strong>, you must log in to the Buyer Portal.
               </p>
               <div className="flex gap-4 w-full">
                 <button 
@@ -222,6 +202,61 @@ export default function PurchaseModal({ listing, onClose }) {
                   className="flex-1 border border-gray-300 text-gray-700 font-bold py-3 hover:bg-gray-50 transition-colors text-sm"
                 >
                   Cancel
+                </button>
+                <a 
+                  href="/login"
+                  className="flex-1 bg-gray-900 hover:bg-black text-white font-bold py-3 transition-colors text-sm flex items-center justify-center"
+                >
+                  Log In or Sign Up
+                </a>
+              </div>
+            </div>
+          )}
+
+          {step === 'processing' && (
+            <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in duration-300">
+              <FiLoader className="w-12 h-12 text-emerald-500 animate-spin mb-6 mx-auto" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Processing Request</h3>
+              <p className="text-sm text-gray-500">Please wait while we send your purchase intent...</p>
+            </div>
+          )}
+
+          {step === 'success' && (
+            <div className="flex flex-col items-center justify-center py-8 text-center animate-in zoom-in-95 duration-500">
+              <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 mb-6 border border-emerald-100 mx-auto">
+                <FiCheckCircle size={40} />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Request Sent</h3>
+              <p className="text-sm text-gray-600 mb-8 max-w-sm">
+                Your purchase intent for <strong>{listing.project_title}</strong> has been sent to the seller.
+              </p>
+              <button 
+                onClick={() => {
+                  onClose();
+                  navigate('/buyer/orders');
+                }}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 transition-colors text-sm shadow-md"
+              >
+                View Pending Orders
+              </button>
+            </div>
+          )}
+
+          {step === 'error' && (
+            <div className="flex flex-col items-center justify-center py-8 text-center animate-in zoom-in-95 duration-500">
+              <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 mb-6 border border-red-100 mx-auto">
+                <FiAlertTriangle size={40} />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Purchase Failed</h3>
+              <p className="text-sm text-red-600 mb-8 max-w-sm">
+                {errorMsg || 'We encountered an error processing your request. Please try again.'}
+              </p>
+              <div className="flex gap-4 w-full">
+                <button 
+                  onClick={onClose}
+                  className="flex-1 border border-gray-300 text-gray-700 font-bold py-3 hover:bg-gray-50 transition-colors text-sm"
+                >
+                  Close
                 </button>
                 <button 
                   onClick={() => setStep('review')}

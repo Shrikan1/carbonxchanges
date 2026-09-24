@@ -1,54 +1,61 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider, Outlet, ScrollRestoration } from 'react-router-dom';
 
-import Home from './pages/shared/Home';
-import AuthPage from './pages/auth/AuthPage';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import VerifyEmail from './pages/auth/VerifyEmail';
-import About from './pages/shared/About';
-import Contact from './pages/shared/Contact';
-import Article from './pages/shared/Article';
-import Posts from './pages/shared/Posts';
-import PostDetail from './pages/shared/PostDetail';
+const Home = lazy(() => import('./pages/shared/Home'));
+const AuthPage = lazy(() => import('./pages/auth/AuthPage'));
+const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
+const VerifyEmail = lazy(() => import('./pages/auth/VerifyEmail'));
+const About = lazy(() => import('./pages/shared/About'));
+const Contact = lazy(() => import('./pages/shared/Contact'));
+const Article = lazy(() => import('./pages/shared/Article'));
+const Posts = lazy(() => import('./pages/shared/Posts'));
+const PostDetail = lazy(() => import('./pages/shared/PostDetail'));
 
-import ProjectListPage from './pages/seller/ProjectListPage';
-import ProjectFormPage from './pages/seller/ProjectFormPage';
-import SellerProjectDetailPage from './pages/seller/SellerProjectDetailPage';
+const ProjectListPage = lazy(() => import('./pages/seller/ProjectListPage'));
+const ProjectFormPage = lazy(() => import('./pages/seller/ProjectFormPage'));
+const SellerProjectDetailPage = lazy(() => import('./pages/seller/SellerProjectDetailPage'));
 
 import RequireAuth from './components/RequireAuth';
-import ProfilePage from './pages/shared/ProfilePage';
+const ProfilePage = lazy(() => import('./pages/shared/ProfilePage'));
 
 import { useAuthStore } from './store/useAuthStore';
 import * as authApi from './api/endpoint/Authapi';
 
 
-import PublicProjectShowcasePage from './pages/shared/PublicProjectShowcasePage';
-import MarketplaceDetailPage from './pages/shared/MarketplaceDetailPage';
-import ProjectPostEditorPage from './pages/seller/ProjectPostEditorPage';
-import ProjectVerificationPage from './pages/seller/ProjectVerificationPage';
-import CreditsPage from './pages/seller/CreditsPage';
-import ListingsPage from './pages/seller/ListingsPage';
-import SalesPage from './pages/seller/SalesPage';
-import SellerWalletPage from './pages/seller/SellerWalletPage';
+const PublicProjectShowcasePage = lazy(() => import('./pages/shared/PublicProjectShowcasePage'));
+const MarketplaceDetailPage = lazy(() => import('./pages/shared/MarketplaceDetailPage'));
+const ProjectPostEditorPage = lazy(() => import('./pages/seller/ProjectPostEditorPage'));
+const ProjectVerificationPage = lazy(() => import('./pages/seller/ProjectVerificationPage'));
+const CreditsPage = lazy(() => import('./pages/seller/CreditsPage'));
+const ListingsPage = lazy(() => import('./pages/seller/ListingsPage'));
+const SalesPage = lazy(() => import('./pages/seller/SalesPage'));
+const SellerWalletPage = lazy(() => import('./pages/seller/SellerWalletPage'));
 
-import WalletPage from './pages/shared/WalletPage';
-import DashboardPage from './pages/shared/DashboardPage';
-import MarketplacePage from './pages/shared/MarketplacePage';
+const WalletPage = lazy(() => import('./pages/shared/WalletPage'));
+const DashboardPage = lazy(() => import('./pages/shared/DashboardPage'));
+const MarketplacePage = lazy(() => import('./pages/shared/MarketplacePage'));
 
-import AdminReviewQueuePage from './pages/admin/AdminReviewQueuePage';
-import AdminProjectDetailPage from './pages/admin/AdminProjectDetailPage';
-import AdminAgentsPage from './pages/admin/AdminAgentsPage';
-import AdminMintQueuePage from './pages/admin/AdminMintQueuePage';
-import AdminOversightUsersPage from './pages/admin/AdminOversightUsersPage';
-import AdminOversightProjectsPage from './pages/admin/AdminOversightProjectsPage';
-import AdminOversightTransactionsPage from './pages/admin/AdminOversightTransactionsPage';
-import AdminReversalsPage from './pages/admin/AdminReversalsPage';
+const AdminReviewQueuePage = lazy(() => import('./pages/admin/AdminReviewQueuePage'));
+const AdminProjectDetailPage = lazy(() => import('./pages/admin/AdminProjectDetailPage'));
+const AdminAgentsPage = lazy(() => import('./pages/admin/AdminAgentsPage'));
+const AdminMintQueuePage = lazy(() => import('./pages/admin/AdminMintQueuePage'));
+const AdminOversightUsersPage = lazy(() => import('./pages/admin/AdminOversightUsersPage'));
+const AdminOversightProjectsPage = lazy(() => import('./pages/admin/AdminOversightProjectsPage'));
+const AdminOversightTransactionsPage = lazy(() => import('./pages/admin/AdminOversightTransactionsPage'));
+const AdminReversalsPage = lazy(() => import('./pages/admin/AdminReversalsPage'));
 
-import AgentAssignedProjectsPage from './pages/agent/AgentAssignedProjectsPage';
-import AgentProjectDetailPage from './pages/agent/AgentProjectDetailPage';
-import AgentHistoryPage from './pages/agent/AgentHistoryPage';
+const AgentAssignedProjectsPage = lazy(() => import('./pages/agent/AgentAssignedProjectsPage'));
+const AgentProjectDetailPage = lazy(() => import('./pages/agent/AgentProjectDetailPage'));
+const AgentHistoryPage = lazy(() => import('./pages/agent/AgentHistoryPage'));
 
-import NotFoundPage from './pages/shared/NotFoundPage';
+// Buyer pages
+const BuyerPortfolioPage = lazy(() => import('./pages/buyer/BuyerPortfolioPage'));
+const BuyerRetirePage = lazy(() => import('./pages/buyer/BuyerRetirePage'));
+const BuyerCertificatesPage = lazy(() => import('./pages/buyer/BuyerCertificatesPage'));
+const BuyerTransactionsPage = lazy(() => import('./pages/buyer/BuyerTransactionsPage'));
+const BuyerOrdersPage = lazy(() => import('./pages/buyer/BuyerOrdersPage'));
+
+const NotFoundPage = lazy(() => import('./pages/shared/NotFoundPage'));
 
 import { Toaster } from 'react-hot-toast';
 
@@ -56,7 +63,9 @@ const RootLayout = () => (
   <>
     <ScrollRestoration />
     <Toaster position="top-center" reverseOrder={false} />
-    <Outlet />
+    <Suspense fallback={<div className="flex h-screen items-center justify-center font-semibold text-gray-500">Loading...</div>}>
+      <Outlet />
+    </Suspense>
   </>
 );
 
@@ -382,6 +391,58 @@ const router = createBrowserRouter([
     </RequireAuth>
   ),
 },
+
+
+// Buyer - Portfolio
+{
+  path: '/buyer/portfolio',
+  element: (
+    <RequireAuth requireBuyer={true}>
+      <BuyerPortfolioPage />
+    </RequireAuth>
+  ),
+},
+
+// Buyer - Retire Credits
+{
+  path: '/buyer/retire',
+  element: (
+    <RequireAuth requireBuyer={true}>
+      <BuyerRetirePage />
+    </RequireAuth>
+  ),
+},
+
+// Buyer - Retirement Certificates
+{
+  path: '/buyer/certificates',
+  element: (
+    <RequireAuth requireBuyer={true}>
+      <BuyerCertificatesPage />
+    </RequireAuth>
+  ),
+},
+
+// Buyer - Transaction History
+{
+  path: '/buyer/transactions',
+  element: (
+    <RequireAuth requireBuyer={true}>
+      <BuyerTransactionsPage />
+    </RequireAuth>
+  ),
+},
+
+// Buyer - Pending Orders
+{
+  path: '/buyer/orders',
+  element: (
+    <RequireAuth requireBuyer={true}>
+      <BuyerOrdersPage />
+    </RequireAuth>
+  ),
+},
+
   // 404
   {
     path: '*',

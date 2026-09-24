@@ -28,8 +28,8 @@ async function requireAuth(req, res, next) {
     return res.status(401).json({ error: 'Token has been revoked. Please log in again.' });
   }
 
-  req.user = decoded; // { id, email, role, tv }
+  req.user = decoded;
   next();
 }
 
-module.exports = { requireAuth };
+module.exports = { requireAuth };

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { FiUsers, FiFileText, FiCheckCircle, FiClock, FiDollarSign, FiAlertCircle, FiShield, FiList, FiRefreshCw } from 'react-icons/fi';
 import AdminDashboard from '../admin/AdminDashboard';
 import SellerDashboard from '../seller/SellerDashboard';
+import BuyerDashboard from '../buyer/BuyerDashboard';
 
 const StatCard = ({ title, value, icon, subtitle }) => (
   <div className="bg-[#111] border border-[#222] p-5 rounded-xl flex flex-col justify-between hover:border-[#444] transition-colors">
@@ -25,18 +26,6 @@ const StatCard = ({ title, value, icon, subtitle }) => (
 
 
 import AgentDashboard from '../agent/AgentDashboard';
-
-const BuyerDashboard = ({ data }) => {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard title="Total Purchased" value={data.total_purchased || 0} icon={<FiCheckCircle size={20} />} />
-        <StatCard title="Current Holdings" value={data.current_holdings || 0} icon={<FiFileText size={20} />} />
-        <StatCard title="CO2 Offset" value={data.total_co2_offset || 0} icon={<FiCheckCircle size={20} />} subtitle="Tons Retired" />
-      </div>
-    </div>
-  );
-};
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
@@ -85,6 +74,11 @@ export default function DashboardPage() {
   // Seller Dashboard renders entirely independently to maintain its white theme
   if (user?.is_seller) {
     return <SellerDashboard data={data} isLoading={isLoading} />;
+  }
+
+  // Buyer Dashboard renders entirely independently with BuyerLayout
+  if (user?.is_buyer) {
+    return <BuyerDashboard data={data} isLoading={isLoading} />;
   }
 
   return (

@@ -117,7 +117,7 @@ export default function SellerWalletPage() {
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Network Balance</p>
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-bold text-gray-900">{balance !== null ? balance : '--'}</span>
-                      <span className="text-sm font-medium text-gray-500">MATIC</span>
+                      <span className="text-sm font-medium text-gray-500">POL</span>
                     </div>
                     <p className="text-[11px] text-gray-400 mt-2">Used for network gas fees.</p>
                   </div>
@@ -126,7 +126,7 @@ export default function SellerWalletPage() {
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Network</p>
                     <div className="flex items-center gap-2 text-gray-900 font-medium">
                       <div className="w-2.5 h-2.5 rounded-full bg-purple-500"></div>
-                      Polygon Mainnet
+                      Polygon Amoy
                     </div>
                     <p className="text-[11px] text-gray-400 mt-2">All assets are minted on Polygon.</p>
                   </div>

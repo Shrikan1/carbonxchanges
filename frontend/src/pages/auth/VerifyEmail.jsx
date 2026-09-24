@@ -88,7 +88,6 @@ const VerifyEmail = () => {
     try {
       setLoading(true);
       const response = await verifyOtp(userId, otpCode);
-      console.log('OTP Verification successful:', response.data);
       // Redirect to login page on success
       navigate('/login', { replace: true, state: { message: 'Email verified successfully! You can now log in.' } });
     } catch (err) {
