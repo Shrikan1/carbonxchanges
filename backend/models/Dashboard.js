@@ -25,7 +25,14 @@ async function getProjectCounts(sellerId) {
   return counts;
 }
 
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: 60 }); // Cache for 60 seconds
+
 async function getDashboardSummary(sellerId) {
+  const cacheKey = `dashboard_seller_${sellerId}`;
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) return cachedData;
+
   const [projectCounts, creditBalance, revenue, wallet, notifications] = await Promise.all([
     getProjectCounts(sellerId),
     Credit.calculateSellerBalance(sellerId),
@@ -34,7 +41,7 @@ async function getDashboardSummary(sellerId) {
     Notification.findRecentByUser(sellerId, 10),
   ]);
 
-  return {
+  const summary = {
     total_projects: projectCounts.total,
     pending_projects: projectCounts.pending,
     approved_projects: projectCounts.approved,
@@ -49,6 +56,8 @@ async function getDashboardSummary(sellerId) {
     },
     recent_notifications: notifications,
   };
+  cache.set(cacheKey, summary);
+  return summary;
 }
 
 async function getAgentProjectCounts(agentId) {
@@ -66,13 +75,17 @@ async function getAgentProjectCounts(agentId) {
 }
 
 async function getAgentDashboardSummary(agentId) {
+  const cacheKey = `dashboard_agent_${agentId}`;
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) return cachedData;
+
   const [projectCounts, recentReports, notifications] = await Promise.all([
     getAgentProjectCounts(agentId),
     Verification.findReportsByAgent(agentId),
     Notification.findRecentByUser(agentId, 10),
   ]);
 
-  return {
+  const summary = {
     pending_verifications: projectCounts.assigned,
     completed_verifications:
       projectCounts.verified + projectCounts.approved + projectCounts.rejected + projectCounts.minted,
@@ -80,6 +93,8 @@ async function getAgentDashboardSummary(agentId) {
     recent_reports: recentReports.slice(0, 5),
     recent_notifications: notifications,
   };
+  cache.set(cacheKey, summary);
+  return summary;
 }
 
 async function getPlatformUserCounts() {
@@ -140,6 +155,10 @@ async function getOverdueCompletionsCount() {
 }
 
 async function getAdminDashboardSummary() {
+  const cacheKey = 'dashboard_admin';
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) return cachedData;
+
   const [userCounts, projectCounts, creditStats, overdueCompletionsCount] = await Promise.all([
     getPlatformUserCounts(),
     getPlatformProjectCounts(),
@@ -147,16 +166,22 @@ async function getAdminDashboardSummary() {
     getOverdueCompletionsCount(),
   ]);
 
-  return {
+  const summary = {
     users: userCounts,
     projects: projectCounts,
     credits: creditStats,
     pending_review_count: projectCounts.pending,
     overdue_completions_count: overdueCompletionsCount,
   };
+  cache.set(cacheKey, summary);
+  return summary;
 }
 
 async function getBuyerDashboardSummary(buyerId) {
+  const cacheKey = `dashboard_buyer_${buyerId}`;
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) return cachedData;
+
   const [portfolioSummary, holdings, wallet, notifications] = await Promise.all([
     Portfolio.getPortfolioSummary(buyerId),
     Portfolio.findPortfolioByBuyer(buyerId),
@@ -164,7 +189,7 @@ async function getBuyerDashboardSummary(buyerId) {
     Notification.findRecentByUser(buyerId, 10),
   ]);
 
-  return {
+  const summary = {
     total_purchased: portfolioSummary.total_purchased,
     total_retired: portfolioSummary.total_retired,
     // "CO2 offset" is exactly total_retired — retirement IS the offset claim
@@ -179,6 +204,8 @@ async function getBuyerDashboardSummary(buyerId) {
     },
     recent_notifications: notifications,
   };
+  cache.set(cacheKey, summary);
+  return summary;
 }
 
 module.exports = { getDashboardSummary, getAgentDashboardSummary, getAdminDashboardSummary, getBuyerDashboardSummary };
