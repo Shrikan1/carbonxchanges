@@ -29,54 +29,45 @@ const AgentDashboard = ({ data, isLoading: dashboardLoading }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
 
         {/* Assigned */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-          <div className="absolute top-4 right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-            <img src="/icons/assign.png" alt="Assigned" className="w-16 h-16 grayscale" />
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">
+        <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
             Assigned
           </p>
           {dashboardLoading
-            ? <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
-            : <span className="text-5xl font-light tracking-tight text-gray-900 leading-none">{total_assigned ?? 0}</span>
+            ? <div className="h-10 w-20 bg-gray-100 rounded animate-pulse" />
+            : <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{total_assigned ?? 0}</span>
           }
         </div>
 
         {/* Due Soon — dark hero card */}
-        <div className="bg-[#022c22] border border-[#022c22] rounded-2xl p-6 relative overflow-hidden group hover:shadow-lg transition-all">
-          <div className="absolute top-4 right-4 text-white/5 group-hover:text-white/10 transition-colors">
-            <FiActivity size={64} />
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#bef264] mb-4">
+        <div className="bg-[#173d25] border border-[#173d25] shadow-sm flex flex-col p-4 rounded-lg">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#bbf7d0] mb-2">
             Due Soon
           </p>
           {dashboardLoading
-            ? <div className="h-12 w-20 bg-white/10 rounded animate-pulse" />
-            : <span className="text-5xl font-light tracking-tight text-white leading-none">{pending_verifications ?? 0}</span>
+            ? <div className="h-10 w-20 bg-white/10 rounded animate-pulse" />
+            : <span className="text-3xl font-semibold tracking-tight text-white leading-none">{pending_verifications ?? 0}</span>
           }
         </div>
 
         {/* Completed */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-          <div className="absolute top-4 right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-            <img src="/icons/history.png" alt="Completed" className="w-16 h-16 grayscale" />
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">
+        <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
             Completed
           </p>
           {dashboardLoading
-            ? <div className="h-12 w-20 bg-gray-100 rounded animate-pulse" />
-            : <span className="text-5xl font-light tracking-tight text-gray-900 leading-none">{completed_verifications ?? 0}</span>
+            ? <div className="h-10 w-20 bg-gray-100 rounded animate-pulse" />
+            : <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{completed_verifications ?? 0}</span>
           }
         </div>
 
       </div>
 
       {/* ── VERIFICATION QUEUE ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
         {/* Queue header */}
-        <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-gray-900 tracking-tight">
+        <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+          <h2 className="text-[13px] md:text-sm font-bold uppercase text-gray-900 tracking-tight">
             Verification Queue
           </h2>
           <Link

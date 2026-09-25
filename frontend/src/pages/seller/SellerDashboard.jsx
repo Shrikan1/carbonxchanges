@@ -65,39 +65,39 @@ export default function SellerDashboard({ data, isLoading }) {
         
         {/* KEY METRICS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Total Projects</p>
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Total Projects</p>
             {isLoading ? (
               <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 leading-none">{total_projects}</span>
+              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{total_projects}</span>
             )}
           </div>
           
-          <div className="bg-[#022c22] border border-[#022c22] rounded-2xl p-6 relative overflow-hidden group hover:shadow-lg transition-all">
-            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-[#bef264] mb-4">Pending Verification</p>
+          <div className="bg-[#173d25] border border-[#173d25] shadow-sm flex flex-col p-4 rounded-lg">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#bbf7d0] mb-2">Pending Verification</p>
             {isLoading ? (
               <div className="h-10 md:h-12 w-20 bg-white/10 rounded animate-pulse" />
             ) : (
-              <span className="text-4xl md:text-5xl font-light tracking-tight text-white leading-none">{pending_projects}</span>
+              <span className="text-3xl font-semibold tracking-tight text-white leading-none">{pending_projects}</span>
             )}
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Credits Issued</p>
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Credits Issued</p>
             {isLoading ? (
               <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 leading-none">{credits_issued.toLocaleString()}</span>
+              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{credits_issued.toLocaleString()}</span>
             )}
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 relative overflow-hidden group hover:shadow-md transition-all">
-            <p className="text-xs font-semibold uppercase font-mono tracking-wider text-gray-500 mb-4">Credits Sold</p>
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Credits Sold</p>
             {isLoading ? (
               <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 leading-none">{credits_sold.toLocaleString()}</span>
+              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{credits_sold.toLocaleString()}</span>
             )}
           </div>
         </div>
@@ -106,10 +106,10 @@ export default function SellerDashboard({ data, isLoading }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* LEFT: Project Overview */}
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
-            <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-base wise-font font-black uppercase text-gray-900 tracking-tight">Project Overview</h2>
-              <Link to="/seller/projects" className="text-sm font-medium font-mono text-emerald-600 hover:text-emerald-700">
+          <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-[13px] md:text-sm font-bold uppercase text-gray-900 tracking-tight">Project Overview</h2>
+              <Link to="/seller/projects" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
                 View All
               </Link>
             </div>
@@ -185,9 +185,9 @@ export default function SellerDashboard({ data, isLoading }) {
           </div>
 
           {/* RIGHT: Verification Progress */}
-          <div className="lg:col-span-1 bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
-            <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-base wise-font font-black uppercase text-gray-900 tracking-tight">Verification Progress</h2>
+          <div className="lg:col-span-1 bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-[13px] md:text-sm font-bold uppercase text-gray-900 tracking-tight">Verification Progress</h2>
             </div>
             <div className="p-6 flex-1 bg-gray-50/30">
               {recentProjects.length === 0 ? (
@@ -240,18 +240,18 @@ export default function SellerDashboard({ data, isLoading }) {
 
         {/* ACTION AREA & CREDITS SUMMARY */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 flex flex-col sm:flex-row items-center gap-4 bg-emerald-50 border border-emerald-100 rounded-2xl p-6">
+          <div className="lg:col-span-2 flex flex-col sm:flex-row items-center gap-4 bg-emerald-50/50 border border-emerald-100 rounded-lg shadow-sm p-5">
             <div className="flex-1">
-              <h3 className="text-lg wise-font font-black uppercase text-emerald-900">Start a new project</h3>
-              <p className="text-sm font-mono text-emerald-700 mt-1">Register your carbon offset initiative to begin verification and minting.</p>
+              <h3 className="text-[13px] md:text-sm font-bold uppercase text-emerald-900 tracking-tight">Start a new project</h3>
+              <p className="text-[12px] text-emerald-700 mt-1">Register your carbon offset initiative to begin verification and minting.</p>
             </div>
-            <Link to="/seller/projects/new" className="shrink-0 bg-primary hover:bg-[#a3e635] text-[#0c0c0c] px-6 py-3.5 font-mono font-bold transition-colors shadow-[4px_4px_0_0_#0c0c0c] border border-[#0c0c0c] flex items-center gap-2">
+            <Link to="/seller/projects/new" className="shrink-0 bg-[#173d25] hover:bg-[#0f2f1b] text-white px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-colors shadow-sm rounded flex items-center gap-2">
               <FiPlus /> Create New Project
             </Link>
           </div>
           
-          <div className="lg:col-span-1 bg-white border border-gray-200 rounded-2xl p-6">
-            <h3 className="text-sm font-semibold text-gray-900 tracking-tight mb-4 uppercase tracking-wider">Credits Overview</h3>
+          <div className="lg:col-span-1 bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+            <h3 className="text-[12px] font-semibold text-gray-900 uppercase tracking-wider mb-4">Credits Overview</h3>
             {credits_issued === 0 ? (
               <div className="text-center">
                 <p className="text-xs font-semibold text-gray-900 mb-1">No credits issued yet</p>

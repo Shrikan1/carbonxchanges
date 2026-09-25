@@ -144,7 +144,7 @@ export default function AdminLayout({ children, title, subtitle }) {
             >
               <div className="p-5 flex items-center justify-between border-b border-gray-100">
                 <Link to="/" className="inline-block" onClick={() => setIsMobileMenuOpen(false)}>
-                  <h1 className="wise-font font-black uppercase tracking-tight text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black] text-xl">CARBONXPLANET</h1>
+                  <h1 className="wise-font font-black uppercase tracking-tight text-[#173d25] text-xl">CARBONXPLANET</h1>
                   <p className="text-[9px] font-bold text-emerald-600 tracking-[0.2em] uppercase">Admin Portal</p>
                 </Link>
                 <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
@@ -183,10 +183,10 @@ export default function AdminLayout({ children, title, subtitle }) {
       <main className="flex-1 lg:ml-[240px] min-h-screen flex flex-col pt-16 lg:pt-0">
         
         {/* Desktop Header */}
-        <header className="hidden lg:flex items-center justify-between h-[88px] px-8 bg-[#f4f7f5] sticky top-0 z-30">
+        <header className="hidden lg:flex items-center justify-between h-[60px] px-6 lg:px-8 bg-[#f4f7f5] sticky top-0 z-30">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{title}</h1>
-            {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+            <h1 className="text-lg md:text-xl font-bold text-gray-900 tracking-tight">{title}</h1>
+            {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
           </div>
           
           <div className="flex items-center gap-5">

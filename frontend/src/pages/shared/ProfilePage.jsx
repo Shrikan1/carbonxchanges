@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { motion, AnimatePresence } from 'motion/react';
-import { FiArrowLeft, FiUser, FiMail, FiLock, FiShield, FiCheck, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiMail, FiLock, FiShield, FiCheck, FiX, FiChevronDown, FiChevronUp, FiPhone, FiMapPin, FiCalendar, FiGlobe } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/layout/Navbar';
 import SellerLayout from '../../components/layout/SellerLayout';
@@ -59,147 +59,154 @@ export default function ProfilePage() {
   }
 
   const profileContent = (
-    <div className="w-full max-w-2xl px-4 md:px-8 mx-auto pb-12 pt-8">
+    <div className="p-4 lg:p-6 max-w-5xl mx-auto w-full">
       <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full"
-        >
-          <div className="mb-10 flex flex-col items-center text-center">
-            <h1 className="text-3xl text-gray-900 mb-2 uppercase wise-font font-black tracking-tighter">Profile Settings</h1>
-            <p className="text-gray-500 text-sm">Manage your account details and security preferences.</p>
-          </div>
-          <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
-            <div className="bg-white rounded-2xl p-3 sm:px-5 sm:py-3 shadow-sm border border-gray-100 flex flex-col">
-              <div 
-                className="flex items-center justify-between cursor-pointer"
-                onClick={() => setIsAccountOpen(!isAccountOpen)}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-[#bef264]/20 text-[#84cc16] flex items-center justify-center">
-                    <FiUser size={16} />
-                  </div>
-                  <h3 className="text-lg wise-font font-black text-gray-900 uppercase tracking-wider">
-                    Account Details
-                  </h3>
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6"
+      >
+        {/* Left Column: Information */}
+        <div className="lg:col-span-1">
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col">
+            <div className="px-5 py-4 border-b border-gray-200">
+              <h2 className="text-[13px] md:text-sm wise-font font-black uppercase text-gray-900 tracking-tight">Information</h2>
+            </div>
+            
+            <div className="p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-gray-500">
+                  <FiGlobe className="w-4 h-4 mr-2.5" />
+                  <span className="text-[13px] font-medium">Website</span>
                 </div>
-                <div className="text-gray-400">
-                  {isAccountOpen ? <FiChevronUp size={24} /> : <FiChevronDown size={24} />}
-                </div>
+                <span className="text-[13px] text-gray-900 font-semibold truncate max-w-[140px]">N/A</span>
               </div>
 
-              <AnimatePresence>
-                {isAccountOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pt-6">
-                      <form onSubmit={handleNameSubmit} className="space-y-5 flex-1 flex flex-col">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-gray-500">
+                  <FiMail className="w-4 h-4 mr-2.5" />
+                  <span className="text-[13px] font-medium">Email</span>
+                </div>
+                <span className="text-[13px] text-gray-900 font-semibold truncate max-w-[140px]">{user?.email || 'N/A'}</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-gray-500">
+                  <FiPhone className="w-4 h-4 mr-2.5" />
+                  <span className="text-[13px] font-medium">Phone</span>
+                </div>
+                <span className="text-[13px] text-gray-900 font-semibold truncate max-w-[140px]">{user?.phone_number || 'N/A'}</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-gray-500">
+                  <FiMapPin className="w-4 h-4 mr-2.5" />
+                  <span className="text-[13px] font-medium">Address</span>
+                </div>
+                <span className="text-[13px] text-gray-900 font-semibold truncate max-w-[140px]">{user?.address || 'N/A'}</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-gray-500">
+                  <FiCalendar className="w-4 h-4 mr-2.5" />
+                  <span className="text-[13px] font-medium">Joined</span>
+                </div>
+                <span className="text-[13px] text-gray-900 font-semibold">
+                  {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Settings & Security */}
+        <div className="lg:col-span-2 space-y-5 lg:space-y-6">
+          
+          {/* Account Details Card */}
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col">
+            <div className="px-5 py-4 border-b border-gray-200">
+              <h2 className="text-[13px] md:text-sm wise-font font-black uppercase text-gray-900 tracking-tight">Account Details</h2>
+            </div>
+            
+            <div className="p-5">
+              <form onSubmit={handleNameSubmit} className="space-y-5 flex flex-col max-w-md">
                 <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">Email Address</Label>
+                  <Label htmlFor="email" className="text-[#0c0c0c] font-mono text-[11px] font-bold uppercase tracking-wider">Email Address</Label>
                   <div className="relative">
-                    <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input 
                       id="email" 
                       value={user?.email || ''} 
                       disabled 
-                      className="pl-10 bg-gray-50 border-[#0c0c0c] text-gray-500 h-11 font-mono text-sm cursor-not-allowed shadow-none"
+                      className="pl-9 bg-gray-50 border-[#0c0c0c] text-gray-500 h-10 font-mono text-[13px] cursor-not-allowed rounded-sm"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="name" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">Full Name</Label>
+                  <Label htmlFor="name" className="text-[#0c0c0c] font-mono text-[11px] font-bold uppercase tracking-wider">Full Name</Label>
                   <div className="relative">
-                    <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input 
                       id="name" 
                       value={name} 
                       onChange={(e) => setName(e.target.value)} 
-                      className="pl-10 bg-white border-[#0c0c0c] text-gray-900 h-11 font-mono text-sm focus:border-gray-900 focus:outline-none transition-all shadow-none"
+                      className="pl-9 bg-white border-[#0c0c0c] text-gray-900 h-10 font-mono text-[13px] focus:border-gray-900 focus:outline-none transition-all rounded-sm"
                       placeholder="Enter your full name"
                     />
                   </div>
                 </div>
 
                 {nameStatus && (
-                  <div className={`p-4 rounded-xl flex items-center space-x-3 text-sm mt-4 border ${nameStatus.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-[#f7fee7] border-[#bef264] text-gray-900'}`}>
-                    <div className={`flex items-center justify-center w-6 h-6 rounded-full ${nameStatus.type === 'error' ? 'bg-red-100 text-red-600' : 'bg-[#bef264]/30 text-[#65a30d]'}`}>
-                      {nameStatus.type === 'error' ? <FiX size={14} /> : <FiCheck size={14} />}
+                  <div className={`p-3 flex items-center space-x-2.5 text-[13px] border rounded-sm ${nameStatus.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-[#f7fee7] border-[#bef264] text-gray-900'}`}>
+                    <div className={`flex items-center justify-center w-5 h-5 rounded-sm ${nameStatus.type === 'error' ? 'bg-red-100 text-red-600' : 'bg-[#bef264]/30 text-[#65a30d]'}`}>
+                      {nameStatus.type === 'error' ? <FiX size={12} /> : <FiCheck size={12} />}
                     </div>
                     <span className="font-medium">{nameStatus.message}</span>
                   </div>
                 )}
 
-                <div className="pt-4 mt-auto flex justify-end">
+                <div className="pt-2 flex justify-start sm:justify-end">
                   <Button 
                     type="submit" 
                     disabled={isSubmittingName || name === user?.name}
-                    className="h-11 px-6 bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] text-sm font-mono font-bold uppercase tracking-wider border-[2px] border-[#0c0c0c] transition-colors disabled:opacity-50 shadow-none hover:shadow-none"
+                    className="h-10 px-6 w-full sm:w-auto bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] text-[12px] font-mono font-bold uppercase tracking-wider border-[2px] border-[#0c0c0c] transition-colors disabled:opacity-50 rounded-sm"
                   >
                     {isSubmittingName ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </div>
-                      </form>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              </form>
             </div>
+          </div>
 
-            {/* Security Card */}
-            <div className="bg-white rounded-2xl p-3 sm:px-5 sm:py-3 shadow-sm border border-gray-100 flex flex-col">
-              <div 
-                className="flex items-center justify-between cursor-pointer"
-                onClick={() => setIsSecurityOpen(!isSecurityOpen)}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-[#bef264]/20 text-[#84cc16] flex items-center justify-center">
-                    <FiShield size={16} />
-                  </div>
-                  <h3 className="text-lg wise-font font-black text-gray-900 uppercase tracking-wider">
-                    Security
-                  </h3>
-                </div>
-                <div className="text-gray-400">
-                  {isSecurityOpen ? <FiChevronUp size={24} /> : <FiChevronDown size={24} />}
-                </div>
-              </div>
-
-              <AnimatePresence>
-                {isSecurityOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pt-6">
-                      <form onSubmit={handlePasswordSubmit} className="space-y-5 flex-1 flex flex-col">
+          {/* Security Card */}
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col">
+            <div className="px-5 py-4 border-b border-gray-200">
+              <h2 className="text-[13px] md:text-sm wise-font font-black uppercase text-gray-900 tracking-tight">Security</h2>
+            </div>
+            
+            <div className="p-5">
+              <form onSubmit={handlePasswordSubmit} className="space-y-5 flex flex-col max-w-md">
                 <div className="space-y-1.5">
-                  <Label htmlFor="current_password" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">Current Password</Label>
+                  <Label htmlFor="current_password" className="text-[#0c0c0c] font-mono text-[11px] font-bold uppercase tracking-wider">Current Password</Label>
                   <div className="relative">
-                    <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
                       id="current_password"
                       type="password"
                       required
                       value={passwords.current_password}
                       onChange={(e) => setPasswords({ ...passwords, current_password: e.target.value })}
-                      className="pl-10 bg-white border-[#0c0c0c] text-gray-900 h-11 font-mono text-sm focus:border-gray-900 focus:outline-none transition-all shadow-none"
+                      className="pl-9 bg-white border-[#0c0c0c] text-gray-900 h-10 font-mono text-[13px] focus:border-gray-900 focus:outline-none transition-all rounded-sm"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="new_password" className="text-[#0c0c0c] font-mono text-xs font-bold uppercase tracking-wider">New Password</Label>
+                  <Label htmlFor="new_password" className="text-[#0c0c0c] font-mono text-[11px] font-bold uppercase tracking-wider">New Password</Label>
                   <div className="relative">
-                    <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
                       id="new_password"
                       type="password"
@@ -207,38 +214,36 @@ export default function ProfilePage() {
                       minLength={8}
                       value={passwords.new_password}
                       onChange={(e) => setPasswords({ ...passwords, new_password: e.target.value })}
-                      className="pl-10 bg-white border-[#0c0c0c] text-gray-900 h-11 font-mono text-sm focus:border-gray-900 focus:outline-none transition-all shadow-none"
+                      className="pl-9 bg-white border-[#0c0c0c] text-gray-900 h-10 font-mono text-[13px] focus:border-gray-900 focus:outline-none transition-all rounded-sm"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
 
                 {passwordStatus && (
-                  <div className={`p-4 rounded-xl flex items-center space-x-3 text-sm mt-4 border ${passwordStatus.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-[#f7fee7] border-[#bef264] text-gray-900'}`}>
-                    <div className={`flex items-center justify-center w-6 h-6 rounded-full ${passwordStatus.type === 'error' ? 'bg-red-100 text-red-600' : 'bg-[#bef264]/30 text-[#65a30d]'}`}>
-                      {passwordStatus.type === 'error' ? <FiX size={14} /> : <FiCheck size={14} />}
+                  <div className={`p-3 flex items-center space-x-2.5 text-[13px] border rounded-sm ${passwordStatus.type === 'error' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-[#f7fee7] border-[#bef264] text-gray-900'}`}>
+                    <div className={`flex items-center justify-center w-5 h-5 rounded-sm ${passwordStatus.type === 'error' ? 'bg-red-100 text-red-600' : 'bg-[#bef264]/30 text-[#65a30d]'}`}>
+                      {passwordStatus.type === 'error' ? <FiX size={12} /> : <FiCheck size={12} />}
                     </div>
                     <span className="font-medium">{passwordStatus.message}</span>
                   </div>
                 )}
 
-                <div className="pt-4 mt-auto flex justify-end">
+                <div className="pt-2 flex justify-start sm:justify-end">
                   <Button 
                     type="submit" 
                     disabled={isSubmittingPassword || !passwords.current_password || !passwords.new_password}
-                    className="h-11 px-6 bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] text-sm font-mono font-bold uppercase tracking-wider border-[2px] border-[#0c0c0c] transition-colors disabled:opacity-50 shadow-none hover:shadow-none"
+                    className="h-10 px-6 w-full sm:w-auto bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] text-[12px] font-mono font-bold uppercase tracking-wider border-[2px] border-[#0c0c0c] transition-colors disabled:opacity-50 rounded-sm"
                   >
                     {isSubmittingPassword ? 'Updating...' : 'Update Password'}
                   </Button>
                 </div>
-                      </form>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              </form>
             </div>
           </div>
-        </motion.div>
+
+        </div>
+      </motion.div>
     </div>
   );
 

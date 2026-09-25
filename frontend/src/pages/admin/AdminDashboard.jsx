@@ -7,24 +7,22 @@ import {
 import { motion } from 'motion/react';
 
 const StatCard = ({ title, value, icon, loading, subtitle, trend }) => (
-  <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between">
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500">
-          {icon}
-        </div>
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{title}</h3>
+  <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm flex flex-col">
+    <div className="flex items-center justify-between mb-2">
+      <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{title}</h3>
+      <div className="text-gray-400">
+        {icon}
       </div>
     </div>
     
     {loading ? (
-      <div className="h-10 bg-gray-100 rounded animate-pulse w-1/2"></div>
+      <div className="h-8 bg-gray-100 rounded animate-pulse w-1/2 mt-1"></div>
     ) : (
       <div>
-        <div className="text-3xl font-bold text-gray-900 tracking-tight">{value}</div>
+        <div className="text-3xl font-semibold text-gray-900 tracking-tight leading-none">{value}</div>
         {subtitle && (
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-sm font-medium text-gray-500">{subtitle}</span>
+          <div className="mt-1 text-[11px] text-gray-400">
+            {subtitle}
           </div>
         )}
       </div>
@@ -37,7 +35,7 @@ export default function AdminDashboard({ data, isLoading }) {
 
   return (
     <AdminLayout title="Admin Dashboard" subtitle="Monitor platform activity, project verification and credit issuance.">
-      <div className="p-6 lg:p-8 w-full max-w-[1400px] mx-auto space-y-8">
+      <div className="p-4 md:p-6 lg:p-8 max-w-[1400px] mx-auto w-full space-y-6">
         
         {/* KPI Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -71,8 +69,12 @@ export default function AdminDashboard({ data, isLoading }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Verification Pipeline */}
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 lg:p-8">
-            <h2 className="text-lg font-bold text-gray-900 mb-6">Verification Pipeline</h2>
+          {/* Verification Pipeline */}
+          <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-200">
+              <h2 className="text-[13px] md:text-sm font-bold uppercase text-gray-900 tracking-tight">Verification Pipeline</h2>
+            </div>
+            <div className="p-5 lg:p-6 flex-1">
             
             {isLoading ? (
               <div className="space-y-4">
@@ -110,14 +112,18 @@ export default function AdminDashboard({ data, isLoading }) {
                 </div>
               </div>
             )}
+            </div>
           </div>
 
           {/* Right Column: Platform Overview & Finance */}
           <div className="space-y-8">
             
             {/* Platform Users */}
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-6">Platform Overview</h2>
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-200">
+                <h2 className="text-[13px] md:text-sm font-bold uppercase text-gray-900 tracking-tight">Platform Overview</h2>
+              </div>
+              <div className="p-5">
               
               {isLoading ? (
                 <div className="h-40 bg-gray-50 rounded-xl animate-pulse"></div>
@@ -155,34 +161,38 @@ export default function AdminDashboard({ data, isLoading }) {
                   </div>
                 </div>
               )}
+              </div>
             </div>
 
             {/* Financial Overview */}
-            <div className="bg-[#0f172a] rounded-2xl border border-slate-800 shadow-lg p-6 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-full blur-[60px] opacity-20 pointer-events-none"></div>
-              <h2 className="text-lg font-bold text-white mb-6 relative z-10 flex items-center gap-2">
-                <FiDollarSign className="text-emerald-400" /> Gross Volume
-              </h2>
+            <div className="bg-[#173d25] rounded-lg border border-[#173d25] shadow-sm flex flex-col overflow-hidden text-white">
+              <div className="px-5 py-4 border-b border-white/10">
+                <h2 className="text-[13px] md:text-sm font-bold uppercase tracking-tight flex items-center gap-2">
+                  <FiDollarSign className="text-[#bbf7d0]" /> Gross Volume
+                </h2>
+              </div>
+              <div className="p-5">
               
               {isLoading ? (
                 <div className="h-12 bg-slate-800/50 rounded-xl animate-pulse"></div>
               ) : (
-                <div className="relative z-10">
-                  <div className="mb-6">
-                    <span className="text-3xl font-black tracking-tight">
+                <div>
+                  <div className="mb-4">
+                    <span className="text-3xl font-semibold tracking-tight leading-none">
                       ₹{credits?.total_platform_revenue?.toLocaleString('en-IN') || 0}
                     </span>
                   </div>
-                  <div className="space-y-3 pt-4 border-t border-slate-700/50">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-slate-400">Credits Sold</span>
-                      <span className="font-semibold">₹{credits?.total_credits_sold?.toLocaleString('en-IN') || 0}</span>
+                  <div className="space-y-3 pt-4 border-t border-white/10">
+                    <div className="flex justify-between items-center text-[12px] uppercase tracking-wider text-[#bbf7d0]/70">
+                      <span>Credits Sold</span>
+                      <span className="font-semibold text-white">₹{credits?.total_credits_sold?.toLocaleString('en-IN') || 0}</span>
                     </div>
                   </div>
                 </div>
               )}
+              </div>
             </div>
-
+            
           </div>
         </div>
         

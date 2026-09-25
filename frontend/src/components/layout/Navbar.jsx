@@ -212,21 +212,38 @@ const Navbar = ({
     if (isAuthenticated) {
 
       return (
-        <div className="hidden lg:flex items-center space-x-1.5 p-1 rounded-full bg-white shadow-sm border border-gray-200">
+        <div className="hidden lg:flex items-center space-x-1.5 p-1 rounded-full">
 
-          {dashboardLinks.map((dash, idx) => (
-            <Link
-              key={idx}
-              to={dash.path}
-              className="group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider flex items-center justify-center transition-colors rounded-full text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-            >
-              <span className="relative overflow-hidden block leading-tight">
-                <span className="block">
-                  {dash.label}
+          {dashboardLinks.map((dash, idx) => {
+            const isActive = location.pathname.startsWith(dash.path);
+            return (
+              <Link
+                key={idx}
+                to={dash.path}
+                className={`relative group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider flex items-center justify-center transition-colors rounded-full ${isActive
+                  ? 'text-gray-900'
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-white/40'
+                }`}
+              >
+                <span className="relative overflow-hidden block leading-tight z-10">
+                  <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                    {dash.label}
+                  </span>
+                  <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                    {dash.label}
+                  </span>
                 </span>
-              </span>
-            </Link>
-          ))}
+                
+                {isActive && (
+                  <motion.div
+                    layoutId="activeDashboardLine"
+                    className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/2 h-[2.5px] bg-[#1a3a22] rounded-full"
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
 
           <div className="w-px h-5 mx-1.5 bg-gray-200"></div>
 
@@ -557,7 +574,7 @@ const Navbar = ({
               DESKTOP NAVIGATION
           ================================================= */}
 
-          <nav className="hidden lg:flex items-center space-x-0.5 bg-gray-100/90 backdrop-blur-sm rounded-full px-1 py-0.5">
+          <nav className="hidden lg:flex items-center space-x-2 bg-gray-100/80 backdrop-blur-sm rounded-full px-2 py-1">
 
             {navLinks.map((link) => {
 
@@ -568,12 +585,12 @@ const Navbar = ({
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider rounded-full transition-all duration-200 flex items-center justify-center ${isActive
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-800 hover:bg-white/60'
+                  className={`relative group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider rounded-full transition-all duration-200 flex items-center justify-center ${isActive
+                    ? 'text-gray-900'
+                    : 'text-gray-500 hover:text-gray-800 hover:bg-white/40'
                     }`}
                 >
-                  <span className="relative overflow-hidden block leading-tight">
+                  <span className="relative overflow-hidden block leading-tight z-10">
                     <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
                       {link.name}
                     </span>
@@ -581,6 +598,14 @@ const Navbar = ({
                       {link.name}
                     </span>
                   </span>
+                  
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeNavLine"
+                      className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/2 h-[2.5px] bg-[#1a3a22] rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                    />
+                  )}
                 </Link>
 
               );

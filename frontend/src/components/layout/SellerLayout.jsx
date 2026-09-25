@@ -66,13 +66,13 @@ export default function SellerLayout({ children, title, subtitle }) {
         to={item.path}
         draggable="false"
         onClick={() => setMobileMenuOpen(false)}
-        className={`flex items-center gap-3.5 w-full px-4 py-3 transition-colors duration-200 font-mono text-sm font-bold rounded-sm select-none outline-none ${
+        className={`flex items-center gap-3 w-full px-4 py-2.5 transition-colors duration-200 font-sans text-[13px] font-medium rounded select-none outline-none ${
           active
-            ? 'bg-[#c2ed6d] text-[#0c0c0c]'
+            ? 'bg-[#173d25] text-white shadow-sm'
             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
         }`}
       >
-        <span className={active ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-500'}>
+        <span className={active ? 'text-white' : 'text-gray-400 group-hover:text-gray-500'}>
           {item.icon}
         </span>
         {item.name}
@@ -83,12 +83,12 @@ export default function SellerLayout({ children, title, subtitle }) {
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-white border-r border-gray-200">
       {/* Logo */}
-      <div className="px-6 py-6 border-b border-gray-200">
+      <div className="px-6 py-5 border-b border-gray-200">
         <Link to="/" className="block">
-          <span className="wise-font font-black uppercase tracking-tight text-[#c2ed6d] [text-shadow:1px_1px_0_black,2px_2px_0_black,3px_3px_0_black] text-[22px] leading-none block truncate pb-1">
+          <span className="font-bold uppercase tracking-tight text-[#173d25] text-[18px] leading-none block truncate pb-0.5">
             CARBONXPLANET
           </span>
-          <span className="text-[11px] font-bold uppercase font-mono tracking-widest text-[#10b981] mt-1.5 block">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-[#10b981] block">
             Seller Portal
           </span>
         </Link>
@@ -149,7 +149,7 @@ export default function SellerLayout({ children, title, subtitle }) {
       {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="h-[68px] bg-white border-b border-gray-200 px-6 lg:px-8 flex items-center justify-between shrink-0 z-10">
+        <header className="h-[60px] bg-white border-b border-gray-200 px-6 lg:px-8 flex items-center justify-between shrink-0 z-10">
           <div className="flex items-center gap-4">
             <button
               className="lg:hidden p-2 -ml-1 text-gray-500 hover:bg-gray-100 rounded-lg"
@@ -158,11 +158,11 @@ export default function SellerLayout({ children, title, subtitle }) {
               <FiMenu className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-xl md:text-2xl font-black uppercase tracking-tight text-[#0c0c0c] font-mono">
+              <h1 className="text-lg md:text-xl font-bold tracking-tight text-gray-900">
                 {title || 'Seller Dashboard'}
               </h1>
               {subtitle && (
-                <p className="hidden md:block text-xs text-gray-500 mt-1 font-mono uppercase tracking-wider font-bold">
+                <p className="hidden md:block text-[11px] text-gray-500 mt-0.5">
                   {subtitle}
                 </p>
               )}
@@ -173,10 +173,10 @@ export default function SellerLayout({ children, title, subtitle }) {
             <NotificationDropdown />
             <div className="h-7 w-px bg-gray-200 hidden sm:block" />
             <Link to="/profile" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-sm bg-[#c2ed6d] border-[2px] border-[#0c0c0c] flex items-center justify-center overflow-hidden transition-all shadow-none group-hover:shadow-[2px_2px_0_0_#0c0c0c] group-hover:-translate-y-px">
+              <div className="w-9 h-9 rounded-full bg-[#173d25] flex items-center justify-center overflow-hidden transition-all shadow-sm">
                 {user?.profilePicture
                   ? <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
-                  : <FiUser className="w-5 h-5 text-[#0c0c0c] opacity-80" />
+                  : <FiUser className="w-5 h-5 text-white opacity-90" />
                 }
               </div>
               <div className="hidden sm:flex flex-col text-left">

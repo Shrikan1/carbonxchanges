@@ -124,9 +124,9 @@
 }
 
 @theme {
-  --color-brand: #c2ed6d;
-  --color-brand-hover: #b0db5c;
-  --color-brand-light: #e0f6ad;
+  --color-brand: #173d25;
+  --color-brand-hover: #0f2f1b;
+  --color-brand-light: #2d6a4f;
   --radius-sm: 0px;
   --radius-md: 0px;
   --radius-lg: 0px;
@@ -137,7 +137,7 @@
 
 @layer utilities {
 
-  /* Enforce rectangular, lime green buttons for all primary action buttons across the site */
+  /* Enforce dark green sleek buttons for all primary action buttons across the site */
   button.bg-gray-900,
   button.bg-emerald-600,
   button.bg-emerald-500,
@@ -148,12 +148,12 @@
   a.bg-black,
   .bg-primary {
     background-color: var(--color-brand) !important;
-    color: #0f172a !important;
-    border-radius: 0 !important;
-    border: 2px solid #0f172a !important;
-    box-shadow: 4px 4px 0px 0px #0f172a !important;
-    transform: translate(0px, 0px) !important;
-    transition: all 0.15s ease !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    border: none !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+    transform: none !important;
+    transition: all 0.2s ease !important;
   }
 
   button.bg-gray-900:hover,
@@ -166,8 +166,7 @@
   a.bg-black:hover,
   .bg-primary:hover {
     background-color: var(--color-brand-hover) !important;
-    box-shadow: 2px 2px 0px 0px #0f172a !important;
-    transform: translate(2px, 2px) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
   }
 
   button.bg-gray-900:active,
@@ -179,8 +178,7 @@
   a.bg-emerald-500:active,
   a.bg-black:active,
   .bg-primary:active {
-    box-shadow: 0px 0px 0px 0px #0f172a !important;
-    transform: translate(4px, 4px) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1) !important;
   }
 }
 
