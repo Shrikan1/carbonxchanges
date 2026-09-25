@@ -7,7 +7,7 @@ import {
   FiMenu, FiX,
 } from 'react-icons/fi';
 import NotificationDropdown from './NotificationDropdown';
-import WalletConnectButton from '../Walletconnectbutton';
+import WalletConnectButton from '../WalletConnectButton';
 
 const navItems = [
   { name: 'Dashboard',    path: '/dashboard',           icon: <FiHome       className="w-[18px] h-[18px]" /> },

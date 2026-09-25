@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import * as walletApi from '../api/endpoint/Walletapi';
-import { connectMetaMask } from '../hook/Usemetamask';
+import { connectMetaMask } from '../hook/useMetamask';
 import { Button } from './ui/Button';
 
 function truncateAddress(address) {

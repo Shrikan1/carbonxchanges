@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { getMetaMaskProvider } from '../hook/Usemetamask';
+import { getMetaMaskProvider } from '../hook/useMetamask';
 import { CARBON_TOKEN_ABI } from './carbonTokenAbi';
 
 // Returns a signer-connected contract instance — every call through this

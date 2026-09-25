@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSellerStore } from '../../store/useSellerStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import * as walletApi from '../../api/endpoint/Walletapi';
-import { connectMetaMask } from '../../hook/Usemetamask';
+import { connectMetaMask } from '../../hook/useMetamask';
 import SellerLayout from '../../components/layout/SellerLayout';
 import { FiPlus, FiBox, FiSend, FiTrash2, FiArrowRight } from 'react-icons/fi';
 

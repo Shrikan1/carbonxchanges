@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import * as walletApi from '../../api/endpoint/Walletapi';
-import { connectMetaMask, getPolBalance } from '../../hook/Usemetamask';
+import { connectMetaMask, getPolBalance } from '../../hook/useMetamask';
 import SellerLayout from '../../components/layout/SellerLayout';
 import { FiAlertCircle, FiCheckCircle, FiLogOut, FiLink, FiShield } from 'react-icons/fi';
 import { FaWallet, FaEthereum } from 'react-icons/fa';

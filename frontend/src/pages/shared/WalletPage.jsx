@@ -1,7 +1,7 @@
 // src/pages/WalletPage.jsx
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
-import { getPolBalance } from '../../hook/Usemetamask';
+import { getPolBalance } from '../../hook/useMetamask';
 import WalletConnectButton from '../../components/WalletConnectButton';
 import PriceTicker from '../../components/PriceTicker';
 
