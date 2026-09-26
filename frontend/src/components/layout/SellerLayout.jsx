@@ -15,11 +15,9 @@ export default function SellerLayout({ children, title, subtitle }) {
   const logout = useAuthStore(state => state.logout);
   const location = useLocation();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const handleLogoutClick = () => {
-    setShowLogoutConfirm(true);
-  };
+
+
 
   const executeLogout = async () => {
     setIsLoggingOut(true);
@@ -29,7 +27,7 @@ export default function SellerLayout({ children, title, subtitle }) {
       console.error(err);
     } finally {
       setIsLoggingOut(false);
-      setShowLogoutConfirm(false);
+
     }
   };
 
@@ -107,7 +105,7 @@ export default function SellerLayout({ children, title, subtitle }) {
           <NavLink key={idx} item={item} />
         ))}
         <button
-          onClick={handleLogoutClick}
+          onClick={executeLogout}
           disabled={isLoggingOut}
           className="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-xl transition-all text-sm font-mono font-bold text-red-600 hover:bg-red-50 disabled:opacity-50"
         >
@@ -195,33 +193,6 @@ export default function SellerLayout({ children, title, subtitle }) {
         </main>
       </div>
       
-      {/* Logout Confirmation Modal */}
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white border-[3px] border-[#0c0c0c] shadow-[8px_8px_0_0_#0c0c0c] max-w-sm w-full p-6 relative">
-            <h3 className="text-xl wise-font font-black uppercase tracking-tight text-[#0c0c0c] mb-2">Confirm Logout</h3>
-            <p className="text-sm font-mono text-gray-600 mb-8">
-              Are you sure you want to end your current session?
-            </p>
-            <div className="flex items-center gap-3 w-full">
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                disabled={isLoggingOut}
-                className="flex-1 px-4 py-2.5 font-mono font-bold text-[#0c0c0c] bg-gray-100 hover:bg-gray-200 border-[2px] border-[#0c0c0c] transition-colors"
-              >
-                CANCEL
-              </button>
-              <button
-                onClick={executeLogout}
-                disabled={isLoggingOut}
-                className="flex-1 px-4 py-2.5 font-mono font-bold text-white bg-red-600 hover:bg-red-700 border-[2px] border-[#0c0c0c] transition-colors flex items-center justify-center disabled:opacity-70"
-              >
-                {isLoggingOut ? 'LOGGING OUT...' : 'LOGOUT'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

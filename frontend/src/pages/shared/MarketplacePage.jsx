@@ -63,11 +63,23 @@ export default function MarketplacePage() {
     <div className="min-h-screen text-gray-900 font-sans flex flex-col" style={{ backgroundColor: 'var(--color-brand)' }}>
       <Navbar />
 
-      <main className="flex-grow pt-28 pb-24">
-        <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 space-y-10">
+      <main className="flex-grow pt-20 md:pt-24 pb-16 md:pb-24">
+        <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 space-y-5 md:space-y-8">
 
           {/* Marketplace Header */}
-          <div className="relative rounded-none shadow-md border border-gray-200/50 mb-4 bg-white flex flex-col justify-center px-6 py-10 md:px-12 md:py-12 overflow-hidden min-h-[240px]">
+          <div className="relative rounded-none shadow-md border border-gray-200/50 bg-white flex flex-col justify-center px-6 py-10 md:px-12 md:py-12 overflow-hidden min-h-[240px]">
+            {/* Background floating globe */}
+            <div className="absolute right-[-30%] sm:right-[-10%] md:right-[0%] lg:right-[8%] top-1/2 -translate-y-1/2 z-0 animate-float pointer-events-none opacity-50 sm:opacity-70 md:opacity-100">
+              <img
+                src="/backgrounds/marketplace_ball-removebg-preview.png"
+                alt="Marketplace Globe"
+                className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] object-contain drop-shadow-2xl"
+              />
+            </div>
+
+            {/* Gradient mask to protect text legibility */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent md:via-white/60 md:to-transparent z-[5] pointer-events-none"></div>
+
             <div className="relative z-10 max-w-xl md:max-w-2xl">
               <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-3 uppercase tracking-tighter wise-font drop-shadow-sm">
                 Carbon Credit Marketplace
@@ -76,46 +88,37 @@ export default function MarketplacePage() {
                 Discover, verify, and purchase high-quality carbon credits to offset your corporate emissions.
               </p>
             </div>
-            
-            {/* Background floating globe */}
-            <div className="absolute right-[-20%] md:right-[0%] lg:right-[10%] top-1/2 -translate-y-1/2 z-0 animate-float pointer-events-none opacity-60 md:opacity-100">
-              <img
-                src="/backgrounds/marketplace_ball-removebg-preview.png"
-                alt="Marketplace Globe"
-                className="w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] object-contain drop-shadow-2xl"
-              />
-            </div>
           </div>
 
           {/* Discovery Toolbar */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center bg-white p-3 rounded-none shadow-sm border border-gray-200">
+          <div className="flex flex-row gap-2 items-center bg-white p-2 rounded-none shadow-sm border border-gray-200">
             <div className="relative w-full flex-1">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input
                 type="text"
-                placeholder="Search verified projects..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-transparent border-none focus:ring-0 text-base text-gray-900 placeholder-gray-400 outline-none"
+                className="w-full pl-9 pr-2 py-2 bg-transparent border-none focus:ring-0 text-[13px] sm:text-sm text-gray-900 placeholder-gray-400 outline-none"
               />
             </div>
 
-            <div className="w-px h-8 bg-gray-200 hidden sm:block"></div>
+            <div className="w-px h-6 bg-gray-200"></div>
 
-            <div className="flex gap-2 w-full sm:w-auto px-2">
+            <div className="flex gap-2 shrink-0">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-none text-sm font-bold transition-all ${showFilters
+                className={`flex items-center justify-center gap-1.5 px-3 py-2 h-[38px] rounded-none text-[13px] font-bold transition-all ${showFilters
                   ? 'bg-gray-900 text-white shadow-md'
                   : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
                   }`}
               >
-                <FiFilter size={16} /> Filters
+                <FiFilter size={14} /> <span className="hidden sm:inline">Filters</span>
               </button>
-              <Select className="flex-1 sm:flex-none w-full sm:w-[180px] h-[46px] rounded-none bg-gray-50 border border-gray-200 text-gray-700 text-sm font-bold focus:outline-none focus:border-gray-300">
-                <option value="newest">Sort: Newest</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
+              <Select className="w-[100px] sm:w-[160px] h-[38px] rounded-none bg-gray-50 border border-gray-200 text-gray-700 text-[13px] font-bold focus:outline-none focus:border-gray-300">
+                <option value="newest">Newest</option>
+                <option value="price_asc">Price Low</option>
+                <option value="price_desc">Price High</option>
               </Select>
             </div>
           </div>
@@ -130,15 +133,15 @@ export default function MarketplacePage() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="bg-white p-6 rounded-none shadow-sm border border-gray-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
-
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Project Type</label>
+                <div className="bg-white p-3 sm:p-4 rounded-none shadow-sm border border-gray-200 flex flex-col sm:flex-row gap-3 items-end">
+                  
+                  <div className="flex flex-col gap-1 w-full sm:w-auto flex-1">
+                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest ml-1">Project Type</label>
                     <Select
                       name="project_type"
                       value={filters.project_type}
                       onChange={(e) => handleFilterChange({ target: { name: 'project_type', value: e.target.value } })}
-                      className="w-full h-[46px] bg-gray-50 border border-gray-200 rounded-none text-sm font-semibold focus:outline-none focus:border-gray-300"
+                      className="w-full h-[36px] bg-gray-50 border border-gray-200 rounded-none text-[12px] font-semibold focus:outline-none focus:border-gray-300"
                     >
                       <option value="">All Types</option>
                       <option value="reforestation">Reforestation</option>
@@ -148,27 +151,29 @@ export default function MarketplacePage() {
                     </Select>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Min Price (₹)</label>
-                    <input
-                      type="number" name="min_price" placeholder="0"
-                      value={filters.min_price} onChange={handleFilterChange}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-none px-4 py-3 text-sm focus:outline-none focus:border-gray-300"
-                    />
+                  <div className="flex flex-row gap-2 w-full sm:w-auto sm:flex-1">
+                    <div className="flex flex-col gap-1 flex-1">
+                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest ml-1">Min (₹)</label>
+                      <input
+                        type="number" name="min_price" placeholder="0"
+                        value={filters.min_price} onChange={handleFilterChange}
+                        className="w-full h-[36px] bg-gray-50 border border-gray-200 rounded-none px-3 py-2 text-[12px] focus:outline-none focus:border-gray-300"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1 flex-1">
+                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest ml-1">Max (₹)</label>
+                      <input
+                        type="number" name="max_price" placeholder="1000"
+                        value={filters.max_price} onChange={handleFilterChange}
+                        className="w-full h-[36px] bg-gray-50 border border-gray-200 rounded-none px-3 py-2 text-[12px] focus:outline-none focus:border-gray-300"
+                      />
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Max Price (₹)</label>
-                    <input
-                      type="number" name="max_price" placeholder="1000"
-                      value={filters.max_price} onChange={handleFilterChange}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-none px-4 py-3 text-sm focus:outline-none focus:border-gray-300"
-                    />
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button onClick={handleClearFilters} className="flex-1 py-3 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors">Clear</button>
-                    <button onClick={handleApplyFilters} className="flex-1 py-3 text-sm font-bold text-white bg-gray-900 rounded-xl hover:bg-black shadow-sm transition-colors">Apply</button>
+                  <div className="flex gap-2 w-full sm:w-auto shrink-0 mt-1 sm:mt-0">
+                    <button onClick={handleClearFilters} className="flex-1 sm:flex-none px-4 h-[36px] text-[12px] font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-none hover:bg-gray-100 transition-colors">Clear</button>
+                    <button onClick={handleApplyFilters} className="flex-1 sm:flex-none px-6 h-[36px] text-[12px] font-bold text-white bg-gray-900 rounded-none hover:bg-black shadow-sm transition-colors">Apply</button>
                   </div>
                 </div>
               </motion.div>

@@ -166,7 +166,7 @@ export default function FormField({ field, value, onChange, error }) {
 
       {/* Description — shows below label, above the input */}
       {description && (
-        <p className="text-xs font-mono text-gray-500 mt-0.5 mb-2 leading-relaxed">{description}</p>
+        <p className="text-xs text-gray-500 mt-0.5 mb-2 leading-relaxed">{description}</p>
       )}
 
       {/* Input */}

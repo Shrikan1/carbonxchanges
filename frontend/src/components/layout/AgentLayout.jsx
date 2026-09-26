@@ -11,7 +11,7 @@ const AgentLayout = ({ children, title, subtitle }) => {
   const { user, logout } = useAuthStore();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
 
   const confirmLogout = async () => {
     if (logout) await logout();
@@ -88,7 +88,7 @@ const AgentLayout = ({ children, title, subtitle }) => {
       {/* Logout */}
       <div className="px-4 py-4 border-t border-[#e2e8e4]">
         <button
-          onClick={() => setShowLogoutConfirm(true)}
+          onClick={confirmLogout}
           className="flex items-center gap-3 px-4 py-2.5 w-full rounded-lg transition-all text-sm font-medium text-red-500 hover:bg-red-50 hover:text-red-600"
         >
           <FiLogOut className="w-[18px] h-[18px]" />
@@ -175,36 +175,6 @@ const AgentLayout = ({ children, title, subtitle }) => {
         </main>
       </div>
 
-      {/* Logout Modal */}
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0a0a]/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl p-8 w-full max-w-sm shadow-2xl border border-[#e2e8e4]">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center mb-5">
-                <FiLogOut className="w-7 h-7 text-red-500" />
-              </div>
-              <h3 className="text-xl font-semibold text-[#0a0a0a] mb-2 tracking-tight">Log Out</h3>
-              <p className="text-sm text-[#666] mb-7 leading-relaxed">
-                Are you sure you want to log out of your agent account?
-              </p>
-              <div className="flex gap-3 w-full">
-                <button
-                  onClick={() => setShowLogoutConfirm(false)}
-                  className="flex-1 px-4 py-3 text-sm font-semibold rounded-xl bg-[#f4f7f5] text-[#555] hover:bg-[#e2e8e4] transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmLogout}
-                  className="flex-1 px-4 py-3 text-sm font-semibold rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors"
-                >
-                  Log Out
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

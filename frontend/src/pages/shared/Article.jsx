@@ -55,20 +55,20 @@ const Article = () => {
     <div className="bg-[#f8faf6] text-[#14352a] min-h-screen font-sans overflow-x-hidden flex flex-col">
       <Navbar />
 
-      <main className="flex-grow pt-20 pb-24">
+      <main className="flex-grow pt-16 md:pt-20 pb-24">
         
         {/* Editorial hero */}
         <section className="border-y border-[#e1e8df] bg-[#fbfcf9] overflow-hidden">
-          <div className="max-w-[1440px] mx-auto min-h-[250px] px-5 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-[60%_40%] items-center">
-            <div className="py-10 lg:py-11 relative z-10">
-              <div className="mb-4 flex items-center gap-3">
-                <span className="h-px w-10 bg-[#9ebda3]" />
-                <span className="text-[11px] font-bold uppercase tracking-[0.27em] text-[#6b8575]">Insights &amp; Articles</span>
+          <div className="max-w-[1440px] mx-auto min-h-[160px] md:min-h-[250px] px-5 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-[60%_40%] items-center">
+            <div className="py-6 lg:py-11 relative z-10">
+              <div className="mb-3 flex items-center gap-3">
+                <span className="h-px w-8 md:w-10 bg-[#9ebda3]" />
+                <span className="text-[9px] md:text-[11px] font-bold uppercase tracking-[0.27em] text-[#6b8575]">Insights &amp; Articles</span>
               </div>
-              <h1 className="max-w-[620px] text-3xl sm:text-4xl xl:text-[3.35rem] font-black uppercase leading-[0.94] tracking-[-0.055em] text-[#123328] wise-font">
+              <h1 className="max-w-[620px] text-2xl sm:text-4xl xl:text-[3.35rem] font-black uppercase leading-[1.05] md:leading-[0.94] tracking-[-0.055em] text-[#123328] wise-font">
                 Stories for a<br className="hidden sm:block" /> brighter tomorrow
               </h1>
-              <p className="mt-4 max-w-xl text-[15px] sm:text-[16px] leading-relaxed text-[#63756a]">
+              <p className="mt-2 md:mt-4 max-w-xl text-[13px] sm:text-[16px] leading-relaxed text-[#63756a]">
                 Deep dives into climate tech, Web3 carbon markets, and the future of verifiable sustainability.
               </p>
             </div>

@@ -64,40 +64,40 @@ export default function SellerDashboard({ data, isLoading }) {
       <div className="p-4 md:p-6 lg:p-8 max-w-[1400px] mx-auto w-full space-y-6">
         
         {/* KEY METRICS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Total Projects</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1 sm:mb-2 truncate">Total Projects</p>
             {isLoading ? (
-              <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 md:h-12 w-16 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{total_projects}</span>
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 leading-none">{total_projects}</span>
             )}
           </div>
           
-          <div className="bg-[#173d25] border border-[#173d25] shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#bbf7d0] mb-2">Pending Verification</p>
+          <div className="bg-[#173d25] border border-[#173d25] shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#bbf7d0] mb-1 sm:mb-2 truncate">Pending Verify</p>
             {isLoading ? (
-              <div className="h-10 md:h-12 w-20 bg-white/10 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 md:h-12 w-16 bg-white/10 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-white leading-none">{pending_projects}</span>
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white leading-none">{pending_projects}</span>
             )}
           </div>
 
-          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Credits Issued</p>
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1 sm:mb-2 truncate">Credits Issued</p>
             {isLoading ? (
-              <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 md:h-12 w-16 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{credits_issued.toLocaleString()}</span>
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 leading-none">{credits_issued.toLocaleString()}</span>
             )}
           </div>
 
-          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Credits Sold</p>
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1 sm:mb-2 truncate">Credits Sold</p>
             {isLoading ? (
-              <div className="h-10 md:h-12 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 md:h-12 w-16 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">{credits_sold.toLocaleString()}</span>
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 leading-none">{credits_sold.toLocaleString()}</span>
             )}
           </div>
         </div>

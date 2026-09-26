@@ -245,20 +245,20 @@ export default function ProjectFormPage() {
                 <div key={s.step} className="relative z-10 flex flex-col items-center">
                   {/* Label (above) */}
                   <div className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap hidden md:block">
-                    <span className={`text-[10px] font-mono font-bold uppercase tracking-widest ${isActive ? 'text-[#0c0c0c]' : 'text-gray-400'}`}>
+                    <span className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? 'text-gray-900' : 'text-gray-400'}`}>
                       {s.title}
                     </span>
                   </div>
                   
                   {/* Node */}
-                  <div className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center transition-all duration-300 border-[2px] sm:border-[2.5px] ${
+                  <div className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center transition-all duration-300 rounded-full border-2 sm:border-2 ${
                     isCompleted 
-                      ? 'bg-[#0c0c0c] border-[#0c0c0c] text-[#c2ed6d]' 
+                      ? 'bg-emerald-500 border-emerald-500 text-white' 
                       : isCurrent
-                      ? 'bg-[#c2ed6d] border-[#0c0c0c] text-[#0c0c0c]'
+                      ? 'bg-white border-emerald-500 text-emerald-600 ring-4 ring-emerald-50'
                       : 'bg-white border-gray-200 text-gray-400'
                   }`}>
-                    {isCompleted ? <FiCheck strokeWidth={3.5} size={15} /> : <span className="font-mono text-[10px] sm:text-[11px] font-bold">{s.step}</span>}
+                    {isCompleted ? <FiCheck strokeWidth={3} size={15} /> : <span className="text-[10px] sm:text-[11px] font-semibold">{s.step}</span>}
                   </div>
                 </div>
               );
@@ -266,10 +266,10 @@ export default function ProjectFormPage() {
           </div>
 
           <div className="mt-4 flex justify-between items-center w-full">
-            <span className="text-[10px] font-bold font-mono text-gray-400 uppercase tracking-widest">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
               Step {currentStep} of {steps.length}
             </span>
-            <span className="text-[10px] font-mono font-bold text-gray-900 uppercase tracking-widest">
+            <span className="text-[10px] font-bold text-gray-900 uppercase tracking-widest">
               {progressPercent}% Complete
             </span>
           </div>
@@ -322,9 +322,9 @@ export default function ProjectFormPage() {
 
           {/* Form Card */}
           <div className="bg-white rounded-3xl p-5 md:p-8 shadow-sm border border-gray-100 mb-6 w-full">
-            <h2 className="text-xl wise-font font-black uppercase text-gray-900 mb-1">{stepConfig.title}</h2>
+            <h2 className="text-xl font-bold uppercase text-gray-900 mb-1">{stepConfig.title}</h2>
             {stepConfig.typeSpecific && formData.project_type && (
-              <p className="text-sm font-mono text-gray-500 mb-6">
+              <p className="text-sm text-gray-500 mb-6">
                 These fields are specific to <strong className="capitalize">{formData.project_type.replace(/_/g, ' ')}</strong> projects.
               </p>
             )}
@@ -358,7 +358,7 @@ export default function ProjectFormPage() {
               variant="outline"
               onClick={handleBack}
               disabled={currentStep === 1}
-              className={`h-11 px-6 w-full sm:w-auto font-mono font-bold border border-[#0c0c0c] bg-white text-[#0c0c0c] sm:shadow-[4px_4px_0_0_#0c0c0c] hover:bg-gray-50 transition-all flex items-center justify-center gap-2 ${
+              className={`h-11 px-6 w-full sm:w-auto font-bold border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-2 ${
                 currentStep === 1 ? 'hidden sm:flex opacity-0 pointer-events-none' : 'opacity-100'
               }`}
             >
@@ -371,7 +371,7 @@ export default function ProjectFormPage() {
               <Button
                 onClick={handleSaveDraft}
                 disabled={saving}
-                className="h-11 px-6 w-full sm:w-auto bg-white hover:bg-gray-100 text-[#0c0c0c] font-mono font-bold border-[2px] border-[#0c0c0c] transition-colors flex items-center justify-center gap-2"
+                className="h-11 px-6 w-full sm:w-auto bg-white hover:bg-gray-50 text-emerald-700 font-bold border border-emerald-200 shadow-sm transition-colors flex items-center justify-center gap-2"
               >
                 <FiSave size={15} />
                 {saving ? 'Saving...' : 'Save Draft'}
@@ -380,7 +380,7 @@ export default function ProjectFormPage() {
               {!isLastStep && (
                 <Button
                   onClick={handleNext}
-                  className="h-11 px-8 w-full sm:w-auto bg-primary hover:bg-[#a3e635] text-[#0c0c0c] font-mono font-bold shadow-[4px_4px_0_0_#0c0c0c] border border-[#0c0c0c] flex items-center justify-center gap-2"
+                  className="h-11 px-8 w-full sm:w-auto bg-[#173d25] hover:bg-[#122e1b] text-white font-bold shadow-sm border border-transparent flex items-center justify-center gap-2"
                 >
                   Next
                   <FiArrowRight className="ml-2" />

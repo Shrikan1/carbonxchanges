@@ -74,77 +74,77 @@ export default function MarketplaceDetailPage() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Navbar />
       
-      <main className="flex-grow w-full max-w-[1200px] mx-auto px-4 md:px-8 pt-28 pb-24">
+      <main className="flex-grow w-full max-w-[1200px] mx-auto px-4 md:px-8 pt-20 md:pt-28 pb-16 md:pb-24">
         
         {/* Project Header */}
-        <div className="bg-white border border-gray-200 flex flex-col md:flex-row mb-12 shadow-sm">
+        <div className="bg-white border border-gray-200 flex flex-col md:flex-row mb-8 md:mb-12 shadow-sm">
           {/* Image Side */}
-          <div className="w-full md:w-[40%] md:border-r border-gray-200 relative bg-gray-100 min-h-[300px]">
+          <div className="w-full md:w-[40%] md:border-r border-gray-200 relative bg-gray-100 h-[180px] md:h-auto md:min-h-[300px]">
             {listing.image_url ? (
               <img src={listing.image_url} alt={listing.project_title} className="w-full h-full object-cover absolute inset-0" />
             ) : (
               <div className={`absolute inset-0 bg-gradient-to-br ${getGradient(listing.project_id || listing.id)} flex items-center justify-center`}>
-                <span className="text-white/20 font-black text-8xl uppercase tracking-tighter mix-blend-overlay wise-font">
+                <span className="text-white/20 font-black text-6xl md:text-8xl uppercase tracking-tighter mix-blend-overlay wise-font">
                   CXP
                 </span>
               </div>
             )}
-            <div className="absolute top-6 left-6">
-              <span className="px-3 py-1.5 bg-white text-emerald-700 text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-md">
-                <FiCheckCircle size={12} className="text-emerald-500" /> Verified Project
+            <div className="absolute top-4 left-4 md:top-6 md:left-6">
+              <span className="px-2.5 py-1 md:px-3 md:py-1.5 bg-white text-emerald-700 text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-md">
+                <FiCheckCircle size={12} className="text-emerald-500" /> Verified
               </span>
             </div>
           </div>
           
           {/* Content Side */}
-          <div className="w-full md:w-[60%] p-8 md:p-12 flex flex-col justify-center">
-            <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">
+          <div className="w-full md:w-[60%] p-4 md:p-12 flex flex-col justify-center">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3 text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 md:mb-4">
               <span className="text-emerald-700 bg-emerald-50 px-2 py-1 border border-emerald-100">{listing.project_type?.replace(/_/g, ' ') || 'Carbon Project'}</span>
               <span>•</span>
               <span className="flex items-center gap-1"><FiMapPin size={12} /> {listing.country || 'Global'}</span>
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 leading-[1.1] tracking-tight">
+            <h1 className="text-xl md:text-5xl font-black text-gray-900 mb-3 md:mb-6 leading-[1.15] tracking-tight">
               {listing.project_title}
             </h1>
             
-            <div className="flex items-center gap-3 text-sm text-gray-600 mb-8 border-l-2 border-gray-200 pl-4">
-              <span className="font-bold text-gray-900 uppercase tracking-wider text-xs">Developed By</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-[12px] md:text-sm text-gray-600 mb-5 md:mb-6 border-l-2 border-gray-200 pl-3 md:pl-4">
+              <span className="font-bold text-gray-900 uppercase tracking-wider text-[10px] md:text-xs">Developed By</span>
               <span className="font-medium">{listing.seller_name || 'CarbonXPlanet Partner'}</span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mt-auto">
-              <div className="flex flex-col bg-gray-50 px-6 py-3 border border-gray-200 shrink-0">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Price per ton</span>
-                <span className="text-2xl font-black text-emerald-600">₹{Number(listing.price_per_credit || 0).toLocaleString('en-IN')}</span>
+            <div className="flex flex-row items-stretch gap-3 mt-auto">
+              <div className="flex flex-col justify-center bg-gray-50 px-4 py-2 md:px-6 md:py-3 border border-gray-200 shrink-0">
+                <span className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5 md:mb-1">Price / Ton</span>
+                <span className="text-xl md:text-2xl font-black text-emerald-600 leading-none">₹{Number(listing.price_per_credit || 0).toLocaleString('en-IN')}</span>
               </div>
               <button 
                 onClick={() => setShowPurchaseModal(true)}
-                className="flex-1 bg-gray-900 hover:bg-black text-white font-bold py-4 px-8 transition-colors text-center text-lg flex items-center justify-center gap-2 shadow-md"
+                className="flex-1 bg-gray-900 hover:bg-black text-white font-bold py-2 px-4 transition-colors text-center text-sm md:text-lg flex items-center justify-center shadow-md"
               >
-                Purchase Credits
+                Purchase
               </button>
             </div>
           </div>
         </div>
 
         {/* Horizontal Key Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 border border-gray-200 bg-white mb-12">
-          <div className="p-6 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col justify-center">
-            <span className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"><FiLayers /> Total Area</span>
-            <span className="text-2xl font-black text-gray-900">{Number(listing.total_project_area_hectares || 0).toLocaleString()} <span className="text-sm font-medium text-gray-500">ha</span></span>
+        <div className="grid grid-cols-2 md:grid-cols-4 border border-gray-200 bg-white mb-8 md:mb-12">
+          <div className="p-4 md:p-6 border-b md:border-b-0 border-r md:border-r border-gray-200 flex flex-col justify-center">
+            <span className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 md:mb-2"><FiLayers /> Total Area</span>
+            <span className="text-lg md:text-2xl font-black text-gray-900 leading-none">{Number(listing.total_project_area_hectares || 0).toLocaleString()} <span className="text-[10px] md:text-sm font-medium text-gray-500">ha</span></span>
           </div>
-          <div className="p-6 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col justify-center">
-            <span className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"><FiTrendingUp /> Est. Volume</span>
-            <span className="text-2xl font-black text-gray-900">{Number(listing.total_co2_claimed || 0).toLocaleString()} <span className="text-sm font-medium text-gray-500">tCO₂e</span></span>
+          <div className="p-4 md:p-6 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col justify-center">
+            <span className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 md:mb-2"><FiTrendingUp /> Est. Volume</span>
+            <span className="text-lg md:text-2xl font-black text-gray-900 leading-none">{Number(listing.total_co2_claimed || 0).toLocaleString()} <span className="text-[10px] md:text-sm font-medium text-gray-500">tCO₂e</span></span>
           </div>
-          <div className="p-6 border-r border-gray-200 flex flex-col justify-center">
-            <span className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"><FiClock /> Duration</span>
-            <span className="text-2xl font-black text-gray-900">{listing.duration_months || '-'} <span className="text-sm font-medium text-gray-500">months</span></span>
+          <div className="p-4 md:p-6 border-r border-gray-200 flex flex-col justify-center">
+            <span className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 md:mb-2"><FiClock /> Duration</span>
+            <span className="text-lg md:text-2xl font-black text-gray-900 leading-none">{listing.duration_months || '-'} <span className="text-[10px] md:text-sm font-medium text-gray-500">mo</span></span>
           </div>
-          <div className="p-6 flex flex-col justify-center bg-gray-50">
-            <span className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Available Now</span>
-            <span className="text-2xl font-black text-emerald-600">{Number(listing.amount_available || 0).toLocaleString()} <span className="text-sm font-medium text-emerald-600/70">tCO₂e</span></span>
+          <div className="p-4 md:p-6 flex flex-col justify-center bg-gray-50">
+            <span className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 md:mb-2">Available</span>
+            <span className="text-lg md:text-2xl font-black text-emerald-600 leading-none">{Number(listing.amount_available || 0).toLocaleString()} <span className="text-[10px] md:text-sm font-medium text-emerald-600/70">tCO₂e</span></span>
           </div>
         </div>
 
@@ -158,13 +158,13 @@ export default function MarketplaceDetailPage() {
             <section>
               <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest border-b-2 border-gray-900 pb-3 mb-6">Project Overview</h2>
               <div className="prose prose-lg text-gray-600 leading-relaxed max-w-none">
-                <p>
+                <div className="whitespace-pre-line">
                   {posts[0]?.story || listing.project_summary || "Detailed overview documentation is pending. The verification metrics below confirm the authenticity and scale of this carbon offset initiative."}
-                </p>
+                </div>
                 {posts[0]?.how_it_works && (
                   <>
                     <h3 className="text-xl font-bold text-gray-900 mt-8 mb-4">Implementation Strategy</h3>
-                    <p>{posts[0].how_it_works}</p>
+                    <div className="whitespace-pre-line">{posts[0].how_it_works}</div>
                   </>
                 )}
               </div>
@@ -224,29 +224,6 @@ export default function MarketplaceDetailPage() {
           {/* Sidebar */}
           <div className="space-y-8">
             
-            {/* Purchase CTA Box */}
-            <div className="bg-gray-900 text-white p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-full blur-[60px] opacity-20 pointer-events-none"></div>
-              <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-6 relative z-10">Carbon Credit Offer</h3>
-              
-              <div className="space-y-4 mb-8 relative z-10">
-                <div className="flex justify-between items-center border-b border-gray-700 pb-3">
-                  <span className="text-gray-400 text-sm font-medium">Available Inventory</span>
-                  <span className="font-bold">{Number(listing.amount_available || 0).toLocaleString()} tCO₂e</span>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-700 pb-3">
-                  <span className="text-gray-400 text-sm font-medium">Price per unit</span>
-                  <span className="font-bold">₹{Number(listing.price_per_credit || 0).toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-              
-              <button 
-                onClick={() => setShowPurchaseModal(true)}
-                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 transition-colors relative z-10 shadow-lg"
-              >
-                Purchase Now
-              </button>
-            </div>
 
             {/* Methodology Information */}
             <div className="bg-white border border-gray-200 p-6">

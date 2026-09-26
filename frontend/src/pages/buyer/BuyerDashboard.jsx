@@ -28,63 +28,63 @@ export default function BuyerDashboard({ data, isLoading }) {
       <div className="p-4 lg:p-6 max-w-5xl mx-auto w-full space-y-5 lg:space-y-6">
 
         {/* ── KEY METRICS ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
 
           {/* Total Purchased — accent card */}
-          <div className="bg-[#173d25] border border-[#173d25] shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#bbf7d0] mb-2">
+          <div className="bg-[#173d25] border border-[#173d25] shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#bbf7d0] mb-1 sm:mb-2 truncate">
               Total Purchased
             </p>
             {isLoading ? (
-              <div className="h-10 w-20 bg-white/10 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 w-16 bg-white/10 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-white leading-none">
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white leading-none">
                 {Number(total_purchased).toLocaleString()}
               </span>
             )}
-            <p className="text-[11px] text-[#bbf7d0]/70 mt-1">tCO2e acquired</p>
+            <p className="text-[9px] sm:text-[11px] text-[#bbf7d0]/70 mt-1 truncate">tCO2e acquired</p>
           </div>
 
-          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1 sm:mb-2 truncate">
               Current Holdings
             </p>
             {isLoading ? (
-              <div className="h-10 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 w-16 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 leading-none">
                 {Number(current_holdings).toLocaleString()}
               </span>
             )}
-            <p className="text-[11px] text-gray-400 mt-1">tCO2e available</p>
+            <p className="text-[9px] sm:text-[11px] text-gray-400 mt-1 truncate">tCO2e available</p>
           </div>
 
-          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1 sm:mb-2 truncate">
               Total Retired
             </p>
             {isLoading ? (
-              <div className="h-10 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 w-16 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 leading-none">
                 {Number(total_retired).toLocaleString()}
               </span>
             )}
-            <p className="text-[11px] text-gray-400 mt-1">tCO2e offset</p>
+            <p className="text-[9px] sm:text-[11px] text-gray-400 mt-1 truncate">tCO2e offset</p>
           </div>
 
-          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-4 rounded-lg">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
+          <div className="bg-white border border-gray-200 shadow-sm flex flex-col p-3 sm:p-4 rounded-lg">
+            <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1 sm:mb-2 truncate">
               CO₂ Offset
             </p>
             {isLoading ? (
-              <div className="h-10 w-20 bg-gray-100 rounded animate-pulse" />
+              <div className="h-7 sm:h-10 w-16 bg-gray-100 rounded animate-pulse" />
             ) : (
-              <span className="text-3xl font-semibold tracking-tight text-gray-900 leading-none">
+              <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 leading-none">
                 {Number(total_co2_offset).toLocaleString()}
               </span>
             )}
-            <p className="text-[11px] text-gray-400 mt-1">tons verified</p>
+            <p className="text-[9px] sm:text-[11px] text-gray-400 mt-1 truncate">tons verified</p>
           </div>
         </div>
 

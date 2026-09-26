@@ -117,7 +117,7 @@ export default function PublicProjectShowcasePage() {
                 <h3 className="text-lg font-black font-mono uppercase tracking-tight text-[#0c0c0c] mb-3 flex items-center gap-2">
                   <FiInfo className="text-[#c2ed6d] stroke-[3]" /> About this Project
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-[15px]">{project.project_summary}</p>
+                <p className="text-gray-600 leading-relaxed text-[15px] whitespace-pre-line">{project.project_summary}</p>
               </div>
             )}
 

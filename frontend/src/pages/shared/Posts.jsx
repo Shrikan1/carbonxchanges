@@ -160,25 +160,26 @@ const Posts = () => {
   };
 
   return (
-    <div className="bg-gray-50 text-gray-900 h-screen font-sans overflow-hidden flex flex-col pt-24">
+    <div className="bg-gray-50 text-gray-900 h-screen font-sans overflow-hidden flex flex-col pt-16 md:pt-24">
       <Navbar />
 
       <main className="flex-1 min-h-0 max-w-[520px] mx-auto w-full px-4 sm:px-6 flex flex-col pb-6">
         
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 border-b border-gray-100 shrink-0">
-          <div>
-            <h1 className="text-2xl md:text-3xl wise-font font-black uppercase tracking-tight text-gray-900 mb-1 font-['Outfit']">
+        <div className="flex flex-row items-center justify-between gap-3 py-5 md:py-6 border-b border-gray-100 shrink-0">
+          <div className="flex-1 min-w-0 pr-2">
+            <h1 className="text-lg md:text-3xl wise-font font-black uppercase tracking-tight text-gray-900 mb-0.5 md:mb-1 font-['Outfit'] truncate">
               Community Updates
             </h1>
-            <p className="text-gray-500 text-sm">
-              Real-time stories from verified carbon reduction projects.
+            <p className="text-gray-500 text-[11px] md:text-sm truncate">
+              Real-time stories from verified projects.
             </p>
           </div>
           
-          <button onClick={() => navigate('/seller/post/new')} className="shrink-0 py-2.5 px-5 bg-[#173d25] hover:bg-[#0f2f1b] text-white text-xs uppercase font-bold tracking-wider transition-all rounded-lg shadow-sm flex items-center justify-center gap-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
-            Create Post
+          <button onClick={() => navigate('/seller/post/new')} className="shrink-0 py-2 md:py-2.5 px-3 md:px-5 bg-[#173d25] hover:bg-[#0f2f1b] text-white text-[10px] md:text-xs uppercase font-bold tracking-wider transition-all rounded-sm shadow-sm flex items-center justify-center gap-1.5">
+            <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <span className="hidden sm:inline">Create Post</span>
+            <span className="sm:hidden">Post</span>
           </button>
         </div>
           

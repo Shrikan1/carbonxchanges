@@ -84,10 +84,10 @@ export default function ProjectListPage() {
               <button 
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-4 py-1.5 text-sm font-mono transition-colors ${
+                className={`px-4 py-1.5 text-sm font-semibold transition-colors rounded-md ${
                   filter === tab 
-                    ? 'font-bold bg-gray-100 text-gray-900 rounded-md' 
-                    : 'font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                    ? 'bg-emerald-50 text-emerald-700' 
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                 }`}
               >
                 {tab}
@@ -95,7 +95,7 @@ export default function ProjectListPage() {
             ))}
           </div>
           
-          <Link to="/seller/projects/new" className="bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] font-mono font-bold uppercase tracking-wider text-sm px-5 py-2.5 flex items-center justify-center gap-2 transition-colors border-[2px] border-[#0c0c0c] shadow-none hover:shadow-none rounded-sm">
+          <Link to="/seller/projects/new" className="bg-[#173d25] hover:bg-[#0f2f1b] text-white font-bold uppercase tracking-wider text-sm px-5 py-2.5 flex items-center justify-center gap-2 transition-colors rounded-lg shadow-sm">
             <FiPlus /> Create Project
           </Link>
         </div>
@@ -121,7 +121,7 @@ export default function ProjectListPage() {
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-1">No projects found</h3>
               <p className="text-sm text-gray-500 mb-6 max-w-md">You haven't registered any projects yet. Add your first carbon project to begin.</p>
-              <Link to="/seller/projects/new" className="bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] font-mono font-bold uppercase tracking-wider text-sm px-5 py-2.5 transition-colors border-[2px] border-[#0c0c0c] shadow-none hover:shadow-none rounded-sm">
+              <Link to="/seller/projects/new" className="bg-[#173d25] hover:bg-[#0f2f1b] text-white font-bold uppercase tracking-wider text-sm px-5 py-2.5 flex items-center justify-center gap-2 transition-colors rounded-lg shadow-sm">
                 Create Project
               </Link>
             </div>
@@ -132,7 +132,7 @@ export default function ProjectListPage() {
             </div>
           ) : (
             <div className="divide-y divide-gray-100">
-              <div className="hidden md:grid grid-cols-[1.5fr_1fr_120px_1fr_1fr] px-6 py-4 text-xs font-semibold font-mono tracking-wider text-gray-500 uppercase bg-gray-50">
+              <div className="hidden md:grid grid-cols-[1.5fr_1fr_120px_1fr_1fr] px-6 py-4 text-xs font-semibold tracking-wider text-gray-500 uppercase bg-gray-50">
                 <span>Project Name</span>
                 <span>Type & Location</span>
                 <span>ID</span>
@@ -152,29 +152,29 @@ export default function ProjectListPage() {
                       {/* Column 1: Name */}
                       <div className="min-w-0 pr-4 w-full">
                         <Link to={isDraft ? `/seller/projects/${project.id}/edit` : `/seller/projects/${project.id}/details`} className="block">
-                          <p className="text-sm font-semibold font-mono text-gray-900 group-hover:text-emerald-600 transition-colors truncate">
+                          <p className="text-sm font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors truncate">
                             {project.title || 'Untitled Project'}
                           </p>
-                          <p className="text-xs font-mono text-gray-500 mt-1 truncate">
+                          <p className="text-xs text-gray-500 mt-1 truncate">
                             Added {new Date(project.created_at).toLocaleDateString()}
                           </p>
                         </Link>
                       </div>
 
                       {/* Column 2: Type/Loc */}
-                      <div className="text-xs font-mono text-gray-600 uppercase tracking-wider font-bold">
+                      <div className="text-xs text-gray-600 uppercase tracking-wider font-bold">
                         {project.project_type?.replace('_', ' ')}
                         {project.country && <span className="block text-gray-400 mt-0.5">{project.country}</span>}
                       </div>
 
                       {/* Column 3: ID */}
-                      <div className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded w-fit">
+                      <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded w-fit font-medium">
                         CXP-{String(project.id).substring(0,6).toUpperCase()}
                       </div>
 
                       {/* Column 4: Status */}
                       <div>
-                        <span className={`inline-flex items-center text-[10px] font-bold font-mono px-2 py-1 uppercase tracking-wider border border-[#0c0c0c] ${status.color}`}>
+                        <span className={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${status.color}`}>
                           {status.label}
                         </span>
                         {isApprovedWalletPending && (
@@ -188,13 +188,13 @@ export default function ProjectListPage() {
                           <div className="flex items-center gap-2">
                             <button 
                               onClick={(e) => handleSubmit(e, project.id)}
-                              className="text-[11px] font-bold font-mono tracking-wider uppercase bg-[#0c0c0c] hover:bg-[#222] text-[#c2ed6d] px-3 py-1.5 transition-colors flex items-center gap-1.5 border border-[#0c0c0c]"
+                              className="text-[11px] font-bold tracking-wider uppercase bg-[#173d25] hover:bg-[#0f2f1b] text-white px-3 py-1.5 transition-colors flex items-center gap-1.5 rounded-md shadow-sm"
                             >
                               <FiSend /> Submit
                             </button>
                             <button 
                               onClick={(e) => handleDelete(e, project.id)}
-                              className="text-gray-400 hover:text-red-600 p-1.5 rounded hover:bg-red-50 transition-colors"
+                              className="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors"
                               title="Delete Draft"
                             >
                               <FiTrash2 size={16} />
@@ -204,15 +204,15 @@ export default function ProjectListPage() {
                           <button 
                             onClick={handleConnectWallet}
                             disabled={walletLoading}
-                            className="text-[11px] font-bold font-mono tracking-wider uppercase bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] px-3 py-1.5 transition-colors flex items-center gap-1.5 border-[2px] border-[#0c0c0c] shadow-none hover:shadow-none rounded-sm"
+                            className="text-[11px] font-bold tracking-wider uppercase bg-[#10b981] hover:bg-emerald-600 text-white px-3 py-1.5 transition-colors flex items-center gap-1.5 rounded-md shadow-sm"
                           >
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-3.5 h-3.5 bg-white rounded-full" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-3.5 h-3.5 bg-white rounded-full p-0.5" />
                             {walletLoading ? 'Connecting...' : 'Connect'}
                           </button>
                         ) : (
                           <Link 
                             to={`/seller/projects/${project.id}/details`}
-                            className="text-[11px] font-bold font-mono tracking-wider uppercase bg-[#c2ed6d] hover:bg-[#a3e635] text-[#0c0c0c] px-3 py-1.5 transition-colors flex items-center justify-center gap-1.5 border-[2px] border-[#0c0c0c] shadow-none hover:shadow-none rounded-sm"
+                            className="text-[11px] font-bold tracking-wider uppercase bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-1.5 transition-colors flex items-center justify-center gap-1.5 rounded-md shadow-sm"
                           >
                             View <FiArrowRight />
                           </Link>

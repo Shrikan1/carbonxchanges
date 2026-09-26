@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaBars, FaTimes, FaHome, FaLeaf, FaUsers, FaFileAlt, FaInfoCircle, FaUser } from 'react-icons/fa';
+import { FaBars, FaTimes, FaHome, FaLeaf, FaUsers, FaFileAlt, FaInfoCircle, FaUser, FaThLarge } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { useAuthStore } from '../../store/useAuthStore';
@@ -610,6 +610,15 @@ const Navbar = ({
           ================================================= */}
 
           <div className="lg:hidden flex items-center space-x-2 ml-2">
+            {isAuthenticated && dashboardLinks.length > 0 && (
+              <Link
+                to={dashboardLinks[0].path}
+                className="flex items-center justify-center w-8 h-8 bg-[#173d25] text-white rounded-full hover:bg-[#122e1b] transition-colors shadow-sm"
+                aria-label="Dashboard"
+              >
+                <FaThLarge size={12} />
+              </Link>
+            )}
             <button
               onClick={toggleMobileMenu}
               className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
@@ -650,16 +659,26 @@ const Navbar = ({
                   <FaTimes size={16} />
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
-                 <div className="px-2 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Navigate</div>
-                 {navLinks.map((link) => (
-                   <Link key={link.name} to={link.path} onClick={closeMobileMenu} className="block px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 rounded-lg">
-                     {link.name}
-                   </Link>
-                 ))}
-                 <hr className="my-4 border-gray-100" />
-                 <div className="px-2 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Account</div>
-                 {renderMobileAuth()}
+              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-1">
+                 {navLinks.map((link) => {
+                   const isActive = location.pathname === link.path;
+                   return (
+                     <Link 
+                       key={link.name} 
+                       to={link.path} 
+                       onClick={closeMobileMenu} 
+                       className={`block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors ${
+                         isActive ? 'bg-[#eef5f0] text-[#1a3a22]' : 'text-gray-700 hover:bg-gray-50'
+                       }`}
+                     >
+                       {link.name}
+                     </Link>
+                   );
+                 })}
+                 
+                 <div className="mt-auto pt-6">
+                   {renderMobileAuth()}
+                 </div>
               </div>
             </motion.div>
           </>
@@ -667,52 +686,7 @@ const Navbar = ({
       </AnimatePresence>
 
 
-      {/* =================================================
-          MOBILE FLOATING BOTTOM NAV
-      ================================================= */}
 
-      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-max z-50 lg:hidden">
-        <div className="bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center p-1.5 gap-1">
-          {navLinks.map((link) => {
-            const isActive = location.pathname === link.path;
-            const label = link.name === 'Marketplace' ? 'Market' : link.name;
-            
-            let IconComponent;
-            switch(link.name) {
-              case 'Home': IconComponent = FaHome; break;
-              case 'Marketplace': IconComponent = FaLeaf; break;
-              case 'Social': IconComponent = FaUsers; break;
-              case 'Article': IconComponent = FaFileAlt; break;
-              case 'About': IconComponent = FaInfoCircle; break;
-              default: IconComponent = FaHome;
-            }
-
-            return (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`relative flex flex-col items-center justify-center px-4 h-[3rem] transition-colors duration-200 z-10 ${isActive 
-                  ? 'text-[#173d25] font-bold' 
-                  : 'hover:bg-gray-50 text-gray-500 rounded-full font-medium'
-                }`}
-              >
-                {isActive && (
-                  <motion.div 
-                    layoutId="dockSlider"
-                    className="absolute inset-0 bg-[#eef5f0] rounded-full -z-10"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <IconComponent size={18} className="mb-0.5" />
-                <span className="text-[10px] tracking-wide">
-                  {label}
-                </span>
-              </Link>
-            );
-          })}
-
-        </div>
-      </nav>
 
     </header>
     </>

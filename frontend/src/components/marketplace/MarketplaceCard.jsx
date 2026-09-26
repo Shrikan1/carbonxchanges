@@ -28,32 +28,32 @@ export default function MarketplaceCard({ listing }) {
           <p className="mt-3 line-clamp-3 max-w-[300px] text-[12px] leading-[1.45] text-[#7a8780]">{summary}</p>
         </div>
         
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-4 flex items-end justify-between gap-2 border-t border-[#f0f0f0]">
           {/* Metrics */}
-          <div className="flex items-end gap-5 mb-4 subheading">
+          <div className="flex items-end gap-3 sm:gap-4 subheading">
             <div className="flex flex-col">
               <span className="text-[#a0aaa3] text-[9px] font-bold uppercase tracking-wider mb-1">Available</span>
-              <span className="text-black font-bold text-sm">{Number(listing.amount_available || 0).toLocaleString()} <span className="text-gray-500 font-normal text-[10px]">tCO₂e</span></span>
+              <span className="text-black font-bold text-sm">{Number(listing.amount_available || 0).toLocaleString()} <span className="text-gray-500 font-normal text-[9px]">tCO₂e</span></span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[#a0aaa3] text-[9px] font-bold uppercase tracking-wider mb-1">Price/Ton</span>
-              <span className="text-[#00d084] font-black text-lg leading-none">₹{Number(listing.price_per_credit || 0).toLocaleString('en-IN')}</span>
+              <span className="text-[#a0aaa3] text-[9px] font-bold uppercase tracking-wider mb-1">Price</span>
+              <span className="text-[#00d084] font-black text-base leading-none">₹{Number(listing.price_per_credit || 0).toLocaleString('en-IN')}</span>
             </div>
           </div>
           
           {isAuthenticated ? (
             <Link 
               to={`/marketplace/${listing.listing_id}`}
-              className="inline-flex items-center gap-2 rounded-full bg-[#0c3a25] text-white font-bold py-2.5 px-5 text-[11px] hover:bg-[#1b5a39] transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-none bg-[#0c3a25] text-white font-bold h-[32px] px-3.5 text-[11px] hover:bg-[#1b5a39] transition-colors shrink-0"
             >
-              View Project <FiArrowRight size={14} />
+              View <FiArrowRight size={12} />
             </Link>
           ) : (
             <Link 
               to="/login"
-              className="inline-flex items-center gap-2 rounded-full bg-[#0c3a25] text-white font-bold py-2.5 px-5 text-[11px] hover:bg-[#1b5a39] transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 rounded-none bg-[#0c3a25] text-white font-bold h-[32px] px-3.5 text-[11px] hover:bg-[#1b5a39] transition-colors shrink-0"
             >
-              Sign In to View <FiArrowRight size={14} />
+              Sign In <FiArrowRight size={12} />
             </Link>
           )}
         </div>

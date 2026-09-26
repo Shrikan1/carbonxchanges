@@ -7,21 +7,21 @@ import {
 import { motion } from 'motion/react';
 
 const StatCard = ({ title, value, icon, loading, subtitle, trend }) => (
-  <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm flex flex-col">
-    <div className="flex items-center justify-between mb-2">
-      <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{title}</h3>
-      <div className="text-gray-400">
+  <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm flex flex-col">
+    <div className="flex items-center justify-between mb-1 sm:mb-2">
+      <h3 className="text-[9px] sm:text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate mr-2">{title}</h3>
+      <div className="text-gray-400 shrink-0 hidden sm:block">
         {icon}
       </div>
     </div>
     
     {loading ? (
-      <div className="h-8 bg-gray-100 rounded animate-pulse w-1/2 mt-1"></div>
+      <div className="h-6 sm:h-8 bg-gray-100 rounded animate-pulse w-1/2 mt-1"></div>
     ) : (
       <div>
-        <div className="text-3xl font-semibold text-gray-900 tracking-tight leading-none">{value}</div>
+        <div className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight leading-none">{value}</div>
         {subtitle && (
-          <div className="mt-1 text-[11px] text-gray-400">
+          <div className="mt-1 text-[9px] sm:text-[11px] text-gray-400 truncate">
             {subtitle}
           </div>
         )}
@@ -29,6 +29,7 @@ const StatCard = ({ title, value, icon, loading, subtitle, trend }) => (
     )}
   </div>
 );
+
 
 export default function AdminDashboard({ data, isLoading }) {
   const { users, projects, credits, pending_review_count } = data || {};
@@ -38,7 +39,7 @@ export default function AdminDashboard({ data, isLoading }) {
       <div className="p-4 md:p-6 lg:p-8 max-w-[1400px] mx-auto w-full space-y-6">
         
         {/* KPI Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           <StatCard 
             title="Total Projects" 
             value={projects?.total?.toLocaleString() || '0'} 
