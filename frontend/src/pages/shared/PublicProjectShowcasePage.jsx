@@ -69,6 +69,7 @@ export default function PublicProjectShowcasePage() {
       <Navbar />
       <div className="flex-grow flex items-center justify-center pt-24 pb-24">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+      </div>
     </div>
   );
 
