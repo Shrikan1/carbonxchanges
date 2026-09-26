@@ -3,7 +3,6 @@ import { FiSearch, FiFilter, FiActivity } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import * as marketplaceApi from '../../api/endpoint/marketplaceApi';
 import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import MarketplaceCard from '../../components/marketplace/MarketplaceCard';
 import { Select } from '../../components/ui/Select';
 
@@ -250,7 +249,6 @@ export default function MarketplacePage() {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }

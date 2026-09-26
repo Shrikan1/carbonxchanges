@@ -386,9 +386,7 @@ const Signup = ({ isEmbedded, isMemberSignUp }) => {
                 <p className="text-white/60 text-sm leading-relaxed max-w-xs font-mono">
                   Build a sustainable future with blockchain-powered carbon credits.
                 </p>
-                <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">
-                  © 2026 CarbonXplanet. All rights reserved.
-                </div>
+
               </div>
             </div>
           </div>

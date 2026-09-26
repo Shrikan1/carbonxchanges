@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes, FaHome, FaLeaf, FaUsers, FaFileAlt, FaInfoCircle, FaUser } from 'react-icons/fa';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 import { useAuthStore } from '../../store/useAuthStore';
 import * as authApi from '../../api/endpoint/Authapi';
@@ -457,68 +457,51 @@ const Navbar = ({
     if (isAuthenticated) {
 
       return (
-        <>
-
-          {/* Dashboard links (only if role exists) */}
-
+        <div className="space-y-2 mt-2">
           {dashboardLinks.map((dash, idx) => (
             <Link
               key={idx}
               to={dash.path}
               onClick={closeMobileMenu}
-              className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+              className="block w-full px-4 py-3.5 text-center text-gray-700 text-sm font-bold uppercase tracking-wider border border-gray-200 hover:bg-gray-50 rounded-xl transition-colors"
             >
               {dash.label}
             </Link>
           ))}
 
-
-          {/* ------------------------------------------
-              LOGOUT
-          ------------------------------------------ */}
-
           <button
             type="button"
             onClick={handleLogout}
-            className="block w-full px-4 py-3 text-center bg-[#222] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#333] transition-colors"
+            className="block w-full px-4 py-3.5 text-center bg-red-50 text-red-600 text-sm font-bold uppercase tracking-wider hover:bg-red-100 rounded-xl transition-colors"
           >
             Logout
           </button>
-
-        </>
+        </div>
       );
     }
-
 
     // ================================================
     // GUEST
     // ================================================
 
     return (
-      <>
-
-        {/* Login */}
-
+      <div className="space-y-2 mt-2">
         <Link
           to="/login"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center text-[#888] text-xs font-bold uppercase tracking-wider border border-[#333] hover:text-white hover:border-[#555] transition-colors"
+          className="block w-full px-4 py-3.5 text-center text-gray-700 text-sm font-bold uppercase tracking-wider border border-gray-200 hover:bg-gray-50 rounded-xl transition-colors"
         >
           LOGIN
         </Link>
 
-
-        {/* Sign Up — primary CTA for guests */}
-
         <Link
           to="/signup"
           onClick={closeMobileMenu}
-          className="block w-full px-4 py-3 text-center bg-white text-[#0c0c0c] text-xs font-bold uppercase tracking-wider hover:bg-[#eee] transition-colors"
+          className="block w-full px-4 py-3.5 text-center bg-[#1a3a22] text-white text-sm font-bold uppercase tracking-wider hover:bg-[#0f2a17] rounded-xl transition-colors shadow-md"
         >
           SIGN UP
         </Link>
-
-      </>
+      </div>
     );
   };
 
@@ -627,31 +610,61 @@ const Navbar = ({
           ================================================= */}
 
           <div className="lg:hidden flex items-center space-x-2 ml-2">
-            {isAuthenticated && (
-              <Link
-                to="/dashboard"
-                className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
-                aria-label="Dashboard Sidebar"
-              >
-                <FaBars size={13} />
-              </Link>
-            )}
-            <Link
-              to={isAuthenticated ? "/profile" : "/login"}
+            <button
+              onClick={toggleMobileMenu}
               className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
-              aria-label="Profile"
+              aria-label="Menu"
             >
               {isAuthenticated && user?.profileImage ? (
                 <img src={user.profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />
-              ) : (
+              ) : isAuthenticated ? (
                 <FaUser size={14} />
+              ) : (
+                <FaBars size={14} />
               )}
-            </Link>
+            </button>
           </div>
 
         </div>
 
       </div>
+
+      {/* =================================================
+          MOBILE MENU DRAWER
+      ================================================= */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 z-[60] lg:hidden backdrop-blur-sm"
+              onClick={closeMobileMenu}
+            />
+            <motion.div
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+              className="fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[70] flex flex-col shadow-2xl lg:hidden"
+            >
+              <div className="p-5 flex items-center justify-between border-b border-gray-100">
+                <span className="wise-font font-black uppercase text-[#1a3a22] text-lg">Menu</span>
+                <button onClick={closeMobileMenu} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
+                  <FaTimes size={16} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
+                 <div className="px-2 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Navigate</div>
+                 {navLinks.map((link) => (
+                   <Link key={link.name} to={link.path} onClick={closeMobileMenu} className="block px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 rounded-lg">
+                     {link.name}
+                   </Link>
+                 ))}
+                 <hr className="my-4 border-gray-100" />
+                 <div className="px-2 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Account</div>
+                 {renderMobileAuth()}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
 
       {/* =================================================
@@ -659,7 +672,7 @@ const Navbar = ({
       ================================================= */}
 
       <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-max z-50 lg:hidden">
-        <div className="bg-black/65 backdrop-blur-2xl border border-white/10 rounded-full shadow-2xl flex items-center justify-center p-1.5 gap-1">
+        <div className="bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center p-1.5 gap-1">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.path;
             const label = link.name === 'Marketplace' ? 'Market' : link.name;
@@ -679,19 +692,19 @@ const Navbar = ({
                 key={link.name}
                 to={link.path}
                 className={`relative flex flex-col items-center justify-center px-4 h-[3rem] transition-colors duration-200 z-10 ${isActive 
-                  ? 'text-white' 
-                  : 'hover:bg-white/5 text-white/50 rounded-full'
+                  ? 'text-[#173d25] font-bold' 
+                  : 'hover:bg-gray-50 text-gray-500 rounded-full font-medium'
                 }`}
               >
                 {isActive && (
                   <motion.div 
                     layoutId="dockSlider"
-                    className="absolute inset-0 bg-white/20 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)] rounded-full -z-10"
+                    className="absolute inset-0 bg-[#eef5f0] rounded-full -z-10"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
                 <IconComponent size={18} className="mb-0.5" />
-                <span className="text-[10px] font-medium tracking-wide">
+                <span className="text-[10px] tracking-wide">
                   {label}
                 </span>
               </Link>

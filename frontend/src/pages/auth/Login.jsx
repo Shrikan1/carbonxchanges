@@ -166,9 +166,7 @@ const Login = ({ isEmbedded }) => {
                 <p className="text-white/60 text-sm leading-relaxed max-w-xs font-mono">
                   Blockchain-powered carbon credit marketplace for a sustainable future.
                 </p>
-                <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-xs">
-                  © 2026 CarbonXplanet. All rights reserved.
-                </div>
+
               </div>
             </div>
           </div>

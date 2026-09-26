@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import * as marketplaceApi from '../../api/endpoint/marketplaceApi';
 import LocationMap from '../../components/LocationMap';
 import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import PurchaseModal from '../../components/marketplace/PurchaseModal';
 import { 
   FiArrowLeft, FiMapPin, FiInfo, FiCheckCircle, FiFileText, FiTarget, 

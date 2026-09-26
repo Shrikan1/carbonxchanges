@@ -4,7 +4,6 @@ import * as projectPostApi from '../../api/endpoint/projectPostApi';
 import * as sellerApi from '../../api/endpoint/Sellerapi';
 import LocationMap from '../../components/LocationMap';
 import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import SellerLayout from '../../components/layout/SellerLayout';
 import AgentLayout from '../../components/layout/AgentLayout';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -70,8 +69,6 @@ export default function PublicProjectShowcasePage() {
       <Navbar />
       <div className="flex-grow flex items-center justify-center pt-24 pb-24">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
-      </div>
-      <Footer />
     </div>
   );
 
@@ -241,7 +238,6 @@ export default function PublicProjectShowcasePage() {
         )}
         </div>
       </main>
-      {!isDashboardLayout && <Footer />}
     </div>
     </LayoutWrapper>
   );

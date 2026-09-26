@@ -102,6 +102,15 @@ const Home = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
   const projectSliderRef = useRef(null);
+  
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const slider = projectSliderRef.current;
@@ -175,30 +184,13 @@ const Home = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut", staggerChildren: 0.15 }}
-            className="w-full lg:w-[52%] py-16 lg:py-0 flex flex-col justify-center"
+            className="w-full lg:w-[52%] pt-8 pb-16 lg:py-0 flex flex-col justify-center"
           >
-
-            {/* Mobile hero image (Moved to top of content) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-              className="relative w-full flex justify-center pb-10 lg:hidden"
-            >
-              <div className="w-[85vw] max-w-[320px] aspect-square rounded-[2rem] overflow-hidden shadow-2xl mx-auto ring-1 ring-black/5">
-                <img
-                  src={img8}
-                  alt="Dark Jungle"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-              className="wise-font font-black text-[#17351f] leading-[0.95] tracking-[-0.04em] mb-4 sm:mb-6 uppercase"
+              className="wise-font font-black text-[#17351f] leading-[0.95] tracking-[-0.04em] mb-4 sm:mb-6 uppercase text-left"
               style={{ fontSize: 'clamp(2.25rem, 8vw, 4.5rem)' }}
             >
               Pioneering<br />
@@ -211,7 +203,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="text-[#51665a] text-[14px] sm:text-[16px] leading-relaxed max-w-[410px] mb-6 sm:mb-8 font-normal"
+              className="text-[#51665a] text-[14px] sm:text-[16px] leading-relaxed max-w-[410px] mb-6 sm:mb-8 font-normal text-left"
             >
               A decentralized marketplace where verified carbon credits
               meet transparent blockchain infrastructure.
@@ -222,11 +214,11 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="flex flex-wrap items-center gap-3 mb-14"
+              className="flex flex-wrap items-center justify-start gap-3 mb-10 w-full"
             >
               <Link
                 to="/marketplace"
-                className="inline-flex items-center gap-2.5 bg-[#173d25] text-white px-6 py-3 rounded-full text-[13px] font-semibold hover:bg-[#0f2f1b] transition-colors"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-10 py-3.5 rounded-none text-[13px] font-semibold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto"
               >
                 Explore Marketplace
                 <FaArrowRight className="text-[10px]" />
@@ -238,7 +230,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row gap-5 sm:gap-0 sm:grid sm:grid-cols-3 max-w-[470px] border-t border-[#ccd9cd] pt-6"
+              className="grid grid-cols-3 gap-2 sm:gap-0 max-w-[470px] border-t border-[#ccd9cd] pt-6 mb-12 lg:mb-0"
             >
               {[
                 { value: '500+', label: 'Verified Projects' },
@@ -250,18 +242,34 @@ const Home = () => {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 + (i * 0.1), ease: "easeOut" }}
-                  className="sm:border-r sm:last:border-r-0 border-[#d7e1d7] sm:first:pr-3 sm:px-3 sm:first:pl-0 flex flex-col items-start"
+                  className="border-r last:border-r-0 border-[#d7e1d7] pr-2 sm:first:pr-3 sm:px-3 sm:first:pl-0 flex flex-col items-start text-left"
                 >
-                  <p className="wise-font font-black text-[2rem] sm:text-[1.7rem] text-[#17351f] leading-none mb-1">
+                  <p className="wise-font font-black text-[1.4rem] sm:text-[1.6rem] text-[#17351f] leading-none mb-1">
                     {stat.value}
                   </p>
-                  <p className="text-[11px] sm:text-[10px] text-[#6a7e70] font-semibold tracking-wide uppercase">
+                  <p className="text-[9px] sm:text-[10px] text-[#6a7e70] font-semibold tracking-wide uppercase">
                     {stat.label}
                   </p>
                 </motion.div>
               ))}
             </motion.div>
 
+            {/* Mobile hero image (Moved below content for professional flow) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+              className="relative w-full flex justify-center lg:hidden"
+            >
+              <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl mx-auto ring-1 ring-black/5">
+                <img
+                  src={img8}
+                  alt="Dark Jungle"
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: 'center 45%' }}
+                />
+              </div>
+            </motion.div>
           </motion.div>
         </div>
 
@@ -395,8 +403,8 @@ const Home = () => {
                 Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
               </p>
             </div>
-            <div className="mt-12">
-              <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-[#bef264] text-[#0f2416] px-8 py-4 text-[13px] font-black hover:bg-white transition-colors tracking-wide">
+            <div className="mt-12 hidden lg:block">
+              <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-10 py-3.5 rounded-none text-[13px] font-semibold hover:bg-white transition-colors">
                 <span>VIEW MARKETPLACE</span>
                 <FaArrowRight className="text-[12px]" />
               </Link>
@@ -413,15 +421,25 @@ const Home = () => {
           
           <DriftWall
             items={projectGalleryItems}
-            columns={3}
-            tileWidth={260}
-            tileHeight={200}
-            gap={16}
-            speed={25}
+            columns={isMobile ? 2 : 3}
+            tileWidth={isMobile ? 130 : 260}
+            tileHeight={isMobile ? 100 : 200}
+            gap={isMobile ? 12 : 16}
+            speed={isMobile ? 12 : 25}
             direction="up"
             overlayColor="transparent"
             dim={1.0}
+            turn={isMobile ? 0 : -14}
+            tilt={isMobile ? 0 : 16}
           />
+        </div>
+
+        {/* Mobile CTA (Below Gallery) */}
+        <div className="w-full bg-[#0a170e] px-6 pb-12 lg:hidden flex justify-center">
+          <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-10 py-3.5 rounded-none text-[13px] font-semibold hover:bg-white transition-colors w-full sm:w-auto">
+            <span>VIEW MARKETPLACE</span>
+            <FaArrowRight className="text-[12px]" />
+          </Link>
         </div>
       </section>
 
@@ -474,7 +492,7 @@ const Home = () => {
 
           <div className="relative flex items-center justify-center w-full mt-10 lg:mt-0 pb-6 sm:pb-0">
             <motion.div
-              className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 w-full"
+              className="grid grid-cols-3 gap-2 sm:gap-4 w-full max-w-[340px] sm:max-w-none mx-auto lg:mx-0"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-50px" }}
@@ -503,10 +521,10 @@ const Home = () => {
                     hidden: { opacity: 0, y: 30, scale: 0.9 },
                     visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 200, damping: 15 } }
                   }}
-                  className="bg-white border border-[#d9e4da] w-full aspect-square max-w-[150px] sm:max-w-none sm:w-32 sm:h-32 mx-auto flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:border-[#96b99c] hover:shadow-[0_10px_20px_rgba(27,66,39,0.08)] cursor-pointer group"
+                  className="bg-white border border-[#d9e4da] w-full aspect-square flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:border-[#96b99c] hover:shadow-[0_10px_20px_rgba(27,66,39,0.08)] cursor-pointer group"
                 >
-                  <Icon className={`text-3xl sm:text-5xl mb-3 transition-transform duration-300 group-hover:scale-110 ${color}`} />
-                  <span className="text-[10px] font-bold text-[#294633] uppercase text-center px-2 leading-tight">{label}</span>
+                  <Icon className={`text-[26px] sm:text-[34px] mb-2 transition-transform duration-300 group-hover:scale-110 ${color}`} />
+                  <span className="text-[8.5px] sm:text-[9.5px] font-bold text-[#294633] uppercase text-center px-1 leading-tight">{label}</span>
                 </motion.div>
               ))}
             </motion.div>

@@ -149,7 +149,8 @@ const DriftWall = ({
           const meta = columnMeta[c];
           if (!meta) continue;
           const paused = wallHoveredRef.current && pauseOnHover;
-          const factor = paused || hoveredColRef.current === c ? 0 : 1;
+          const hasHover = typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches;
+          const factor = paused || (hoveredColRef.current === c && hasHover) ? 0 : 1;
           const target = baseVelocities[c] * factor;
 
           const ease = 1 - Math.exp(-dt / (target === 0 ? 0.16 : 0.28));
@@ -335,6 +336,9 @@ const DriftWall = ({
       <div
         ref={planeRef}
         className="absolute left-1/2 top-1/2 flex cursor-pointer flex-row [transform-style:preserve-3d] [transform-origin:50%_50%] will-change-transform"
+        style={{
+          transform: `translate(-50%, -50%) scale(1.18) rotateX(${tilt}deg) rotateY(${turn}deg) rotateZ(${roll}deg) translateZ(${-depth}px)`
+        }}
       >
         {columnItems.map((col, c) => {
           const meta = columnMeta[c];

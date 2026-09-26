@@ -38,7 +38,7 @@ const Footer = () => {
             </div>
 
             {/* Links Columns (Right Columns) */}
-            <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 pt-2">
+            <div className="md:col-span-7 grid grid-cols-2 gap-8 pt-2">
 
               <div>
                 <h4 className="text-white wise-font font-black uppercase tracking-widest mb-6 text-[15px]">Platform</h4>
@@ -60,29 +60,10 @@ const Footer = () => {
                 </ul>
               </div>
 
-              <div>
-                <h4 className="text-white wise-font font-black uppercase tracking-widest mb-6 text-[15px]">Company</h4>
-                <ul className="space-y-4">
-                  <li><Link to="/about" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">About</Link></li>
-                  <li><Link to="/contact" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Contact</Link></li>
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Careers</a></li>
-                  <li><a href="#" className="text-[#888] hover:text-white text-[13px] font-mono transition-colors">Partners</a></li>
-                </ul>
-              </div>
 
             </div>
           </div>
 
-          <div className="border-t border-[#222] pt-8 flex flex-col md:flex-row justify-between items-center relative z-10">
-            <p className="text-[#666] text-[13px] font-mono mb-4 md:mb-0">
-              © {new Date().getFullYear()} CarbonXplanet. All rights reserved.
-            </p>
-            <div className="flex space-x-6 text-[13px] font-mono">
-              <a href="#" className="text-[#666] hover:text-[#aaa] transition-colors underline decoration-[#333] underline-offset-4">Privacy Policy</a>
-              <a href="#" className="text-[#666] hover:text-[#aaa] transition-colors underline decoration-[#333] underline-offset-4">Terms of Service</a>
-              <a href="#" className="text-[#666] hover:text-[#aaa] transition-colors underline decoration-[#333] underline-offset-4">Cookies Settings</a>
-            </div>
-          </div>
 
           {/* Subtle large background text like the image (watermark effect) */}
           <div className="absolute -bottom-[20%] left-1/2 transform -translate-x-1/2 text-[15vw] wise-font font-black uppercase tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
