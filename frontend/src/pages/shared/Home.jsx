@@ -218,10 +218,10 @@ const Home = () => {
             >
               <Link
                 to="/marketplace"
-                className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-10 py-3.5 rounded-none text-[13px] font-semibold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto"
               >
-                Explore Marketplace
-                <FaArrowRight className="text-[10px]" />
+                Discover Projects
+                <FaArrowRight className="text-[11px]" />
               </Link>
             </motion.div>
 
@@ -404,9 +404,9 @@ const Home = () => {
               </p>
             </div>
             <div className="mt-12 hidden lg:block">
-              <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-10 py-3.5 rounded-none text-[13px] font-semibold hover:bg-white transition-colors">
-                <span>VIEW MARKETPLACE</span>
-                <FaArrowRight className="text-[12px]" />
+              <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-white transition-colors w-full sm:w-auto">
+                <span>BROWSE MARKETPLACE</span>
+                <FaArrowRight className="text-[11px]" />
               </Link>
             </div>
           </div>
@@ -436,9 +436,9 @@ const Home = () => {
 
         {/* Mobile CTA (Below Gallery) */}
         <div className="w-full bg-[#0a170e] px-6 pb-12 lg:hidden flex justify-center">
-          <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-10 py-3.5 rounded-none text-[13px] font-semibold hover:bg-white transition-colors w-full sm:w-auto">
-            <span>VIEW MARKETPLACE</span>
-            <FaArrowRight className="text-[12px]" />
+          <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-white transition-colors w-full sm:w-auto">
+            <span>BROWSE MARKETPLACE</span>
+            <FaArrowRight className="text-[11px]" />
           </Link>
         </div>
       </section>
@@ -478,13 +478,13 @@ const Home = () => {
               Generate audit-ready ESG reports aligned with Verra VCS and Gold Standard. Every credit is minted as an NFT with an immutable audit trail.
             </p>
             {isAuthenticated ? (
-              <Link to="/seller/post/new" className="inline-flex items-center space-x-3 bg-[#173d25] text-white px-6 py-3 text-[12px] font-bold hover:bg-[#0f2f1b] transition-colors">
-                <span>CREATE NEW PROJECT</span>
+              <Link to="/seller/post/new" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
+                <span>START SELLING</span>
                 <FaArrowRight className="text-[11px]" />
               </Link>
             ) : (
-              <Link to="/signup" className="inline-flex items-center space-x-3 bg-[#173d25] text-white px-6 py-3 text-[12px] font-bold hover:bg-[#0f2f1b] transition-colors">
-                <span>CREATE AN ACCOUNT</span>
+              <Link to="/signup" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
+                <span>JOIN PLATFORM</span>
                 <FaArrowRight className="text-[11px]" />
               </Link>
             )}
@@ -555,8 +555,8 @@ const Home = () => {
             <p className="text-white/70 text-[15px] leading-relaxed mb-8 font-semibold">
               No brokers. No greenwashing. No BS.
             </p>
-            <Link to="/marketplace" className="inline-flex items-center space-x-3 bg-[#e4f0db] text-[#153323] px-6 py-3 text-[12px] font-bold hover:bg-white transition-colors">
-              <span>EXPLORE MARKETPLACE</span>
+            <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#e4f0db] text-[#153323] px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-white transition-colors w-full sm:w-auto mt-2">
+              <span>VIEW LIVE CREDITS</span>
               <FaArrowRight className="text-[11px]" />
             </Link>
           </div>
@@ -719,8 +719,8 @@ const Home = () => {
             </AnimatePresence>
           </div>
 
-          <Link to="/about" className="inline-flex items-center space-x-3 bg-[#0a0a0a] text-white px-6 py-3 text-[12px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl">
-            <span>READ THEIR STORY</span>
+          <Link to="/about" className="inline-flex items-center justify-center gap-2.5 bg-[#0a0a0a] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl w-full sm:w-auto mt-4">
+            <span>READ OUR STORY</span>
             <FaArrowRight className="text-[11px]" />
           </Link>
         </div>
