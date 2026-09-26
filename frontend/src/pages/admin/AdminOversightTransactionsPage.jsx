@@ -48,8 +48,8 @@ export default function AdminOversightTransactionsPage() {
           </div>
 
           {/* Table */}
-          <div className="flex-1 overflow-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="flex-1 overflow-x-auto overflow-y-auto w-full">
+            <table className="w-full text-left border-collapse min-w-[800px]">
               <thead className="bg-white sticky top-0 z-10 border-b border-gray-200 shadow-sm">
                 <tr>
                   <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider w-[35%]">Project</th>

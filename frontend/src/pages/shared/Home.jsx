@@ -218,7 +218,7 @@ const Home = () => {
             >
               <Link
                 to="/marketplace"
-                className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto"
               >
                 Discover Projects
                 <FaArrowRight className="text-[11px]" />
@@ -403,8 +403,8 @@ const Home = () => {
                 Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
               </p>
             </div>
-            <div className="mt-12 hidden lg:block">
-              <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-white transition-colors w-full sm:w-auto">
+            <div className="mt-12 hidden lg:flex">
+              <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-white transition-colors shadow-sm">
                 <span>BROWSE MARKETPLACE</span>
                 <FaArrowRight className="text-[11px]" />
               </Link>
@@ -435,8 +435,8 @@ const Home = () => {
         </div>
 
         {/* Mobile CTA (Below Gallery) */}
-        <div className="w-full bg-[#0a170e] px-6 pb-12 lg:hidden flex justify-center">
-          <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-white transition-colors w-full sm:w-auto">
+        <div className="w-full bg-[#0a170e] px-6 pb-12 lg:hidden flex justify-center items-center">
+          <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-white transition-colors shadow-sm">
             <span>BROWSE MARKETPLACE</span>
             <FaArrowRight className="text-[11px]" />
           </Link>
@@ -478,12 +478,12 @@ const Home = () => {
               Generate audit-ready ESG reports aligned with Verra VCS and Gold Standard. Every credit is minted as an NFT with an immutable audit trail.
             </p>
             {isAuthenticated ? (
-              <Link to="/seller/post/new" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
+              <Link to="/seller/post/new" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
                 <span>START SELLING</span>
                 <FaArrowRight className="text-[11px]" />
               </Link>
             ) : (
-              <Link to="/signup" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
+              <Link to="/signup" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
                 <span>JOIN PLATFORM</span>
                 <FaArrowRight className="text-[11px]" />
               </Link>
@@ -555,7 +555,7 @@ const Home = () => {
             <p className="text-white/70 text-[15px] leading-relaxed mb-8 font-semibold">
               No brokers. No greenwashing. No BS.
             </p>
-            <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#e4f0db] text-[#153323] px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-white transition-colors w-full sm:w-auto mt-2">
+            <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#e4f0db] text-[#153323] px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-white transition-colors w-full sm:w-auto mt-2">
               <span>VIEW LIVE CREDITS</span>
               <FaArrowRight className="text-[11px]" />
             </Link>
@@ -719,7 +719,7 @@ const Home = () => {
             </AnimatePresence>
           </div>
 
-          <Link to="/about" className="inline-flex items-center justify-center gap-2.5 bg-[#0a0a0a] text-white px-8 py-3.5 rounded-none text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl w-full sm:w-auto mt-4">
+          <Link to="/about" className="inline-flex items-center justify-center gap-2.5 bg-[#0a0a0a] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl w-full sm:w-auto mt-4">
             <span>READ OUR STORY</span>
             <FaArrowRight className="text-[11px]" />
           </Link>
@@ -910,7 +910,7 @@ const Home = () => {
                   />
                 </div>
 
-                <button type="submit" className="w-full bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] font-bold py-3.5 px-6 rounded-xl transition-all shadow-md hover:shadow-lg text-[13px] uppercase tracking-widest mt-2 flex justify-center items-center">
+                <button type="submit" className="w-full bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] font-bold py-3.5 px-6 rounded-md transition-all shadow-md hover:shadow-lg text-[13px] uppercase tracking-widest mt-2 flex justify-center items-center">
                   Send Message
                 </button>
               </form>

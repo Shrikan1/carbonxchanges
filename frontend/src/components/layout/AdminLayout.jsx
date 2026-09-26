@@ -118,7 +118,7 @@ export default function AdminLayout({ children, title, subtitle }) {
       {/* ── Mobile Header ── */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-4">
         <Link to="/" className="flex flex-col">
-          <span className="text-lg font-black tracking-widest text-gray-900 wise-font uppercase leading-none">CXP</span>
+          <span className="text-sm sm:text-base font-black tracking-widest text-gray-900 wise-font uppercase leading-none">CARBONXPLANET</span>
           <span className="text-[8px] font-bold font-mono text-emerald-600 tracking-widest uppercase">Admin</span>
         </Link>
         <div className="flex items-center gap-4">
@@ -180,7 +180,7 @@ export default function AdminLayout({ children, title, subtitle }) {
       </AnimatePresence>
 
       {/* ── Main Content Area ── */}
-      <main className="flex-1 lg:ml-[240px] min-h-screen flex flex-col pt-16 lg:pt-0">
+      <main className="flex-1 min-w-0 lg:ml-[240px] min-h-screen flex flex-col pt-16 lg:pt-0 overflow-x-hidden">
         
         {/* Desktop Header */}
         <header className="hidden lg:flex items-center justify-between h-[60px] px-6 lg:px-8 bg-[#f4f7f5] sticky top-0 z-30">
