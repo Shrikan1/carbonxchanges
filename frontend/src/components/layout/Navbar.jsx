@@ -658,7 +658,7 @@ const Navbar = ({
           onClick={closeMobileMenu}
         />
         <div
-          className={`fixed top-0 right-0 h-[100dvh] w-[280px] bg-white z-[70] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out overscroll-none ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[70] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out overscroll-none ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
           <div className="p-5 flex items-center justify-between border-b border-gray-100">
             <span className="wise-font font-black uppercase text-[#1a3a22] text-lg">Menu</span>
