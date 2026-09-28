@@ -1,5 +1,6 @@
 const ProjectPost = require('../../models/ProjectPost');
 const Project = require('../../models/Project');
+const { memoryCache, invalidateCache } = require('../../utils/cache');
 
 // POST /api/project-posts   body: { project_id, title, description, story, how_it_works, images, videos }
 async function createProjectPost(req, res) {
@@ -16,6 +17,7 @@ async function createProjectPost(req, res) {
     }
 
     const post = await ProjectPost.createPost(project_id, req.body);
+    invalidateCache('post');
     res.status(201).json({ message: 'Project post created', post });
   } catch (err) {
     console.error('Create project post error:', err);
@@ -33,6 +35,7 @@ async function updateProjectPost(req, res) {
     }
 
     const updated = await ProjectPost.updatePost(req.params.id, req.body);
+    invalidateCache('post');
     res.json({ message: 'Post updated', post: updated });
   } catch (err) {
     console.error('Update project post error:', err);
@@ -50,6 +53,7 @@ async function deleteProjectPost(req, res) {
     }
 
     await ProjectPost.deletePost(req.params.id);
+    invalidateCache('post');
     res.json({ message: 'Post deleted' });
   } catch (err) {
     console.error('Delete project post error:', err);
@@ -60,14 +64,26 @@ async function deleteProjectPost(req, res) {
 // GET /api/project-posts/:id — public
 async function getProjectPostById(req, res) {
   try {
+    const cacheKey = `post_id_${req.params.id}`;
+    const cachedData = memoryCache.get(cacheKey);
+    if (cachedData) {
+      res.setHeader('X-Cache', 'HIT');
+      res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=30');
+      return res.json(cachedData);
+    }
+
     const post = await ProjectPost.findPostById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
     
-    // Attach updates if needed, though single post view might not show them or might want them
+    // Attach updates if needed
     const updates = await ProjectPost.findUpdatesByPost(post.id);
     post.updates = updates;
     
-    res.json({ post });
+    const responseData = { post };
+    memoryCache.set(cacheKey, responseData, 30);
+    res.setHeader('X-Cache', 'MISS');
+    res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=30');
+    res.json(responseData);
   } catch (err) {
     console.error('Get project post by id error:', err);
     res.status(500).json({ error: 'Failed to fetch project post' });
@@ -77,6 +93,14 @@ async function getProjectPostById(req, res) {
 // GET /api/project-posts/project/:projectId  — public, no ownership check
 async function getProjectPosts(req, res) {
   try {
+    const cacheKey = `posts_project_${req.params.projectId}`;
+    const cachedData = memoryCache.get(cacheKey);
+    if (cachedData) {
+      res.setHeader('X-Cache', 'HIT');
+      res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=30');
+      return res.json(cachedData);
+    }
+
     const posts = await ProjectPost.findPostsByProject(req.params.projectId);
     // Attach progress updates for each post so the showcase page has everything in one call
     const postsWithUpdates = await Promise.all(
@@ -85,7 +109,12 @@ async function getProjectPosts(req, res) {
         updates: await ProjectPost.findUpdatesByPost(post.id),
       }))
     );
-    res.json({ posts: postsWithUpdates });
+
+    const responseData = { posts: postsWithUpdates };
+    memoryCache.set(cacheKey, responseData, 30);
+    res.setHeader('X-Cache', 'MISS');
+    res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=30');
+    res.json(responseData);
   } catch (err) {
     console.error('Get project posts error:', err);
     res.status(500).json({ error: 'Failed to fetch project posts' });
@@ -95,8 +124,20 @@ async function getProjectPosts(req, res) {
 // GET /api/project-posts/all — public, get all global posts
 async function getAllProjectPosts(req, res) {
   try {
+    const cacheKey = 'posts_all';
+    const cachedData = memoryCache.get(cacheKey);
+    if (cachedData) {
+      res.setHeader('X-Cache', 'HIT');
+      res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=30');
+      return res.json(cachedData);
+    }
+
     const posts = await ProjectPost.findAllPosts();
-    res.json({ posts });
+    const responseData = { posts };
+    memoryCache.set(cacheKey, responseData, 30);
+    res.setHeader('X-Cache', 'MISS');
+    res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=30');
+    res.json(responseData);
   } catch (err) {
     console.error('Get all project posts error:', err);
     res.status(500).json({ error: 'Failed to fetch global posts' });
@@ -110,6 +151,7 @@ async function likeProjectPost(req, res) {
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
     const result = await ProjectPost.toggleLike(req.params.id, req.user.id);
+    invalidateCache('post');
     res.json({ message: result.liked ? 'Post liked' : 'Like removed', ...result });
   } catch (err) {
     console.error('Like project post error:', err);
@@ -124,6 +166,7 @@ async function shareProjectPost(req, res) {
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
     const result = await ProjectPost.incrementShareCount(req.params.id);
+    invalidateCache('post');
     res.json({ message: 'Share recorded', shares_count: result.shares_count });
   } catch (err) {
     console.error('Share project post error:', err);

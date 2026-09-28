@@ -1,7 +1,8 @@
-﻿const PendingSale = require('../../models/PendingSale');
+const PendingSale = require('../../models/PendingSale');
 const Notification = require('../../models/Notification');
 const blockchainService = require('../../services/blockchainService');
 const User = require('../../models/User');
+const { invalidateCache } = require('../../utils/cache');
 
 // GET /api/seller/sales/pending
 async function getPendingSales(req, res) {
@@ -44,6 +45,8 @@ async function completeSale(req, res) {
 
     const { transaction } = await PendingSale.completePendingSale(saleId, req.user.id, tx_hash);
 
+    invalidateCache('marketplace');
+
     // Notify buyer their tokens are on the way
     await Notification.createNotification(
       sale.buyer_id,
@@ -67,6 +70,8 @@ async function rejectSale(req, res) {
   try {
     const saleId = Number(req.params.saleId);
     const sale = await PendingSale.rejectPendingSale(saleId, req.user.id);
+
+    invalidateCache('marketplace');
 
     await Notification.createNotification(
       sale.buyer_id,

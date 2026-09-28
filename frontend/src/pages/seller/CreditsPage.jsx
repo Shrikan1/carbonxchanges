@@ -128,7 +128,7 @@ export default function CreditsPage() {
                               {tx.transaction_type === 'mint' ? '+' : '-'}{tx.amount}
                             </span>
                             {tx.price_per_credit && (
-                              <span className="text-[10px] md:text-xs text-gray-500">@ ${tx.price_per_credit}/ea</span>
+                              <span className="text-[10px] md:text-xs text-gray-500">@ ₹{tx.price_per_credit}/ea</span>
                             )}
                           </div>
                         </div>

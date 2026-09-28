@@ -1,7 +1,8 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as salesApi from '../../api/endpoint/salesApi';
 import SellerLayout from '../../components/layout/SellerLayout';
-import { FiDownload, FiDollarSign, FiArrowRight, FiActivity, FiClock, FiCheck, FiX } from 'react-icons/fi';
+import { FiDownload, FiArrowRight, FiActivity, FiClock, FiCheck, FiX } from 'react-icons/fi';
+import { FaRupeeSign } from 'react-icons/fa6';
 import toast from 'react-hot-toast';
 import { getCarbonTokenContract } from '../../lib/carbonTokenContract';
 import { toOnChainAmount } from '../../lib/carbonTokenAbi';
@@ -124,12 +125,12 @@ export default function SalesPage() {
             <div className="lg:col-span-1">
               <div className="bg-[#022c22] border border-[#022c22] rounded-2xl p-6 shadow-md flex flex-col justify-center items-start lg:sticky lg:top-6">
                 <div className="w-12 h-12 bg-white/10 text-[#bef264] rounded-xl flex items-center justify-center mb-6">
-                  <FiDollarSign size={24} />
+                  <FaRupeeSign size={22} />
                 </div>
                 <p className="text-xs font-mono text-[#bef264] font-bold uppercase tracking-wider mb-2">Total Revenue</p>
                 <div className="text-5xl font-mono font-bold text-white tracking-tight flex items-baseline gap-1">
-                  <span className="text-2xl text-emerald-500 font-medium">$</span>
-                  {revenue ? Number(revenue.total_revenue).toLocaleString('en-US', { maximumFractionDigits: 0 }) : '0'}
+                  <span className="text-2xl text-emerald-500 font-medium">₹</span>
+                  {revenue ? Number(revenue.total_revenue).toLocaleString('en-IN', { maximumFractionDigits: 0 }) : '0'}
                 </div>
               </div>
             </div>
@@ -154,7 +155,7 @@ export default function SalesPage() {
                             Buyer: <span className="font-medium text-gray-700">{sale.buyer_name}</span> ({sale.buyer_wallet})
                           </p>
                           <p className="text-sm font-mono mt-2 text-gray-600">
-                            {Number(sale.amount).toLocaleString()} credits @ ${Number(sale.price_per_credit).toLocaleString()} = <span className="font-bold text-emerald-600">${Number(sale.amount * sale.price_per_credit).toLocaleString()}</span>
+                            {Number(sale.amount).toLocaleString()} credits @ ₹{Number(sale.price_per_credit).toLocaleString('en-IN')} = <span className="font-bold text-emerald-600">₹{Number(sale.amount * sale.price_per_credit).toLocaleString('en-IN')}</span>
                           </p>
                         </div>
                         
@@ -224,12 +225,12 @@ export default function SalesPage() {
                             </div>
 
                             <div className="text-sm font-mono text-gray-600">
-                              ${Number(s.price_per_credit).toLocaleString()}
+                              ₹{Number(s.price_per_credit).toLocaleString('en-IN')}
                             </div>
                             
                             <div className="w-full text-right">
                               <div className="font-mono font-bold text-emerald-600 text-sm">
-                                +${Number(s.total_price).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                                +₹{Number(s.total_price).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                               </div>
                             </div>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import { FaCheckCircle, FaArrowRight, FaGlobeAmericas, FaLeaf, FaLink } from 'react-icons/fa';
+import { FaCheckCircle, FaArrowRight, FaLeaf, FaLink } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import heroImage from '../../assets/Mangrove-Forest-Coast-2000x1237-1.jpg';
 
@@ -34,15 +34,6 @@ const About = () => {
             className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 flex items-center space-x-4 bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-xl">
-            <div className="w-12 h-12 rounded-full bg-[#bef264] flex items-center justify-center text-[#0a0a0a] shrink-0">
-              <FaGlobeAmericas className="text-xl" />
-            </div>
-            <div>
-              <h4 className="text-gray-900 font-bold text-[15px] tracking-wide font-['JetBrains_Mono']">Global Impact</h4>
-              <p className="text-gray-500 text-sm">Connecting projects worldwide.</p>
-            </div>
-          </div>
         </div>
       </section>
 

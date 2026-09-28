@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../models/User');
-const generateToken = require("../../utils/token")
+const { generateToken, generateRefreshToken } = require('../../utils/token');
+const { getRefreshCookieOptions } = require('../../utils/cookieOptions');
 // GET /api/profile
 // Note: this covers your "findSellerById()" query — it's the same as the
 // already-existing User.findById(), since profile lookup isn't actually
@@ -61,8 +62,11 @@ async function changePassword(req, res) {
     await User.bumpTokenVersion(req.user.id);
     const freshUser = await User.findById(req.user.id);
     const token = generateToken(freshUser);
+    const refreshToken = generateRefreshToken(freshUser);
 
-    res.json({ message: 'Password changed successfully', token });
+    res
+      .cookie('refreshToken', refreshToken, getRefreshCookieOptions(req))
+      .json({ message: 'Password changed successfully', token });
   } catch (err) {
     console.error('Change password error:', err);
     res.status(500).json({ error: 'Failed to change password' });

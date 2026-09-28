@@ -1,7 +1,8 @@
 const { query } = require('../../config/db');
 const Listing = require('../../models/Listing');
 const Credit = require('../../models/Credit');
-const Paginate = require('../../utils/paginate')
+const Paginate = require('../../utils/paginate');
+const { invalidateCache } = require('../../utils/cache');
   // POST /api/marketplace/listings   body: { batch_id, price_per_credit, amount_listed, image_url }
 async function createCreditListing(req, res) {
   try {
@@ -38,6 +39,7 @@ async function createCreditListing(req, res) {
     }
 
     const listing = await Listing.createListing(batch_id, req.user.id, price_per_credit, amount_listed, image_url);
+    invalidateCache('marketplace');
     res.status(201).json({ message: 'Listing created', listing });
   } catch (err) {
     console.error('Create listing error:', err);
@@ -58,6 +60,7 @@ async function updateCreditPrice(req, res) {
     }
 
     const updated = await Listing.updateListing(req.params.id, req.body);
+    invalidateCache('marketplace');
     res.json({ message: 'Listing updated', listing: updated });
   } catch (err) {
     console.error('Update listing error:', err);
@@ -78,6 +81,7 @@ async function cancelListing(req, res) {
     }
 
     const cancelled = await Listing.deleteListing(req.params.id);
+    invalidateCache('marketplace');
     res.json({ message: 'Listing cancelled', listing: cancelled });
   } catch (err) {
     console.error('Cancel listing error:', err);

@@ -3,6 +3,7 @@ const User = require('../../models/User');
 const Otp = require('../../models/Otp');
 const { sendOtpEmail } = require('../../services/emailService');
 const { generateToken, generateRefreshToken, verifyToken } = require('../../utils/token');
+const { getRefreshCookieOptions } = require('../../utils/cookieOptions');
 
 
 
@@ -108,12 +109,7 @@ async function login(req, res) {
     // so it can't be stolen via XSS. Access token goes in the response body
     // for the frontend to store in memory (not localStorage).
     res
-      .cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
-      })
+      .cookie('refreshToken', refreshToken, getRefreshCookieOptions(req))
       .json({ user, token });
 
   } catch (err) {
@@ -156,7 +152,11 @@ async function refreshToken(req, res) {
   }
 
   const newAccessToken = generateToken(user);
-  res.json({ token: newAccessToken });
+  const newRefreshToken = generateRefreshToken(user);
+
+  res
+    .cookie('refreshToken', newRefreshToken, getRefreshCookieOptions(req))
+    .json({ token: newAccessToken });
 }
 
 // POST /api/auth/logout
@@ -166,8 +166,10 @@ async function logout(req, res) {
   if (req.user?.id) {
     await User.bumpTokenVersion(req.user.id);
   }
+  const cookieOpts = getRefreshCookieOptions(req);
+  delete cookieOpts.maxAge;
   res
-    .clearCookie('refreshToken')
+    .clearCookie('refreshToken', cookieOpts)
     .json({ message: 'Logged out successfully' });
 }
 

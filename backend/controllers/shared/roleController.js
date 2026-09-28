@@ -1,7 +1,8 @@
 const User = require('../../models/User');
 const Otp = require('../../models/Otp');
 const { sendOtpEmail } = require('../../services/emailService');
-const { generateToken } = require('../../utils/token');
+const { generateToken, generateRefreshToken } = require('../../utils/token');
+const { getRefreshCookieOptions } = require('../../utils/cookieOptions');
 
 
 const VALID_ROLE_TYPES = ['seller', 'buyer'];
@@ -81,8 +82,13 @@ async function verifyRoleUpgrade(req, res) {
     await User.bumpTokenVersion(req.user.id);
     const freshUser = await User.findById(req.user.id); // re-fetch with new token_version
     const token = generateToken(freshUser);
+    const refreshToken = generateRefreshToken(freshUser);
 
-    res.json({ message: 'Role upgrade verified', user: updatedUser, token });
+    // Update the httpOnly refresh cookie with the new token_version so silent refresh
+    // works seamlessly and doesn't get flagged as a revoked session.
+    res
+      .cookie('refreshToken', refreshToken, getRefreshCookieOptions(req))
+      .json({ message: 'Role upgrade verified', user: freshUser, token });
 
   } catch (err) {
     console.error('Verify role upgrade error:', err);

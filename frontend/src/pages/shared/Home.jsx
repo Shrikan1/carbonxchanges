@@ -282,7 +282,7 @@ const Home = () => {
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="absolute hidden lg:block overflow-hidden"
           style={{
-            width: 'clamp(490px, 48vw, 740px)',
+            width: 'clamp(380px, 42vw, 680px)',
             height: 'calc(100% - 36px)',
             borderRadius: '260px 0 0 260px',
             top: '18px',
@@ -375,6 +375,7 @@ const Home = () => {
                     loop
                     muted
                     playsInline
+                    preload="metadata"
                     className="w-full h-full object-cover"
                   >
                     <source src="/lv_0_20260812015528.mp4" type="video/mp4" />
@@ -835,7 +836,7 @@ const Home = () => {
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Call Us</p>
-                  <p className="text-[15px] font-medium text-white">+91 8080209999</p>
+                  <a href="tel:+917972112460" className="text-[15px] font-medium text-white hover:text-[#bef264] transition-colors">+91 7972112460</a>
                 </div>
               </div>
 
@@ -846,7 +847,7 @@ const Home = () => {
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Email Us</p>
-                  <p className="text-[15px] font-medium text-white">contact@carbonxplanet.in</p>
+                  <a href="mailto:carbonxcredit2@gmail.com" className="text-[15px] font-medium text-white hover:text-[#bef264] transition-colors">carbonxcredit2@gmail.com</a>
                 </div>
               </div>
             </div>

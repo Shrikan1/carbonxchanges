@@ -28,7 +28,7 @@ async function requireAuth(req, res, next) {
     return res.status(401).json({ error: 'Token has been revoked. Please log in again.' });
   }
 
-  req.user = decoded;
+  req.user = { ...decoded, ...user };
   next();
 }
 

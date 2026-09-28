@@ -3,10 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import {
   FiHome, FiFolder, FiPlusSquare, FiFileText,
-  FiAward, FiTag, FiDollarSign, FiBriefcase,
+  FiAward, FiTag, FiBriefcase,
   FiUser, FiSettings, FiHelpCircle, FiLogOut,
   FiMenu, FiX
 } from 'react-icons/fi';
+import { FaRupeeSign } from 'react-icons/fa6';
 import NotificationDropdown from './NotificationDropdown';
 
 export default function SellerLayout({ children, title, subtitle }) {
@@ -47,7 +48,7 @@ export default function SellerLayout({ children, title, subtitle }) {
     // { name: 'KYC Documents', path: '/seller/kyc', icon: <FiFileText className="w-[18px] h-[18px]" /> },
     { name: 'Credits', path: '/seller/credits', icon: <FiAward className="w-[18px] h-[18px]" /> },
     { name: 'Listings', path: '/seller/listings', icon: <FiTag className="w-[18px] h-[18px]" /> },
-    { name: 'Sales', path: '/seller/sales', icon: <FiDollarSign className="w-[18px] h-[18px]" /> },
+    { name: 'Sales', path: '/seller/sales', icon: <FaRupeeSign className="w-[18px] h-[18px]" /> },
     { name: 'Wallet', path: '/seller/wallet', icon: <FiBriefcase className="w-[18px] h-[18px]" /> },
   ];
 

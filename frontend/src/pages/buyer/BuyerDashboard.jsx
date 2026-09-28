@@ -167,7 +167,7 @@ export default function BuyerDashboard({ data, isLoading }) {
                       <div className="flex justify-end">
                         <span className="text-sm font-medium text-gray-400 flex items-center gap-1">
                           {t.type === 'purchase' && t.price_per_credit
-                            ? `$${t.price_per_credit}/cr`
+                            ? `₹${t.price_per_credit}/cr`
                             : ''}
                         </span>
                       </div>

@@ -59,11 +59,17 @@ const NotFoundPage = lazy(() => import('./pages/shared/NotFoundPage'));
 
 import { Toaster } from 'react-hot-toast';
 
+const PageLoader = () => (
+  <div className="flex h-screen w-full items-center justify-center bg-[#f5f7f2]">
+    <div className="w-8 h-8 rounded-full border-[2.5px] border-stone-300 border-t-stone-800 animate-spin" />
+  </div>
+);
+
 const RootLayout = () => (
   <>
     <ScrollRestoration />
     <Toaster position="top-center" reverseOrder={false} />
-    <Suspense fallback={<div className="flex h-screen items-center justify-center font-semibold text-gray-500">Loading...</div>}>
+    <Suspense fallback={<PageLoader />}>
       <Outlet />
     </Suspense>
   </>
@@ -73,381 +79,381 @@ const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-  {
-    path: '/',
-    element: <Home />,
-  },
+      {
+        path: '/',
+        element: <Home />,
+      },
 
-  {
-    path: '/about',
-    element: <About />,
-  },
+      {
+        path: '/about',
+        element: <About />,
+      },
 
-  {
-    path: '/contact',
-    element: <Contact />,
-  },
+      {
+        path: '/contact',
+        element: <Contact />,
+      },
 
-  {
-    path: '/posts',
-    element: <Posts />,
-  },
+      {
+        path: '/posts',
+        element: <Posts />,
+      },
 
-  {
-    path: '/posts/:postId',
-    element: (
-      <RequireAuth>
-        <PostDetail />
-      </RequireAuth>
-    ),
-  },
+      {
+        path: '/posts/:postId',
+        element: (
+          <RequireAuth>
+            <PostDetail />
+          </RequireAuth>
+        ),
+      },
 
-  {
-    path: '/article',
-    element: <Article />,
-  },
-
-
-  {
-    path: '/signup',
-    element: <AuthPage />,
-  },
-
-  {
-    path: '/login',
-    element: <AuthPage />,
-  },
-
-  {
-    path: '/forgot-password',
-    element: <ForgotPassword />,
-  },
-
-  {
-    path: '/verify-email',
-    element: <VerifyEmail />,
-  },
-
-  // Profile
-  {
-    path: '/profile',
-    element: (
-      <RequireAuth>
-        <ProfilePage />
-      </RequireAuth>
-    ),
-  },
-
-  // Seller Projects
-  {
-    path: '/seller/projects',
-    element: (
-      <RequireAuth requireSeller={true}>
-        <ProjectListPage />
-      </RequireAuth>
-    ),
-  },
-
-  // Create New Project
-  {
-    path: '/seller/projects/new',
-    element: (
-      <RequireAuth requireSeller={true}>
-        <ProjectFormPage />
-      </RequireAuth>
-    ),
-  },
-
-  // Edit Draft Project
-  {
-    path: '/seller/projects/:projectId/edit',
-    element: (
-      <RequireAuth requireSeller={true}>
-        <ProjectFormPage />
-      </RequireAuth>
-    ),
-  },
-
-  // Seller Project Detail View
-  {
-    path: '/seller/projects/:id/details',
-    element: (
-      <RequireAuth requireSeller={true}>
-        <SellerProjectDetailPage />
-      </RequireAuth>
-    ),
-  },
-
-  {
-    path: '/projects/:projectId',
-    element: (
-      <RequireAuth>
-        <PublicProjectShowcasePage />
-      </RequireAuth>
-    ),
-  },
-
-  // Seller project editor
-  {
-    path: '/seller/projects/:projectId/post',
-    element: (
-      <RequireAuth requireSeller={true}>
-        <ProjectPostEditorPage />
-      </RequireAuth>
-    ),
-  },
-  {
-    path: '/seller/post/new',
-    element: (
-      <RequireAuth requireSeller={true}>
-        <ProjectPostEditorPage />
-      </RequireAuth>
-    ),
-  },
-  {
-  path: '/seller/projects/:projectId/verification',
-  element: (
-    <RequireAuth requireSeller={true}>
-      <ProjectVerificationPage />
-    </RequireAuth>
-  ),
-},
-
-{
-  path: '/seller/credits',
-  element: (
-    <RequireAuth requireSeller={true}>
-      <CreditsPage />
-    </RequireAuth>
-  ),
-},
-
-{
-  path: '/seller/listings',
-  element: (
-    <RequireAuth requireSeller={true}>
-      <ListingsPage />
-    </RequireAuth>
-  ),
-},
-
-{
-  path: '/seller/sales',
-  element: (
-    <RequireAuth requireSeller={true}>
-      <SalesPage />
-    </RequireAuth>
-  ),
-},
-
-{
-  path: '/seller/wallet',
-  element: (
-    <RequireAuth requireSeller={true}>
-      <SellerWalletPage />
-    </RequireAuth>
-  ),
-},
-
-  // Wallet
-{
-  path: '/wallet',
-  element: (
-    <RequireAuth>
-      <WalletPage />
-    </RequireAuth>
-  ),
-},
-
-// Marketplace
-{
-  path: '/marketplace',
-  element: <MarketplacePage />,
-},
-{
-  path: '/marketplace/:listingId',
-  element: (
-    <RequireAuth>
-      <MarketplaceDetailPage />
-    </RequireAuth>
-  ),
-},
-
-// Dashboard
-{
-  path: '/dashboard',
-  element: (
-    <RequireAuth>
-      <DashboardPage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Project Review
-{
-  path: '/admin/projects',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminReviewQueuePage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Project Detail
-{
-  path: '/admin/projects/:id',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminProjectDetailPage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Agents
-{
-  path: '/admin/agents',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminAgentsPage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Mint Queue
-{
-  path: '/admin/mint-queue',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminMintQueuePage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Oversight Users
-{
-  path: '/admin/oversight/users',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminOversightUsersPage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Oversight Projects
-{
-  path: '/admin/oversight/projects',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminOversightProjectsPage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Oversight Transactions
-{
-  path: '/admin/oversight/transactions',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminOversightTransactionsPage />
-    </RequireAuth>
-  ),
-},
-
-// Admin - Reversals
-{
-  path: '/admin/reversals',
-  element: (
-    <RequireAuth allowedRoles={['admin']}>
-      <AdminReversalsPage />
-    </RequireAuth>
-  ),
-},
-// Agent - Assigned Projects
-{
-  path: '/agent/projects',
-  element: (
-    <RequireAuth allowedRoles={['agent', 'admin']}>
-      <AgentAssignedProjectsPage />
-    </RequireAuth>
-  ),
-},
-
-// Agent - Project Detail
-{
-  path: '/agent/projects/:id',
-  element: (
-    <RequireAuth allowedRoles={['agent', 'admin']}>
-      <AgentProjectDetailPage />
-    </RequireAuth>
-  ),
-},
-
-// Agent - History
-{
-  path: '/agent/history',
-  element: (
-    <RequireAuth allowedRoles={['agent', 'admin']}>
-      <AgentHistoryPage />
-    </RequireAuth>
-  ),
-},
+      {
+        path: '/article',
+        element: <Article />,
+      },
 
 
-// Buyer - Portfolio
-{
-  path: '/buyer/portfolio',
-  element: (
-    <RequireAuth requireBuyer={true}>
-      <BuyerPortfolioPage />
-    </RequireAuth>
-  ),
-},
+      {
+        path: '/signup',
+        element: <AuthPage />,
+      },
 
-// Buyer - Retire Credits
-{
-  path: '/buyer/retire',
-  element: (
-    <RequireAuth requireBuyer={true}>
-      <BuyerRetirePage />
-    </RequireAuth>
-  ),
-},
+      {
+        path: '/login',
+        element: <AuthPage />,
+      },
 
-// Buyer - Retirement Certificates
-{
-  path: '/buyer/certificates',
-  element: (
-    <RequireAuth requireBuyer={true}>
-      <BuyerCertificatesPage />
-    </RequireAuth>
-  ),
-},
+      {
+        path: '/forgot-password',
+        element: <ForgotPassword />,
+      },
 
-// Buyer - Transaction History
-{
-  path: '/buyer/transactions',
-  element: (
-    <RequireAuth requireBuyer={true}>
-      <BuyerTransactionsPage />
-    </RequireAuth>
-  ),
-},
+      {
+        path: '/verify-email',
+        element: <VerifyEmail />,
+      },
 
-// Buyer - Pending Orders
-{
-  path: '/buyer/orders',
-  element: (
-    <RequireAuth requireBuyer={true}>
-      <BuyerOrdersPage />
-    </RequireAuth>
-  ),
-},
+      // Profile
+      {
+        path: '/profile',
+        element: (
+          <RequireAuth>
+            <ProfilePage />
+          </RequireAuth>
+        ),
+      },
 
-  // 404
-  {
-    path: '*',
-    element: <NotFoundPage />,
-  },
+      // Seller Projects
+      {
+        path: '/seller/projects',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <ProjectListPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Create New Project
+      {
+        path: '/seller/projects/new',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <ProjectFormPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Edit Draft Project
+      {
+        path: '/seller/projects/:projectId/edit',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <ProjectFormPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Seller Project Detail View
+      {
+        path: '/seller/projects/:id/details',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <SellerProjectDetailPage />
+          </RequireAuth>
+        ),
+      },
+
+      {
+        path: '/projects/:projectId',
+        element: (
+          <RequireAuth>
+            <PublicProjectShowcasePage />
+          </RequireAuth>
+        ),
+      },
+
+      // Seller project editor
+      {
+        path: '/seller/projects/:projectId/post',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <ProjectPostEditorPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/seller/post/new',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <ProjectPostEditorPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/seller/projects/:projectId/verification',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <ProjectVerificationPage />
+          </RequireAuth>
+        ),
+      },
+
+      {
+        path: '/seller/credits',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <CreditsPage />
+          </RequireAuth>
+        ),
+      },
+
+      {
+        path: '/seller/listings',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <ListingsPage />
+          </RequireAuth>
+        ),
+      },
+
+      {
+        path: '/seller/sales',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <SalesPage />
+          </RequireAuth>
+        ),
+      },
+
+      {
+        path: '/seller/wallet',
+        element: (
+          <RequireAuth requireSeller={true}>
+            <SellerWalletPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Wallet
+      {
+        path: '/wallet',
+        element: (
+          <RequireAuth>
+            <WalletPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Marketplace
+      {
+        path: '/marketplace',
+        element: <MarketplacePage />,
+      },
+      {
+        path: '/marketplace/:listingId',
+        element: (
+          <RequireAuth>
+            <MarketplaceDetailPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Dashboard
+      {
+        path: '/dashboard',
+        element: (
+          <RequireAuth>
+            <DashboardPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Project Review
+      {
+        path: '/admin/projects',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminReviewQueuePage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Project Detail
+      {
+        path: '/admin/projects/:id',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminProjectDetailPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Agents
+      {
+        path: '/admin/agents',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminAgentsPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Mint Queue
+      {
+        path: '/admin/mint-queue',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminMintQueuePage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Oversight Users
+      {
+        path: '/admin/oversight/users',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminOversightUsersPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Oversight Projects
+      {
+        path: '/admin/oversight/projects',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminOversightProjectsPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Oversight Transactions
+      {
+        path: '/admin/oversight/transactions',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminOversightTransactionsPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Admin - Reversals
+      {
+        path: '/admin/reversals',
+        element: (
+          <RequireAuth allowedRoles={['admin']}>
+            <AdminReversalsPage />
+          </RequireAuth>
+        ),
+      },
+      // Agent - Assigned Projects
+      {
+        path: '/agent/projects',
+        element: (
+          <RequireAuth allowedRoles={['agent', 'admin']}>
+            <AgentAssignedProjectsPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Agent - Project Detail
+      {
+        path: '/agent/projects/:id',
+        element: (
+          <RequireAuth allowedRoles={['agent', 'admin']}>
+            <AgentProjectDetailPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Agent - History
+      {
+        path: '/agent/history',
+        element: (
+          <RequireAuth allowedRoles={['agent', 'admin']}>
+            <AgentHistoryPage />
+          </RequireAuth>
+        ),
+      },
+
+
+      // Buyer - Portfolio
+      {
+        path: '/buyer/portfolio',
+        element: (
+          <RequireAuth requireBuyer={true}>
+            <BuyerPortfolioPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Buyer - Retire Credits
+      {
+        path: '/buyer/retire',
+        element: (
+          <RequireAuth requireBuyer={true}>
+            <BuyerRetirePage />
+          </RequireAuth>
+        ),
+      },
+
+      // Buyer - Retirement Certificates
+      {
+        path: '/buyer/certificates',
+        element: (
+          <RequireAuth requireBuyer={true}>
+            <BuyerCertificatesPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Buyer - Transaction History
+      {
+        path: '/buyer/transactions',
+        element: (
+          <RequireAuth requireBuyer={true}>
+            <BuyerTransactionsPage />
+          </RequireAuth>
+        ),
+      },
+
+      // Buyer - Pending Orders
+      {
+        path: '/buyer/orders',
+        element: (
+          <RequireAuth requireBuyer={true}>
+            <BuyerOrdersPage />
+          </RequireAuth>
+        ),
+      },
+
+      // 404
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
 
 
     ]
@@ -467,7 +473,7 @@ function App() {
     async function restoreSession() {
       try {
         const { data } = await authApi.refreshToken();
-        
+
         // Set the token immediately so the interceptor can attach it to the getProfile request
         useAuthStore.getState().setToken(data.token);
 

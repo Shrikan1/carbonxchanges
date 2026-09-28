@@ -2,8 +2,9 @@ import React from 'react';
 import AdminLayout from '../../components/layout/AdminLayout';
 import { 
   FiFolder, FiClock, FiCheckCircle, FiCpu, 
-  FiUsers, FiShoppingBag, FiUserCheck, FiDollarSign 
+  FiUsers, FiShoppingBag, FiUserCheck 
 } from 'react-icons/fi';
+import { FaRupeeSign } from 'react-icons/fa6';
 import { motion } from 'motion/react';
 
 const StatCard = ({ title, value, icon, loading, subtitle, trend }) => (
@@ -169,7 +170,7 @@ export default function AdminDashboard({ data, isLoading }) {
             <div className="bg-[#173d25] rounded-lg border border-[#173d25] shadow-sm flex flex-col overflow-hidden text-white">
               <div className="px-5 py-4 border-b border-white/10">
                 <h2 className="text-[13px] md:text-sm font-bold uppercase tracking-tight flex items-center gap-2">
-                  <FiDollarSign className="text-[#bbf7d0]" /> Gross Volume
+                  <FaRupeeSign className="text-[#bbf7d0]" /> Gross Volume
                 </h2>
               </div>
               <div className="p-5">

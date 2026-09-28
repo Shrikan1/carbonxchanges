@@ -142,7 +142,7 @@ export default function BuyerLayout({ children, title, subtitle }) {
       {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="h-[60px] bg-white border-b border-gray-200 px-6 lg:px-8 flex items-center justify-between shrink-0 z-10">
+        <header className="h-[64px] bg-white border-b border-gray-200 px-6 lg:px-8 flex items-center justify-between shrink-0 z-10">
           <div className="flex items-center gap-4">
             <button
               className="lg:hidden p-2 -ml-1 text-gray-500 hover:bg-gray-100 rounded-lg"
@@ -155,7 +155,7 @@ export default function BuyerLayout({ children, title, subtitle }) {
                 {title || 'Buyer Dashboard'}
               </h1>
               {subtitle && (
-                <p className="text-[11px] text-gray-500 mt-0.5">
+                <p className="hidden md:block text-[11px] text-gray-500 mt-0.5">
                   {subtitle}
                 </p>
               )}

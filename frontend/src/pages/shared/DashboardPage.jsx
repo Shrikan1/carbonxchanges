@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import * as dashboardApi from '../../api/endpoint/dashboardApi';
 import PriceTicker from '../../components/PriceTicker';
 import { Link } from 'react-router-dom';
-import { FiUsers, FiFileText, FiCheckCircle, FiClock, FiDollarSign, FiAlertCircle, FiShield, FiList, FiRefreshCw } from 'react-icons/fi';
+import { FiUsers, FiFileText, FiCheckCircle, FiClock, FiAlertCircle, FiShield, FiList, FiRefreshCw } from 'react-icons/fi';
 import AdminDashboard from '../admin/AdminDashboard';
 import SellerDashboard from '../seller/SellerDashboard';
 import BuyerDashboard from '../buyer/BuyerDashboard';

@@ -99,7 +99,7 @@ export default function ListingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Price per Credit ($)</label>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Price per Credit (₹)</label>
                   <input 
                     type="number" 
                     step="0.01" 
@@ -206,7 +206,7 @@ export default function ListingsPage() {
                         </div>
                         
                         <div className="text-sm font-bold text-emerald-600">
-                          ${l.price_per_credit}
+                          ₹{l.price_per_credit}
                         </div>
 
                         <div className="text-xs font-bold uppercase tracking-wider">

@@ -1,6 +1,7 @@
-﻿const PendingSale = require('../../models/PendingSale');
+const PendingSale = require('../../models/PendingSale');
 const Notification = require('../../models/Notification');
 const User = require('../../models/User');
+const { invalidateCache } = require('../../utils/cache');
 
 // POST /api/buyer/purchase/intent
 // Buyer expresses intent — no MetaMask needed here.
@@ -24,6 +25,8 @@ async function createPurchaseIntent(req, res) {
       req.user.id,
       Number(amount)
     );
+
+    invalidateCache('marketplace');
 
     // Notify the seller so they can action it from their Sales page
     await Notification.createNotification(

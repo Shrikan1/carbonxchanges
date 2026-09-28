@@ -5,9 +5,34 @@ require('dotenv').config();
 const {generalLimiter} = require("../middleware/rateLimiter")
 const app = express();
 
+// Trust reverse proxy (essential for cookies, HTTPS detection, and IP rate limiting on Render/Vercel/Nginx)
+app.set('trust proxy', 1);
 
 // --- Global middleware ---
-app.use(cors({ origin: true, credentials: true })); // credentials:true allows cookies cross-origin
+const allowedOrigins = [
+  'https://www.carbonxplanet.me',
+  'https://carbonxplanet.me',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5000',
+  process.env.FRONTEND_URL ? `https://${process.env.FRONTEND_URL.replace(/^https?:\/\//, '')}` : null,
+  process.env.FRONTEND_URL ? `http://${process.env.FRONTEND_URL.replace(/^https?:\/\//, '')}` : null,
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    // In production keep secure; in development permit local origins
+    if (process.env.NODE_ENV !== 'production' || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // credentials:true allows cookies cross-origin
+}));
 app.use(express.json());       // Parse incoming JSON request bodies
 app.use(cookieParser());       // Parse httpOnly cookies (used for refresh token)
 

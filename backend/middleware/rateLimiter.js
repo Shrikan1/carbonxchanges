@@ -9,12 +9,12 @@ const otpLimiter = rateLimit({
 })
 
 const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500,                   // 50 attempts per window (was 5/5min — far too tight for dev)
-    message: { error: 'Too many login attempts. Please wait 15 minutes before trying again.' },
-    standardHeaders: true,
-    legacyHeaders: false,
-})
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 20 : 100, // 20 attempts in prod, 100 in dev
+  message: { error: 'Too many login attempts. Please wait 15 minutes before trying again.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 
 const generalLimiter = rateLimit({

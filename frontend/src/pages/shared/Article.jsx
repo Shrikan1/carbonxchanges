@@ -10,7 +10,17 @@ const Article = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const fallbackImage = img1;
+const fallbackImage = img1;
+
+function cleanHtml(html) {
+  if (!html) return '';
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/on\w+="[^"]*"/gi, '')
+    .replace(/on\w+='[^']*'/gi, '')
+    .replace(/javascript:[^"']*/gi, '');
+}
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -129,14 +139,14 @@ const Article = () => {
                   {/* Title */}
                   <h2 
                     className="text-[20px] font-bold text-[#18372b] tracking-[-0.035em] leading-[1.12] line-clamp-3 mb-3 group-hover:text-[#397554] transition-colors"
-                    dangerouslySetInnerHTML={{ __html: article.webTitle }}
+                    dangerouslySetInnerHTML={{ __html: cleanHtml(article.webTitle) }}
                   />
                   
                   {/* Description */}
                   {article.fields?.trailText && (
                     <p 
                       className="text-[14px] text-[#718177] line-clamp-3 font-normal leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: article.fields.trailText }}
+                      dangerouslySetInnerHTML={{ __html: cleanHtml(article.fields.trailText) }}
                     />
                   )}
                   

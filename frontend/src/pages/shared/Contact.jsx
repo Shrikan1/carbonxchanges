@@ -47,7 +47,7 @@ const Contact = () => {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Call Us</p>
-                <p className="text-[15px] font-medium text-gray-900">+91 8080209999</p>
+                <a href="tel:+917972112460" className="text-[15px] font-medium text-gray-900 hover:text-blue-600 transition-colors">+91 7972112460</a>
               </div>
             </div>
 
@@ -58,7 +58,7 @@ const Contact = () => {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Email Us</p>
-                <p className="text-[15px] font-medium text-gray-900">contact@carbonxplanet.in</p>
+                <a href="mailto:carbonxcredit2@gmail.com" className="text-[15px] font-medium text-gray-900 hover:text-blue-600 transition-colors">carbonxcredit2@gmail.com</a>
               </div>
             </div>
           </div>
