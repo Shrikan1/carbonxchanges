@@ -152,6 +152,17 @@ const Navbar = ({
     setIsMobileMenuOpen(false);
   };
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
 
   // ===================================================
   // LOGOUT
@@ -641,49 +652,43 @@ const Navbar = ({
       {/* =================================================
           MOBILE MENU DRAWER
       ================================================= */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 z-[60] lg:hidden backdrop-blur-sm"
-              onClick={closeMobileMenu}
-            />
-            <motion.div
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
-              className="fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[70] flex flex-col shadow-2xl lg:hidden"
-            >
-              <div className="p-5 flex items-center justify-between border-b border-gray-100">
-                <span className="wise-font font-black uppercase text-[#1a3a22] text-lg">Menu</span>
-                <button onClick={closeMobileMenu} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
-                  <FaTimes size={16} />
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-1">
-                 {navLinks.map((link) => {
-                   const isActive = location.pathname === link.path;
-                   return (
-                     <Link 
-                       key={link.name} 
-                       to={link.path} 
-                       onClick={closeMobileMenu} 
-                       className={`block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors ${
-                         isActive ? 'bg-[#eef5f0] text-[#1a3a22]' : 'text-gray-700 hover:bg-gray-50'
-                       }`}
-                     >
-                       {link.name}
-                     </Link>
-                   );
-                 })}
-                 
-                 <div className="mt-auto pt-6">
-                   {renderMobileAuth()}
-                 </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      <div className={`fixed inset-0 z-[60] lg:hidden ${isMobileMenuOpen ? 'visible' : 'invisible pointer-events-none'} transition-all duration-300`}>
+        <div 
+          className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+          onClick={closeMobileMenu}
+        />
+        <div
+          className={`fixed top-0 right-0 h-[100dvh] w-[280px] bg-white z-[70] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out overscroll-none ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        >
+          <div className="p-5 flex items-center justify-between border-b border-gray-100">
+            <span className="wise-font font-black uppercase text-[#1a3a22] text-lg">Menu</span>
+            <button onClick={closeMobileMenu} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
+              <FaTimes size={16} />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-1 overscroll-none">
+             {navLinks.map((link) => {
+               const isActive = location.pathname === link.path;
+               return (
+                 <Link 
+                   key={link.name} 
+                   to={link.path} 
+                   onClick={closeMobileMenu} 
+                   className={`block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors ${
+                     isActive ? 'bg-[#eef5f0] text-[#1a3a22]' : 'text-gray-700 hover:bg-gray-50'
+                   }`}
+                 >
+                   {link.name}
+                 </Link>
+               );
+             })}
+             
+             <div className="mt-auto pt-6">
+               {renderMobileAuth()}
+             </div>
+          </div>
+        </div>
+      </div>
 
 
 

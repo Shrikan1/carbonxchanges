@@ -12,7 +12,7 @@ const Footer = () => {
             {/* Logo and Description (Left Column) */}
             <div className="md:col-span-5">
               <Link to="/" className="flex items-center mb-6">
-                <span className="font-bold uppercase tracking-tight text-emerald-400 text-3xl">
+                <span className="wise-font font-black uppercase tracking-tight text-emerald-400 text-3xl">
                   CARBONXPLANET
                 </span>
               </Link>
@@ -41,7 +41,7 @@ const Footer = () => {
             <div className="md:col-span-7 grid grid-cols-2 gap-8 pt-2">
 
               <div>
-                <h4 className="text-white font-bold uppercase tracking-wider mb-6 text-sm">Platform</h4>
+                <h4 className="text-white font-sans font-semibold uppercase tracking-wider mb-6 text-xs">Platform</h4>
                 <ul className="space-y-4">
                   <li><Link to="/" className="text-[#888] hover:text-white text-sm transition-colors">Home</Link></li>
                   <li><Link to="/marketplace" className="text-[#888] hover:text-white text-sm transition-colors">Marketplace</Link></li>
@@ -51,7 +51,7 @@ const Footer = () => {
               </div>
 
               <div>
-                <h4 className="text-white font-bold uppercase tracking-wider mb-6 text-sm">Resources</h4>
+                <h4 className="text-white font-sans font-semibold uppercase tracking-wider mb-6 text-xs">Resources</h4>
                 <ul className="space-y-4">
                   <li><a href="#" className="text-[#888] hover:text-white text-sm transition-colors">Documentation</a></li>
                   <li><a href="#" className="text-[#888] hover:text-white text-sm transition-colors">Tutorials</a></li>
@@ -66,8 +66,8 @@ const Footer = () => {
 
 
           {/* Subtle large background text like the image (watermark effect) */}
-          <div className="absolute -bottom-[20%] left-1/2 transform -translate-x-1/2 text-[15vw] font-bold uppercase tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
-            CarbonXplanet
+          <div className="absolute -bottom-[20%] left-1/2 transform -translate-x-1/2 text-[15vw] wise-font font-black uppercase tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
+            CARBONXPLANET
           </div>
 
         </div>

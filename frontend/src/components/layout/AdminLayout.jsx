@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import { useAuthStore } from '../../store/useAuthStore';
 import NotificationDropdown from './NotificationDropdown';
 import sidebarForest from '../../assets/dense-evergreen-forest-covered-fog_23-2151975503.avif';
@@ -130,54 +129,48 @@ export default function AdminLayout({ children, title, subtitle }) {
       </div>
 
       {/* ── Mobile Sidebar Drawer ── */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-gray-900/40 z-50 lg:hidden backdrop-blur-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            <motion.aside
-              initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
-              className="fixed top-0 left-0 bottom-0 w-[280px] bg-white z-50 flex flex-col border-r border-gray-200 lg:hidden shadow-2xl"
-            >
-              <div className="p-5 flex items-center justify-between border-b border-gray-100">
-                <Link to="/" className="inline-block" onClick={() => setIsMobileMenuOpen(false)}>
-                  <h1 className="wise-font font-black uppercase tracking-tight text-[#173d25] text-xl">CARBONXPLANET</h1>
-                  <p className="text-[9px] font-bold text-emerald-600 tracking-[0.2em] uppercase">Admin Portal</p>
-                </Link>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
-                  <FiX size={20} />
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 space-y-6">
-                <div>
-                  <div className="px-3 mb-2 text-xs font-semibold font-mono text-gray-400 uppercase tracking-wider">Main</div>
-                  <nav className="space-y-1">
-                    {mainNav.map((item) => (
-                      <Link
-                        key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-3 rounded-xl font-mono text-sm font-bold transition-all ${
-                          isActive(item.path) ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600'
-                        }`}
-                      >
-                        <item.icon className={isActive(item.path) ? 'text-emerald-600' : 'text-gray-400'} size={18} />
-                        {item.name}
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-              <div className="p-4 border-t border-gray-100">
-                <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-3 rounded-xl font-mono text-sm font-bold text-red-600 bg-red-50">
-                  <FiLogOut size={18} /> Logout
-                </button>
-              </div>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+      <div className={`fixed inset-0 z-50 lg:hidden ${isMobileMenuOpen ? 'visible' : 'invisible pointer-events-none'} transition-all duration-300`}>
+        <div 
+          className={`fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+        <aside
+          className={`fixed top-0 left-0 bottom-0 w-[280px] bg-white z-50 flex flex-col border-r border-gray-200 lg:hidden shadow-2xl transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          <div className="p-5 flex items-center justify-between border-b border-gray-100">
+            <Link to="/" className="inline-block" onClick={() => setIsMobileMenuOpen(false)}>
+              <h1 className="wise-font font-black uppercase tracking-tight text-[#173d25] text-xl">CARBONXPLANET</h1>
+              <p className="text-[9px] font-bold text-emerald-600 tracking-[0.2em] uppercase">Admin Portal</p>
+            </Link>
+            <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
+              <FiX size={20} />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div>
+              <div className="px-3 mb-2 text-xs font-semibold font-mono text-gray-400 uppercase tracking-wider">Main</div>
+              <nav className="space-y-1">
+                {mainNav.map((item) => (
+                  <Link
+                    key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-xl font-mono text-sm font-bold transition-all ${
+                      isActive(item.path) ? 'bg-emerald-50 text-emerald-700' : 'text-gray-600'
+                    }`}
+                  >
+                    <item.icon className={isActive(item.path) ? 'text-emerald-600' : 'text-gray-400'} size={18} />
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </div>
+          <div className="p-4 border-t border-gray-100">
+            <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-3 rounded-xl font-mono text-sm font-bold text-red-600 bg-red-50">
+              <FiLogOut size={18} /> Logout
+            </button>
+          </div>
+        </aside>
+      </div>
 
       {/* ── Main Content Area ── */}
       <main className="flex-1 min-w-0 lg:ml-[240px] min-h-screen flex flex-col pt-16 lg:pt-0 overflow-x-hidden">
