@@ -102,7 +102,7 @@ const Home = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
   const projectSliderRef = useRef(null);
-  
+
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -178,6 +178,8 @@ const Home = () => {
       {/* ─── HERO SECTION ─── */}
       <section className="relative overflow-hidden bg-[#f5f7f2] border-b border-[#dfe7df]" style={{ minHeight: 'min(780px, calc(100vh - 48px))', marginTop: '48px' }}>
 
+
+
         {/* ── Left content ── */}
         <div className="relative z-10 w-full max-w-[1360px] mx-auto px-6 lg:px-12 xl:px-16 flex items-center h-full" style={{ minHeight: 'min(780px, calc(100vh - 48px))' }}>
           <motion.div
@@ -214,7 +216,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="flex flex-wrap items-center justify-start gap-3 mb-10 w-full"
+              className="flex flex-wrap items-center justify-start gap-3 mb-10 sm:mb-12 w-full"
             >
               <Link
                 to="/marketplace"
@@ -225,34 +227,34 @@ const Home = () => {
               </Link>
             </motion.div>
 
-            {/* Impact Stats */}
+            {/* Protocol & Verification Standards */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="grid grid-cols-3 gap-2 sm:gap-0 max-w-[470px] border-t border-[#ccd9cd] pt-6 mb-12 lg:mb-0"
+              className="border-t border-[#ccd9cd] pt-7 sm:pt-8 max-w-[460px] mt-4 sm:mt-6 mb-8 lg:mb-0"
             >
-              {[
-                { value: '500+', label: 'Verified Projects' },
-                { value: '1.2M+', label: 'tCO₂ Credits' },
-                { value: '50+', label: 'Global Contributors' },
-              ].map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 + (i * 0.1), ease: "easeOut" }}
-                  className="border-r last:border-r-0 border-[#d7e1d7] pr-2 sm:first:pr-3 sm:px-3 sm:first:pl-0 flex flex-col items-start text-left"
-                >
-                  <p className="wise-font font-black text-[1.4rem] sm:text-[1.6rem] text-[#17351f] leading-none mb-1">
-                    {stat.value}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="border-l-2 border-[#173d25] pl-3.5 py-0.5">
+                  <p className="text-[13px] font-bold text-[#17351f] uppercase tracking-wide leading-none mb-1">
+                    Zero Double-Count
                   </p>
-                  <p className="text-[9px] sm:text-[10px] text-[#6a7e70] font-semibold tracking-wide uppercase">
-                    {stat.label}
+                  <p className="text-[12px] text-[#607567] leading-tight font-normal">
+                    On-chain cryptographic serials
                   </p>
-                </motion.div>
-              ))}
+                </div>
+
+                <div className="border-l-2 border-[#173d25] pl-3.5 py-0.5">
+                  <p className="text-[13px] font-bold text-[#17351f] uppercase tracking-wide leading-none mb-1">
+                    ESG Ready
+                  </p>
+                  <p className="text-[12px] text-[#607567] leading-tight font-normal">
+                    Instant proof of retirement
+                  </p>
+                </div>
+              </div>
             </motion.div>
+
 
             {/* Mobile hero image (Moved below content for professional flow) */}
             <motion.div
@@ -296,6 +298,8 @@ const Home = () => {
           <div className="absolute inset-0 bg-[#16391f]/10" />
           <p className="absolute bottom-8 right-9 max-w-[116px] -rotate-6 text-[10px] font-bold uppercase leading-[1.55] tracking-[0.16em] text-[#e1efd9]">A cleaner planet, together</p>
         </motion.div>
+
+
 
       </section>
 
@@ -387,7 +391,7 @@ const Home = () => {
 
       {/* ─── PROJECT GALLERY (FULL BLEED SPLIT SCREEN) ─── */}
       <section id="gallery" className="bg-[#0f2416] text-white overflow-hidden relative flex flex-col lg:flex-row min-h-[500px] lg:h-[80vh] lg:min-h-[700px]">
-        
+
         {/* Left Content (Aligned with container) */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center py-12 lg:py-0 z-10 relative bg-[#0f2416]">
           {/* Inner container pushes to the right, max width half of 1360 (680) */}
@@ -418,7 +422,7 @@ const Home = () => {
           <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0f2416] to-transparent z-10 pointer-events-none hidden lg:block"></div>
           <div className="absolute inset-x-0 top-0 h-16 sm:h-24 bg-gradient-to-b from-[#0f2416] to-transparent z-10 pointer-events-none lg:hidden"></div>
           <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-[#0f2416] to-transparent z-10 pointer-events-none"></div>
-          
+
           <DriftWall
             items={projectGalleryItems}
             columns={isMobile ? 2 : 3}

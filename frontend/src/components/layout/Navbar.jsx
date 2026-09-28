@@ -234,7 +234,7 @@ const Navbar = ({
                 className={`relative group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider flex items-center justify-center transition-colors rounded-full ${isActive
                   ? 'text-gray-900'
                   : 'text-gray-700 hover:text-gray-900 hover:bg-white/40'
-                }`}
+                  }`}
               >
                 <span className="relative overflow-hidden block leading-tight z-10">
                   <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
@@ -244,7 +244,7 @@ const Navbar = ({
                     {dash.label}
                   </span>
                 </span>
-                
+
                 {isActive && (
                   <motion.div
                     layoutId="activeDashboardLine"
@@ -278,7 +278,7 @@ const Navbar = ({
 
             {isProfileDropdownOpen && (
               <div ref={dropdownRef} className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 rounded-[20px] shadow-2xl py-2 z-50 overflow-hidden font-sans ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-200">
-                
+
                 <div className="px-4 py-3 border-b border-gray-100 mb-1 bg-gray-50/50">
                   <p className="text-sm font-bold text-gray-900 truncate">
                     {user?.name || 'User'}
@@ -345,7 +345,7 @@ const Navbar = ({
                       Buyer Dashboard
                     </Link>
                   )}
-                  
+
                   {user?.role === 'admin' && (
                     <>
                       <Link
@@ -412,7 +412,7 @@ const Navbar = ({
                     className="w-full text-left px-3 py-2.5 text-sm text-red-600 font-bold hover:bg-red-50 rounded-xl transition-colors flex items-center justify-between"
                   >
                     <span>Sign out</span>
-                    <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                   </button>
                 </div>
 
@@ -536,164 +536,163 @@ const Navbar = ({
       )}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#eef0eb] border-b border-[#dde0d8]">
 
-      {/* =================================================
+        {/* =================================================
           NAVBAR
       ================================================= */}
 
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-1.5">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-1.5">
 
-        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between">
 
 
-          {/* =================================================
+            {/* =================================================
               LOGO
           ================================================= */}
 
-          <Link
-            to="/"
-            className="flex items-center hover:opacity-80 transition-opacity"
-          >
+            <Link
+              to="/"
+              className="flex items-center hover:opacity-80 transition-opacity"
+            >
 
-            <span
+              <span
                 data-brand="logo"
                 className="wise-font font-black uppercase tracking-normal text-[17px] text-[#1a3a22]"
               >
                 CarbonXplanet
               </span>
 
-          </Link>
+            </Link>
 
 
-          {/* =================================================
+            {/* =================================================
               DESKTOP NAVIGATION
           ================================================= */}
 
-          <nav className="hidden lg:flex items-center space-x-2 bg-gray-100/80 backdrop-blur-sm rounded-full px-2 py-1">
+            <nav className="hidden lg:flex items-center space-x-2 bg-gray-100/80 backdrop-blur-sm rounded-full px-2 py-1">
 
-            {navLinks.map((link) => {
+              {navLinks.map((link) => {
 
-              const isActive = location.pathname === link.path;
+                const isActive = location.pathname === link.path;
 
-              return (
+                return (
 
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`relative group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider rounded-full transition-all duration-200 flex items-center justify-center ${isActive
-                    ? 'text-gray-900'
-                    : 'text-gray-500 hover:text-gray-800 hover:bg-white/40'
-                    }`}
-                >
-                  <span className="relative overflow-hidden block leading-tight z-10">
-                    <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
-                      {link.name}
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`relative group px-4 py-1.5 text-[12px] font-semibold uppercase tracking-wider rounded-full transition-all duration-200 flex items-center justify-center ${isActive
+                      ? 'text-gray-900'
+                      : 'text-gray-500 hover:text-gray-800 hover:bg-white/40'
+                      }`}
+                  >
+                    <span className="relative overflow-hidden block leading-tight z-10">
+                      <span className="block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                        {link.name}
+                      </span>
+                      <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+                        {link.name}
+                      </span>
                     </span>
-                    <span className="absolute top-full left-0 block transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
-                      {link.name}
-                    </span>
-                  </span>
-                  
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNavLine"
-                      className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/2 h-[2.5px] bg-[#1a3a22] rounded-full"
-                      transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                    />
-                  )}
-                </Link>
 
-              );
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavLine"
+                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/2 h-[2.5px] bg-[#1a3a22] rounded-full"
+                        transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                      />
+                    )}
+                  </Link>
 
-            })}
+                );
 
-          </nav>
+              })}
+
+            </nav>
 
 
-          {/* =================================================
+            {/* =================================================
               DESKTOP AUTH
           ================================================= */}
 
-          {renderDesktopAuth()}
+            {renderDesktopAuth()}
 
 
-          {/* =================================================
+            {/* =================================================
               MOBILE TOP AUTH
           ================================================= */}
 
-          <div className="lg:hidden flex items-center space-x-2 ml-2">
-            {isAuthenticated && dashboardLinks.length > 0 && (
-              <Link
-                to={dashboardLinks[0].path}
-                className="flex items-center justify-center w-8 h-8 bg-[#173d25] text-white rounded-full hover:bg-[#122e1b] transition-colors shadow-sm"
-                aria-label="Dashboard"
-              >
-                <FaThLarge size={12} />
-              </Link>
-            )}
-            <button
-              onClick={toggleMobileMenu}
-              className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
-              aria-label="Menu"
-            >
-              {isAuthenticated && user?.profileImage ? (
-                <img src={user.profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />
-              ) : isAuthenticated ? (
-                <FaUser size={14} />
-              ) : (
-                <FaBars size={14} />
+            <div className="lg:hidden flex items-center space-x-2 ml-2">
+              {isAuthenticated && dashboardLinks.length > 0 && (
+                <Link
+                  to={dashboardLinks[0].path}
+                  className="flex items-center justify-center w-8 h-8 bg-[#173d25] text-white rounded-full hover:bg-[#122e1b] transition-colors shadow-sm"
+                  aria-label="Dashboard"
+                >
+                  <FaThLarge size={12} />
+                </Link>
               )}
-            </button>
+              <button
+                onClick={toggleMobileMenu}
+                className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
+                aria-label="Menu"
+              >
+                {isAuthenticated && user?.profileImage ? (
+                  <img src={user.profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                ) : isAuthenticated ? (
+                  <FaUser size={14} />
+                ) : (
+                  <FaBars size={14} />
+                )}
+              </button>
+            </div>
+
           </div>
 
         </div>
 
-      </div>
-
-      {/* =================================================
+        {/* =================================================
           MOBILE MENU DRAWER
       ================================================= */}
-      <div className={`fixed inset-0 z-[60] lg:hidden ${isMobileMenuOpen ? 'visible' : 'invisible pointer-events-none'} transition-all duration-300`}>
-        <div 
-          className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
-          onClick={closeMobileMenu}
-        />
-        <div
-          className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[70] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out overscroll-none ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
-        >
-          <div className="p-5 flex items-center justify-between border-b border-gray-100">
-            <span className="wise-font font-black uppercase text-[#1a3a22] text-lg">Menu</span>
-            <button onClick={closeMobileMenu} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
-              <FaTimes size={16} />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-1 overscroll-none">
-             {navLinks.map((link) => {
-               const isActive = location.pathname === link.path;
-               return (
-                 <Link 
-                   key={link.name} 
-                   to={link.path} 
-                   onClick={closeMobileMenu} 
-                   className={`block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors ${
-                     isActive ? 'bg-[#eef5f0] text-[#1a3a22]' : 'text-gray-700 hover:bg-gray-50'
-                   }`}
-                 >
-                   {link.name}
-                 </Link>
-               );
-             })}
-             
-             <div className="mt-auto pt-6">
-               {renderMobileAuth()}
-             </div>
+        <div className={`fixed inset-0 z-[60] lg:hidden ${isMobileMenuOpen ? 'visible' : 'invisible pointer-events-none'} transition-all duration-300`}>
+          <div
+            className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+            onClick={closeMobileMenu}
+          />
+          <div
+            className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[70] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out overscroll-none ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          >
+            <div className="p-5 flex items-center justify-between border-b border-gray-100">
+              <span className="wise-font font-black uppercase text-[#1a3a22] text-lg">Menu</span>
+              <button onClick={closeMobileMenu} className="text-gray-500 bg-gray-100 p-1.5 rounded-full">
+                <FaTimes size={16} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-1 overscroll-none">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={closeMobileMenu}
+                    className={`block px-4 py-3.5 text-sm font-bold rounded-xl transition-colors ${isActive ? 'bg-[#eef5f0] text-[#1a3a22]' : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+
+              <div className="mt-auto pt-6">
+                {renderMobileAuth()}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
 
 
 
-    </header>
+      </header>
     </>
   );
 };

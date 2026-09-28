@@ -12,14 +12,14 @@ const Footer = () => {
             {/* Logo and Description (Left Column) */}
             <div className="md:col-span-5">
               <Link to="/" className="flex items-center mb-6">
-                <span className="wise-font font-black uppercase tracking-tight text-emerald-400 text-3xl">
+                <span className="wise-font font-black uppercase tracking-tight text-[#bef264] text-3xl">
                   CARBONXPLANET
                 </span>
               </Link>
               <p className="text-[#888] text-sm leading-relaxed mb-8 max-w-sm">
                 CarbonXplanet empowers teams to transform environmental impact into clear, compelling action making carbon offsetting easier to share, understand, and act on.
               </p>
-              
+
               <div className="flex space-x-5">
                 <a href="#" className="text-[#666] hover:text-white transition-colors">
                   <FaTwitter className="text-xl" />
