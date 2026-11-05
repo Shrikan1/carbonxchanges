@@ -15,6 +15,9 @@ export const signup = (name, email, password, confirmPassword, role_type, phone_
 export const verifyOtp = (userId, otpCode) =>
   api.post('/v1/auth/verify-otp', { userId, otpCode });
 
+export const resendOtp = (userId, purpose = 'signup') =>
+  api.post('/v1/auth/resend-otp', { userId, purpose });
+
 export const login = (email, password) =>
   api.post('/v1/auth/login', { email, password });
 

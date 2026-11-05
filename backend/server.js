@@ -1,5 +1,6 @@
 const app = require('./src/app');
 const { pool } = require('./config/db');
+const { startKeepAlive } = require('./utils/keepAlive');
 
 const PORT = process.env.PORT || 5000;
 
@@ -15,6 +16,11 @@ if (!process.env.JWT_SECRET) {
 pool.query('SELECT NOW()')
   .then(() => {
     console.log('PostgreSQL connected successfully');
+    
+    // Start Supabase keep-alive service to prevent database from pausing
+    // Pings database every 5 minutes to maintain active connection
+    startKeepAlive(5);
+    
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });

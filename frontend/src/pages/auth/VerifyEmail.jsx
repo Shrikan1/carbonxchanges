@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.webp'; // Changed to WebP
-import { verifyOtp } from '../../api/endpoint/Authapi';
+import { verifyOtp, resendOtp } from '../../api/endpoint/Authapi';
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
@@ -12,7 +12,9 @@ const VerifyEmail = () => {
 
   const [code, setCode] = useState(Array(6).fill(''));
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const inputRefs = useRef([]);
 
   // Redirect back if accessed directly without state
@@ -78,6 +80,7 @@ const VerifyEmail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccessMessage('');
     
     const otpCode = code.join('');
     if (otpCode.length !== 6) {
@@ -93,9 +96,30 @@ const VerifyEmail = () => {
     } catch (err) {
       console.error('OTP Verification failed:', err);
       const defaultError = err.request ? 'Network error. Please check your connection.' : 'Invalid or expired OTP. Please try again.';
-      setError(err.response?.data?.message || defaultError);
+      setError(err.response?.data?.error || err.response?.data?.message || defaultError);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      setResending(true);
+      setError('');
+      setSuccessMessage('');
+      
+      await resendOtp(userId, 'signup');
+      setSuccessMessage('A new code has been sent to your email!');
+      setCode(Array(6).fill('')); // Clear the input
+      inputRefs.current[0]?.focus();
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccessMessage(''), 5000);
+    } catch (err) {
+      console.error('Resend OTP failed:', err);
+      setError(err.response?.data?.error || 'Failed to resend code. Please try again.');
+    } finally {
+      setResending(false);
     }
   };
 
@@ -138,8 +162,14 @@ const VerifyEmail = () => {
 
             <form className="space-y-8 flex-1" onSubmit={handleSubmit}>
               {error && (
-                <div className="bg-red-50 text-red-500 text-[13px] font-medium p-3 border border-red-100">
+                <div className="bg-red-50 text-red-500 text-[13px] font-medium p-3 border border-red-100 rounded">
                   {error}
+                </div>
+              )}
+              
+              {successMessage && (
+                <div className="bg-green-50 text-green-600 text-[13px] font-medium p-3 border border-green-100 rounded">
+                  {successMessage}
                 </div>
               )}
               
@@ -179,8 +209,13 @@ const VerifyEmail = () => {
 
             <p className="mt-8 text-center text-[13px] font-mono text-[#999]">
               Didn't receive the code?{' '}
-              <button className="text-[#0c0c0c] font-bold hover:underline">
-                Resend
+              <button 
+                type="button"
+                onClick={handleResend}
+                disabled={resending}
+                className="text-[#0c0c0c] font-bold hover:underline disabled:opacity-50"
+              >
+                {resending ? 'Sending...' : 'Resend'}
               </button>
             </p>
             

@@ -40,9 +40,14 @@ async function signup(req, res) {
     else if (role_type === 'buyer') await User.setBuyerFlag(user.id);
 
     const otpCode = await Otp.createOtp(user.id, 'signup');
-    await sendOtpEmail(email, otpCode);
+    
+    // Send email asynchronously (non-blocking) to improve response time
+    // Email failures won't block signup - user can request resend if needed
+    sendOtpEmail(email, otpCode)
+      .then(() => console.log(`✅ OTP email sent to ${email}`))
+      .catch((error) => console.error(`❌ Failed to send OTP email to ${email}:`, error.message));
 
-    // No token yet — account isn't usable until OTP is verified
+    // Respond immediately without waiting for email
     res.status(201).json({
       message: 'Account created. Check your email for a verification code.',
       userId: user.id,
@@ -76,6 +81,49 @@ async function verifyOtp(req, res) {
   } catch (err) {
     console.error('OTP verification error:', err);
     res.status(500).json({ error: 'Failed to verify OTP' });
+  }
+}
+
+// POST /api/auth/resend-otp
+async function resendOtp(req, res) {
+  try {
+    const { userId, purpose = 'signup' } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.is_verified && purpose === 'signup') {
+      return res.status(400).json({ error: 'Email already verified' });
+    }
+
+    // Generate new OTP
+    const otpCode = await Otp.createOtp(userId, purpose);
+    
+    // Send email asynchronously
+    if (purpose === 'signup') {
+      sendOtpEmail(user.email, otpCode)
+        .then(() => console.log(`✅ OTP resent to ${user.email}`))
+        .catch((error) => console.error(`❌ Failed to resend OTP to ${user.email}:`, error.message));
+    } else if (purpose === 'reset_password') {
+      const { sendPasswordResetEmail } = require('../../services/emailService');
+      sendPasswordResetEmail(user.email, otpCode)
+        .then(() => console.log(`✅ Password reset OTP resent to ${user.email}`))
+        .catch((error) => console.error(`❌ Failed to resend password reset OTP:`, error.message));
+    }
+
+    res.json({ 
+      message: 'A new verification code has been sent to your email',
+      userId: user.id 
+    });
+  } catch (err) {
+    console.error('Resend OTP error:', err);
+    res.status(500).json({ error: 'Failed to resend OTP' });
   }
 }
 
@@ -223,7 +271,7 @@ async function resetPassword(req, res) {
   }
 }
 
-module.exports = { signup, verifyOtp, login, getProfile, refreshToken, logout, forgotPassword, resetPassword };
+module.exports = { signup, verifyOtp, resendOtp, login, getProfile, refreshToken, logout, forgotPassword, resetPassword };
 
 
 

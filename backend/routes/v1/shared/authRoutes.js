@@ -8,6 +8,7 @@ const {otpLimiter , loginLimiter} = require('../../../middleware/rateLimiter')
 
 router.post('/signup', otpLimiter, authController.signup);
 router.post('/verify-otp', otpLimiter, authController.verifyOtp);
+router.post('/resend-otp', otpLimiter, authController.resendOtp); // NEW: Resend OTP endpoint
 router.post('/login', loginLimiter, authController.login);
 router.get('/me', requireAuth, authController.getProfile);
 router.post('/forgot-password', otpLimiter, authController.forgotPassword);
@@ -18,4 +19,3 @@ router.post('/refresh', authController.refreshToken);
 router.post('/logout', requireAuth, authController.logout); 
 
 module.exports = router;
-
