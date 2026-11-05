@@ -474,21 +474,24 @@ function App() {
       try {
         const { data } = await authApi.refreshToken();
 
-        if (data?.user) {
+        if (data?.user && data?.token) {
           setSession(data.user, data.token);
         } else if (data?.token) {
           useAuthStore.getState().setToken(data.token);
           const { data: profileData } = await authApi.getProfile();
-          setSession(profileData.user, data.token);
+          if (profileData?.user) {
+            setSession(profileData.user, data.token);
+          } else {
+            finishInitializing();
+          }
         } else {
           finishInitializing();
         }
-      } catch {
-        if (useAuthStore.getState().user) {
-          useAuthStore.getState().logout();
-        } else {
-          finishInitializing();
-        }
+      } catch (err) {
+        // Don't logout on initial load - just finish initializing
+        // This prevents the login loop when there's no valid session
+        console.log('Session restore failed:', err.message);
+        finishInitializing();
       }
     }
 
