@@ -156,7 +156,7 @@ async function refreshToken(req, res) {
 
   res
     .cookie('refreshToken', newRefreshToken, getRefreshCookieOptions(req))
-    .json({ token: newAccessToken });
+    .json({ token: newAccessToken, user });
 }
 
 // POST /api/auth/logout

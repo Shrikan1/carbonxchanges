@@ -11,7 +11,7 @@ export default function BuyerDashboard({ data, isLoading }) {
     total_retired      = 0,
     current_holdings   = 0,
     total_co2_offset   = 0,
-    recent_transactions = [],
+    recent_transactions = [], // Use from initial payload
   } = data || {};
 
   // Retirement progress as a percentage of total purchased

@@ -37,16 +37,8 @@ export default function BuyerLayout({ children, title, subtitle }) {
     return location.pathname.startsWith(path);
   };
 
-  const executeLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await logout();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoggingOut(false);
-
-    }
+  const executeLogout = () => {
+    logout();
   };
 
   const NavLink = ({ item }) => {

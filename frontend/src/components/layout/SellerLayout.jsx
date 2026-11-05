@@ -20,16 +20,8 @@ export default function SellerLayout({ children, title, subtitle }) {
 
 
 
-  const executeLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await logout();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoggingOut(false);
-
-    }
+  const executeLogout = () => {
+    logout();
   };
 
   const isActive = (path) => {

@@ -25,20 +25,34 @@ async function getProjectCounts(sellerId) {
   return counts;
 }
 
+// NEW: Fetch recent projects for dashboard
+async function getRecentProjects(sellerId, limit = 5) {
+  const result = await query(
+    `SELECT id, title, project_type, status, created_at, updated_at
+     FROM projects
+     WHERE seller_id = $1
+     ORDER BY updated_at DESC
+     LIMIT $2`,
+    [sellerId, limit]
+  );
+  return result.rows;
+}
+
 const NodeCache = require('node-cache');
-const cache = new NodeCache({ stdTTL: 60 }); // Cache for 60 seconds
+const cache = new NodeCache({ stdTTL: 300 }); // Cache for 5 minutes (was 60 seconds)
 
 async function getDashboardSummary(sellerId) {
   const cacheKey = `dashboard_seller_${sellerId}`;
   const cachedData = cache.get(cacheKey);
   if (cachedData) return cachedData;
 
-  const [projectCounts, creditBalance, revenue, wallet, notifications] = await Promise.all([
+  const [projectCounts, creditBalance, revenue, wallet, notifications, recentProjects] = await Promise.all([
     getProjectCounts(sellerId),
     Credit.calculateSellerBalance(sellerId),
     Sales.calculateRevenue(sellerId),
     Wallet.findWallet(sellerId),
     Notification.findRecentByUser(sellerId, 10),
+    getRecentProjects(sellerId, 5), // NEW: Include recent projects
   ]);
 
   const summary = {
@@ -48,6 +62,7 @@ async function getDashboardSummary(sellerId) {
     credits_issued: creditBalance.total_minted,
     credits_sold: creditBalance.total_sold,
     revenue: revenue.total_revenue,
+    recent_projects: recentProjects, // NEW: Add to response
     wallet: {
       address: wallet?.wallet_address || null,
       connected: !!wallet?.wallet_address,
@@ -154,6 +169,27 @@ async function getOverdueCompletionsCount() {
   return Number(result.rows[0].count);
 }
 
+// NEW: Fetch recent buyer transactions for dashboard
+async function getRecentBuyerTransactions(buyerId, limit = 5) {
+  const result = await query(
+    `SELECT 
+      t.id, 
+      t.type, 
+      t.amount, 
+      t.price_per_credit, 
+      t.created_at,
+      p.title as project_title,
+      p.vintage_year
+    FROM transactions t
+    LEFT JOIN projects p ON t.project_id = p.id
+    WHERE t.buyer_id = $1
+    ORDER BY t.created_at DESC
+    LIMIT $2`,
+    [buyerId, limit]
+  );
+  return result.rows;
+}
+
 async function getAdminDashboardSummary() {
   const cacheKey = 'dashboard_admin';
   const cachedData = cache.get(cacheKey);
@@ -182,11 +218,12 @@ async function getBuyerDashboardSummary(buyerId) {
   const cachedData = cache.get(cacheKey);
   if (cachedData) return cachedData;
 
-  const [portfolioSummary, holdings, wallet, notifications] = await Promise.all([
+  const [portfolioSummary, holdings, wallet, notifications, recentTransactions] = await Promise.all([
     Portfolio.getPortfolioSummary(buyerId),
     Portfolio.findPortfolioByBuyer(buyerId),
     Wallet.findWallet(buyerId),
     Notification.findRecentByUser(buyerId, 10),
+    getRecentBuyerTransactions(buyerId, 5), // NEW: Include recent transactions
   ]);
 
   const summary = {
@@ -198,6 +235,7 @@ async function getBuyerDashboardSummary(buyerId) {
     total_co2_offset: portfolioSummary.total_retired,
     current_holdings: portfolioSummary.current_holdings,
     projects_supported: holdings.length,
+    recent_transactions: recentTransactions, // NEW: Add to response
     wallet: {
       address: wallet?.wallet_address || null,
       connected: !!wallet?.wallet_address,

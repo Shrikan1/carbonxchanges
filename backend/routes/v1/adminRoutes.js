@@ -8,6 +8,7 @@ const adminDashboardController = require('../../controllers/admin/adminDashboard
 const adminProjectController = require('../../controllers/admin/adminProjectController');
 const mintController = require('../../controllers/admin/mintController');
 const oversightController = require('../../controllers/admin/oversightController');
+const contactController = require('../../controllers/shared/contactController');
 
 // Every route in this file is admin-only
 router.use(requireAuth, requireRole('admin'));
@@ -32,5 +33,10 @@ router.post('/mint/:id/retry', writeLimiter, mintController.retryMint);
 router.get('/oversight/users', oversightController.getAllUsers);
 router.get('/oversight/projects', oversightController.getAllProjects);
 router.get('/oversight/transactions', oversightController.getAllTransactions);
+
+// Contact messages / inquiries management
+router.get('/messages', contactController.getAdminMessages);
+router.patch('/messages/:id/status', contactController.updateAdminMessageStatus);
+router.delete('/messages/:id', contactController.deleteAdminMessage);
 
 module.exports = router;

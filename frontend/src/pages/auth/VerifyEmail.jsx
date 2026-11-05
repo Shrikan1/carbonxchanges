@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
+import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.webp'; // Changed to WebP
 import { verifyOtp } from '../../api/endpoint/Authapi';
 
 const VerifyEmail = () => {

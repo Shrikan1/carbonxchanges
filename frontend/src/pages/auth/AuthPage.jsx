@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'motion/react';
-import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
+import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.webp'; // Changed to WebP
 
 import { useAuthStore } from '../../store/useAuthStore';
 import Login from './Login';

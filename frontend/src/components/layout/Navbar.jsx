@@ -168,17 +168,11 @@ const Navbar = ({
   // LOGOUT
   // ===================================================
 
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await logout();
-    } finally {
-      closeMobileMenu();
-      navigate('/login', { replace: true });
-      setIsLoggingOut(false);
-    }
+  const handleLogout = () => {
+    closeProfileDropdown();
+    closeMobileMenu();
+    logout();
+    navigate('/login', { replace: true });
   };
 
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -212,7 +206,7 @@ const Navbar = ({
   // ===================================================
 
   const renderDesktopAuth = () => {
-    if (isInitializing) {
+    if (isInitializing && !user) {
       return <div className="hidden lg:flex items-center space-x-2 min-w-[120px] h-10"></div>;
     }
 
@@ -457,7 +451,7 @@ const Navbar = ({
   // ===================================================
 
   const renderMobileAuth = () => {
-    if (isInitializing) {
+    if (isInitializing && !user) {
       return null;
     }
 
@@ -523,17 +517,6 @@ const Navbar = ({
 
   return (
     <>
-      {isLoggingOut && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300">
-          <div className="flex flex-col items-center">
-            <svg className="animate-spin h-12 w-12 text-white mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p className="text-white text-lg uppercase tracking-[0.2em] animate-pulse">Logging out...</p>
-          </div>
-        </div>
-      )}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#eef0eb] border-b border-[#dde0d8]">
 
         {/* =================================================

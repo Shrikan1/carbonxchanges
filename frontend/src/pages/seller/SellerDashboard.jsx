@@ -1,36 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SellerLayout from '../../components/layout/SellerLayout';
-import * as Sellerapi from '../../api/endpoint/Sellerapi';
-import { FiArrowRight, FiPlus, FiClock, FiFileText, FiCheckCircle } from 'react-icons/fi';
+import { FiArrowRight, FiPlus, FiClock, FiFileText, FiCheckCircle, FiFolder } from 'react-icons/fi';
 
 export default function SellerDashboard({ data, isLoading }) {
   const {
     total_projects = 0,
     pending_projects = 0,
     credits_issued = 0,
-    credits_sold = 0
+    credits_sold = 0,
+    recent_projects = [] // Use from initial payload
   } = data || {};
 
-  const [recentProjects, setRecentProjects] = useState([]);
-  const [loadingProjects, setLoadingProjects] = useState(true);
+  // Use parent's recent_projects directly - no local state needed
+  const recentProjects = recent_projects;
+  
+  // Combined loading state - only show skeleton if parent is loading AND we have no data
+  const showSkeleton = isLoading && recentProjects.length === 0;
+  
   const navigate = useNavigate();
-
-  useEffect(() => {
-    async function fetchProjects() {
-      try {
-        setLoadingProjects(true);
-        // Using limit to get the most recent projects
-        const response = await Sellerapi.getMyProjects({ limit: 5 });
-        setRecentProjects(response.data?.data || []);
-      } catch (err) {
-        console.error('Failed to fetch recent projects', err);
-      } finally {
-        setLoadingProjects(false);
-      }
-    }
-    fetchProjects();
-  }, []);
 
   const latestProject = recentProjects.length > 0 ? recentProjects[0] : null;
 
@@ -115,7 +103,7 @@ export default function SellerDashboard({ data, isLoading }) {
             </div>
             
             <div className="flex-1">
-              {loadingProjects ? (
+              {showSkeleton ? (
                 <div className="p-6 space-y-4">
                   {[1, 2, 3].map(i => (
                     <div key={i} className="h-16 bg-gray-50 rounded-xl animate-pulse" />
@@ -151,7 +139,7 @@ export default function SellerDashboard({ data, isLoading }) {
                           {p.title}
                         </p>
                         <p className="text-sm text-gray-500 mt-0.5 truncate uppercase text-[11px] tracking-wider">
-                          {p.project_type?.replace('_', ' ')} {p.country ? `· ${p.country}` : ''}
+                          {p.project_type?.replace('_', ' ')}
                         </p>
                       </div>
                       
@@ -235,45 +223,6 @@ export default function SellerDashboard({ data, isLoading }) {
                 </div>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* ACTION AREA & CREDITS SUMMARY */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 flex flex-col sm:flex-row items-center gap-4 bg-emerald-50/50 border border-emerald-100 rounded-lg shadow-sm p-5">
-            <div className="flex-1">
-              <h3 className="text-[13px] md:text-sm font-bold uppercase text-emerald-900 tracking-tight">Start a new project</h3>
-              <p className="text-[12px] text-emerald-700 mt-1">Register your carbon offset initiative to begin verification and minting.</p>
-            </div>
-            <Link to="/seller/projects/new" className="shrink-0 bg-[#173d25] hover:bg-[#0f2f1b] text-white px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-colors shadow-sm rounded flex items-center gap-2">
-              <FiPlus /> Create New Project
-            </Link>
-          </div>
-          
-          <div className="lg:col-span-1 bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-            <h3 className="text-[12px] font-semibold text-gray-900 uppercase tracking-wider mb-4">Credits Overview</h3>
-            {credits_issued === 0 ? (
-              <div className="text-center">
-                <p className="text-xs font-semibold text-gray-900 mb-1">No credits issued yet</p>
-                <p className="text-xs text-gray-500">Approved projects become eligible for credit issuance.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-500 font-medium">Issued</span>
-                  <span className="font-semibold text-gray-900">{credits_issued.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-500 font-medium">Sold</span>
-                  <span className="font-semibold text-gray-900">{credits_sold.toLocaleString()}</span>
-                </div>
-                <div className="w-full h-px bg-gray-100 my-2" />
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-900 font-semibold">Available</span>
-                  <span className="font-bold text-emerald-600">{(credits_issued - credits_sold).toLocaleString()}</span>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 

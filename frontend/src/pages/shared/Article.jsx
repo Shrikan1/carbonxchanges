@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import { FiArrowUpRight, FiCalendar, FiClock, FiSearch } from 'react-icons/fi';
-import img1 from '../../assets/os-x-mavericks-3840x2160-24079.jpg';
-import heroForest from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.jpg';
+import img1 from '../../assets/os-x-mavericks-3840x2160-24079.webp'; // Changed to WebP
+import heroForest from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.webp'; // Changed to WebP
 
 const Article = () => {
   const [articles, setArticles] = useState([]);

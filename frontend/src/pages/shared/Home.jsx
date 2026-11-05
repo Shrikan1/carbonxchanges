@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence, useReducedMotion, LayoutGroup, useScroll, useTransform } from 'motion/react';
 import {
   FaArrowRight,
   FaTree,
@@ -11,7 +10,6 @@ import {
   FaChartLine,
   FaFileContract,
   FaWallet,
-  FaSearch,
   FaHandshake,
   FaLinkedinIn,
   FaTwitter,
@@ -21,44 +19,36 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaPen,
-  FaMapMarkerAlt
-} from 'react-icons/fa';
+  FaMapMarkerAlt } from 'react-icons/fa';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import { useAuthStore } from '../../store/useAuthStore';
-import DriftWall from '../../components/ui/DriftWall';
-import heroBg from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.jpg';
-import GlareHover from '../../components/ui/GlareHover';
-import DecryptedText from '../../components/ui/DecryptedText';
-import ScrollExpand from '../../components/ui/ScrollExpand';
-import TextLoop from '../../components/ui/TextLoop';
-import img2 from '../../assets/18297.jpg';
-import img3 from '../../assets/4k-wallpaper-clouds-cropland-dawn.jpg';
-import img4 from '../../assets/634013.jpg';
-import img5 from '../../assets/Mangrove-Forest-Coast-2000x1237-1.jpg';
-import img7 from '../../assets/dense-evergreen-forest-covered-fog_23-2151975503.avif';
-import img8 from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
-import img9 from '../../assets/nature-outdoors-countryside-hill.jpg';
-import img10 from '../../assets/os-x-mavericks-3840x2160-24079.jpg';
-import img11 from '../../assets/pexels-adnan-atasoy-261355608-12644453.jpg';
-import img12 from '../../assets/shutterstock_297591356.jpg.webp';
-import img13 from '../../assets/wp2557992.jpg';
-import img14 from '../../assets/wp9161748.jpg';
+import toast from 'react-hot-toast';
+import { submitContact } from '../../api/endpoint/contactApi';
+import PrimaryButton from '../../components/ui/PrimaryButton';
+import SecondaryButton from '../../components/ui/SecondaryButton';
 
+// Optimized WebP images
+import heroBg from '../../assets/forest-wallpaper-3840x2160-nature-tranquil-6524.webp';
+import img2 from '../../assets/18297.jpg'; // No WebP version available
+import img3 from '../../assets/4k-wallpaper-clouds-cropland-dawn.jpg'; // No WebP version available
+import img4 from '../../assets/634013.webp';
+import img5 from '../../assets/Mangrove-Forest-Coast-2000x1237-1.webp'; // Changed to WebP
+import img7 from '../../assets/dense-evergreen-forest-covered-fog_23-2151975503.avif';
+import img8 from '../../assets/jungle-tree-dark-3840x2160-22695.webp';
+import img9 from '../../assets/nature-outdoors-countryside-hill.jpg'; // No WebP version available
+import img10 from '../../assets/os-x-mavericks-3840x2160-24079.webp';
+import img11 from '../../assets/pexels-adnan-atasoy-261355608-12644453.webp';
+import img12 from '../../assets/shutterstock_297591356.jpg.webp';
+import img13 from '../../assets/wp2557992.webp'; // Changed to WebP
+import img14 from '../../assets/wp9161748.webp';
+
+// Gallery items for simple grid display
 const projectGalleryItems = [
   { image: img2, title: 'Kutch Wind Turbines' },
   { image: img3, title: 'Bhadla Solar Park' },
-  { image: img4, title: 'Himalayan Valley' },
   { image: img5, title: 'Andaman Conservation' },
-  { image: img7, title: 'Sundarbans Sunrise' },
   { image: img8, title: 'Delhi Recycling Hub' },
-  { image: img9, title: 'Nilgiri Landscape' },
-  { image: img10, title: 'Punjab Golden Fields' },
-  { image: img11, title: 'Pichavaram Mangroves' },
-  { image: img12, title: 'Meghalaya Forest' },
-  { image: img13, title: 'Jog Falls Canyon' },
-  { image: img14, title: 'Karakoram Peaks' },
-  { image: heroBg, title: 'Ganga River Bridge' },
 ];
 
 const testimonials = [
@@ -68,108 +58,62 @@ const testimonials = [
     name: "ANANYA SHARMA",
     role: "Head of Sustainability",
     company: "Tata EcoTech",
-    image: img5
-  },
+    image: img5 },
   {
     id: 2,
     quote: "CarbonXplanet provides the exact transparency we need to verify our ESG commitments. The blockchain integration makes all the difference.",
     name: "RAHUL DESAI",
     role: "Chief Operations Officer",
     company: "Reliance Green",
-    image: img2
-  },
+    image: img2 },
   {
     id: 3,
     quote: "By cutting out the middlemen, we've seen a massive increase in capital going directly to the communities protecting our forests.",
     name: "PRIYA MENON",
     role: "Project Director",
     company: "Western Ghats Conservation",
-    image: img3
-  },
+    image: img3 },
   {
     id: 4,
     quote: "An elegant, decentralized solution to a complex global problem. We’ve retired over 10,000 tons with complete confidence.",
     name: "VIKRAM SINGH",
     role: "VP of Environmental Impact",
     company: "Adani Renewables",
-    image: img4
-  }
+    image: img4 }
 ];
 
 const Home = () => {
   const { isAuthenticated } = useAuthStore();
-  const shouldReduceMotion = useReducedMotion();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
-  const projectSliderRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const slider = projectSliderRef.current;
-    if (!slider) return;
-
-    const interval = setInterval(() => {
-      if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 10) {
-        slider.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        slider.scrollBy({ left: 260, behavior: 'smooth' });
-      }
-    }, 3500);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      const slider = projectSliderRef.current;
-      if (!slider) return;
-      if (e.key === 'ArrowLeft') {
-        slider.scrollBy({ left: -260, behavior: 'smooth' });
-      } else if (e.key === 'ArrowRight') {
-        slider.scrollBy({ left: 260, behavior: 'smooth' });
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    alert('Thank you for reaching out! We will get back to you soon.');
-    setFormData({ name: '', phone: '', email: '', message: '' });
-  };
+    if (!formData.name?.trim() || !formData.email?.trim() || !formData.message?.trim()) {
+      toast.error('Please fill in all required fields');
+      return; }
+    setIsSubmitting(true);
+    try {
+      const res = await submitContact(formData);
+      toast.success(res.data?.message || 'Thank you! Your message has been sent to our team.');
+      setFormData({ name: '', phone: '', email: '', message: '' }); } catch (err) {
+      console.error('Contact submission error:', err);
+      toast.error(err.response?.data?.error || 'Failed to send message. Please try again.'); } finally {
+      setIsSubmitting(false); }};
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+      setActiveTestimonial((prev) => (prev + 1) % testimonials.length); }, 5000);
+    return () => clearInterval(timer); }, []);
 
   const handlePrevTestimonial = () => {
-    setActiveTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  };
+    setActiveTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1)); };
 
   const handleNextTestimonial = () => {
-    setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-  };
+    setActiveTestimonial((prev) => (prev + 1) % testimonials.length); };
 
-  // Parallax effect for the How It Works watermark
-  const howItWorksRef = useRef(null);
-  const { scrollYProgress: howItWorksScrollY } = useScroll({
-    target: howItWorksRef,
-    offset: ["start end", "end start"]
-  });
-  const textX = useTransform(howItWorksScrollY, [0, 1], ["10%", "-25%"]);
+  // Removed parallax effect for better performance
 
   return (
     <div className="bg-[#eef0eb] text-[#1a2e1a] min-h-screen font-sans">
@@ -177,63 +121,44 @@ const Home = () => {
 
       {/* ─── HERO SECTION ─── */}
       <section className="relative overflow-hidden bg-[#f5f7f2] border-b border-[#dfe7df]" style={{ minHeight: 'min(780px, calc(100vh - 48px))', marginTop: '48px' }}>
-
-
-
         {/* ── Left content ── */}
         <div className="relative z-10 w-full max-w-[1360px] mx-auto px-6 lg:px-12 xl:px-16 flex items-center h-full" style={{ minHeight: 'min(780px, calc(100vh - 48px))' }}>
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", staggerChildren: 0.15 }}
-            className="w-full lg:w-[52%] pt-8 pb-16 lg:py-0 flex flex-col justify-center"
-          >
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-              className="wise-font font-black text-[#17351f] leading-[0.95] tracking-[-0.04em] mb-4 sm:mb-6 uppercase text-left"
+          <div className="w-full lg:w-[52%] pt-8 pb-16 lg:py-0 flex flex-col justify-center">
+            {/* Mobile hero image (at the top on mobile) */}
+            <div className="relative w-full flex justify-center mb-6 sm:mb-8 lg:hidden">
+              <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl mx-auto ring-1 ring-black/5">
+                <img
+                  src={img8}
+                  alt="Dark Jungle"
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                  style={{ objectPosition: 'center 45%' }} />
+              </div>
+            </div>
+
+            <h1 className="wise-font font-black text-[#17351f] leading-[0.95] tracking-[-0.04em] mb-4 sm:mb-6 uppercase text-left"
               style={{ fontSize: 'clamp(2.25rem, 8vw, 4.5rem)' }}
             >
               Pioneering<br />
               Global Climate<br />
               Action
-            </motion.h1>
+            </h1>
 
             {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="text-[#51665a] text-[14px] sm:text-[16px] leading-relaxed max-w-[410px] mb-6 sm:mb-8 font-normal text-left"
-            >
+            <p className="text-[#51665a] text-[14px] sm:text-[16px] leading-relaxed max-w-[410px] mb-6 sm:mb-8 font-normal text-left">
               A decentralized marketplace where verified carbon credits
               meet transparent blockchain infrastructure.
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-              className="flex flex-wrap items-center justify-start gap-3 mb-10 sm:mb-12 w-full"
-            >
-              <Link
-                to="/marketplace"
-                className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto"
-              >
+            <div className="flex flex-wrap items-center justify-start gap-3 mb-10 sm:mb-12 w-full">
+              <PrimaryButton to="/marketplace">
                 Discover Projects
-                <FaArrowRight className="text-[11px]" />
-              </Link>
-            </motion.div>
+              </PrimaryButton>
+            </div>
 
             {/* Protocol & Verification Standards */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              className="border-t border-[#ccd9cd] pt-7 sm:pt-8 max-w-[460px] mt-4 sm:mt-6 mb-8 lg:mb-0"
-            >
+            <div className="hidden sm:block border-t border-[#ccd9cd] pt-7 sm:pt-8 max-w-[460px] mt-4 sm:mt-6 mb-8 lg:mb-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="border-l-2 border-[#173d25] pl-3.5 py-0.5">
                   <p className="text-[13px] font-bold text-[#17351f] uppercase tracking-wide leading-none mb-1">
@@ -253,54 +178,28 @@ const Home = () => {
                   </p>
                 </div>
               </div>
-            </motion.div>
-
-
-            {/* Mobile hero image (Moved below content for professional flow) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-              className="relative w-full flex justify-center lg:hidden"
-            >
-              <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl mx-auto ring-1 ring-black/5">
-                <img
-                  src={img8}
-                  alt="Dark Jungle"
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: 'center 45%' }}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
 
         {/* ── Right: Large circular image ── */}
-        <motion.div
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute hidden lg:block overflow-hidden"
+        <div className="absolute hidden lg:block overflow-hidden"
           style={{
             width: 'clamp(380px, 42vw, 680px)',
             height: 'calc(100% - 36px)',
             borderRadius: '260px 0 0 260px',
             top: '18px',
-            right: '0',
-          }}
+            right: '0'}}
         >
           <img
             src={heroBg}
             alt="Lush forest landscape"
             className="w-full h-full object-cover"
-            style={{ objectPosition: 'center 45%' }}
-          />
+            loading="eager"
+            style={{ objectPosition: 'center 45%' }} />
           <div className="absolute inset-0 bg-[#16391f]/10" />
           <p className="absolute bottom-8 right-9 max-w-[116px] -rotate-6 text-[10px] font-bold uppercase leading-[1.55] tracking-[0.16em] text-[#e1efd9]">A cleaner planet, together</p>
-        </motion.div>
-
-
-
+        </div>
       </section>
 
 
@@ -320,12 +219,11 @@ const Home = () => {
                 </p>
               </div>
 
-              <h2 className="text-[2.25rem] sm:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] tracking-tight leading-[1.05] uppercase wise-font font-black text-[#1a2e1a] break-words">
-                Empowering<br className="hidden sm:inline" />
-                {" "}Global<br className="hidden sm:inline" />
-                {" "}Climate<br className="hidden sm:inline" />
-                {" "}Action.
-              </h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tighter mb-8 leading-[1.05] text-[#0a0a0a] wise-font font-black flex flex-col items-center text-center">
+            <span>Don't take our word for it.</span>
+            <span>Take theirs. It's</span>
+            <span>pretty impactful.</span>
+          </h2>
 
               <div className="space-y-4 max-w-lg">
                 <p className="text-[#4a6052] text-[15px] lg:text-[16px] leading-relaxed font-normal">
@@ -363,8 +261,7 @@ const Home = () => {
               <div className="relative w-full max-w-[760px]">
                 {/* Offset Lime Green Background (Shadow effect) */}
                 <div
-                  className="absolute top-2 left-2 sm:top-4 sm:left-4 w-full h-full bg-[#b6d77e] rounded-2xl sm:rounded-3xl pointer-events-none"
-                />
+                  className="absolute top-2 left-2 sm:top-4 sm:left-4 w-full h-full bg-[#b6d77e] rounded-2xl sm:rounded-3xl pointer-events-none" />
 
                 {/* Video Container with Thin Green Outline / Border */}
                 <div
@@ -390,89 +287,50 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ─── PROJECT GALLERY (FULL BLEED SPLIT SCREEN) ─── */}
-      <section id="gallery" className="bg-[#0f2416] text-white overflow-hidden relative flex flex-col lg:flex-row min-h-[500px] lg:h-[80vh] lg:min-h-[700px]">
-
-        {/* Left Content (Aligned with container) */}
-        <div className="w-full lg:w-1/2 flex flex-col justify-center py-12 lg:py-0 z-10 relative bg-[#0f2416]">
-          {/* Inner container pushes to the right, max width half of 1360 (680) */}
-          <div className="w-full max-w-[680px] ml-auto px-6 lg:pl-12 lg:pr-16">
-            <h2 className="text-4xl sm:text-5xl xl:text-7xl leading-[0.95] font-black tracking-[-0.04em] text-[#eaf6df] uppercase wise-font">
-              Explore<br />Projects.
-            </h2>
-            <div className="max-w-md mt-8">
-              <p className="text-[#a4c2b0] text-[17px] leading-relaxed font-medium">
-                A profile, portfolio, and social feed in one place.
-              </p>
-              <p className="text-[#83a390] text-[15px] leading-relaxed mt-4">
-                Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
-              </p>
+      {/* ─── PROJECT GALLERY (SIMPLE GRID) ─── */}
+      <section id="gallery" className="bg-[#0f2416] text-white overflow-hidden py-16 lg:py-24">
+        <div className="w-full max-w-[1360px] mx-auto px-6 lg:px-12 xl:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
+            <div>
+              <h2 className="text-4xl sm:text-5xl xl:text-6xl leading-[0.95] font-black tracking-[-0.04em] text-[#eaf6df] uppercase wise-font">
+                Explore<br />Projects.
+              </h2>
+              <div className="max-w-md mt-6">
+                <p className="text-[#a4c2b0] text-[17px] leading-relaxed font-medium">
+                  A profile, portfolio, and social feed in one place.
+                </p>
+                <p className="text-[#83a390] text-[15px] leading-relaxed mt-4">
+                  Explore the initiatives shaping a carbon-neutral future. From rainforest preservation to renewable energy projects across the globe.
+                </p>
+              </div>
+              <div className="mt-8">
+                <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-white transition-colors shadow-sm">
+                  <span>BROWSE MARKETPLACE</span>
+                  <FaArrowRight className="text-[11px]" />
+                </Link>
+              </div>
             </div>
-            <div className="mt-12 hidden lg:flex">
-              <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-white transition-colors shadow-sm">
-                <span>BROWSE MARKETPLACE</span>
-                <FaArrowRight className="text-[11px]" />
-              </Link>
+
+            {/* Simple Image Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {projectGalleryItems.map((item, idx) => (
+                <div key={idx} className="aspect-[4/3] rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    loading="lazy" />
+                </div>
+              ))}
             </div>
           </div>
         </div>
-
-        {/* Right Gallery (Full Bleed) */}
-        <div className="w-full lg:w-1/2 relative h-[380px] sm:h-[450px] lg:h-full bg-[#0a170e]">
-          {/* Smooth shadow overlays for seamless blending */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0f2416] to-transparent z-10 pointer-events-none hidden lg:block"></div>
-          <div className="absolute inset-x-0 top-0 h-16 sm:h-24 bg-gradient-to-b from-[#0f2416] to-transparent z-10 pointer-events-none lg:hidden"></div>
-          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-[#0f2416] to-transparent z-10 pointer-events-none"></div>
-
-          <DriftWall
-            items={projectGalleryItems}
-            columns={isMobile ? 2 : 3}
-            tileWidth={isMobile ? 130 : 260}
-            tileHeight={isMobile ? 100 : 200}
-            gap={isMobile ? 12 : 16}
-            speed={isMobile ? 12 : 25}
-            direction="up"
-            overlayColor="transparent"
-            dim={1.0}
-            turn={isMobile ? 0 : -14}
-            tilt={isMobile ? 0 : 16}
-          />
-        </div>
-
-        {/* Mobile CTA (Below Gallery) */}
-        <div className="w-full bg-[#0a170e] px-6 pb-12 lg:hidden flex justify-center items-center">
-          <Link to="/marketplace" className="inline-flex items-center justify-center gap-2.5 bg-[#bef264] text-[#0f2416] px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-white transition-colors shadow-sm">
-            <span>BROWSE MARKETPLACE</span>
-            <FaArrowRight className="text-[11px]" />
-          </Link>
-        </div>
       </section>
 
-      {/* ─── PLATFORM FEATURES (WHITE & FLOATING ICONS) ─── */}
-      <section className="bg-[#f8faf6] text-[#17351f] overflow-hidden py-24 lg:py-32 relative min-h-[80vh] xl:min-h-[85vh] flex items-center w-full">
-        {/* Animated Background TextLoop */}
-        <div className="hidden absolute inset-0 flex items-center justify-center opacity-[0.25] pointer-events-none select-none scale-[1.5] sm:scale-[2]">
-          <TextLoop
-            text="CarbonXplanet ✦ Blockchain ✦ Transparent"
-            shape="wave"
-            speed={90}
-            direction="forward"
-            separator="✦"
-            curviness={90}
-            fontSize={46}
-            fontWeight={800}
-            letterSpacing={2}
-            uppercase
-            color="#ffffff"
-            ribbon
-            ribbonColor="#10B981"
-            ribbonWidth={86}
-            pauseOnHover={false}
-          />
-        </div>
-
-        <div className="w-full max-w-[1360px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          <div className="max-w-xl lg:pr-10 z-10">
+      {/* ─── PLATFORM FEATURES ─── */}
+      <section className="bg-[#f8faf6] text-[#17351f] overflow-hidden py-24 lg:py-32">
+        <div className="w-full max-w-[1360px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="max-w-xl lg:pr-10">
             <h2 className="text-[2.25rem] sm:text-5xl tracking-[-0.05em] mb-4 sm:mb-6 leading-[1.05] sm:leading-[0.98] text-[#17351f] uppercase wise-font font-black">
               Why CarbonXplanet.
             </h2>
@@ -483,72 +341,40 @@ const Home = () => {
               Generate audit-ready ESG reports aligned with Verra VCS and Gold Standard. Every credit is minted as an NFT with an immutable audit trail.
             </p>
             {isAuthenticated ? (
-              <Link to="/seller/post/new" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
-                <span>START SELLING</span>
-                <FaArrowRight className="text-[11px]" />
-              </Link>
+              <PrimaryButton to="/seller/post/new">START SELLING</PrimaryButton>
             ) : (
-              <Link to="/signup" className="inline-flex items-center justify-center gap-2.5 bg-[#173d25] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-[#0f2f1b] transition-colors w-full sm:w-auto mt-2">
-                <span>JOIN PLATFORM</span>
-                <FaArrowRight className="text-[11px]" />
-              </Link>
+              <PrimaryButton to="/signup">JOIN PLATFORM</PrimaryButton>
             )}
           </div>
 
-          <div className="relative flex items-center justify-center w-full mt-10 lg:mt-0 pb-6 sm:pb-0">
-            <motion.div
-              className="grid grid-cols-3 gap-2 sm:gap-4 w-full max-w-[340px] sm:max-w-none mx-auto lg:mx-0"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.1 }
-                }
-              }}
-            >
+          <div className="relative flex items-center justify-center w-full">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full max-w-[340px] sm:max-w-none mx-auto lg:mx-0">
               {[
-                { Icon: FaBolt, label: 'Instant Settlement', color: 'text-emerald-500', rotate: '-rotate-2' },
-                { Icon: FaShieldAlt, label: 'Verified Security', color: 'text-gray-900', rotate: 'rotate-3' },
-                { Icon: FaChartLine, label: 'Scalable Impact', color: 'text-lime-500', rotate: '-rotate-1' },
-                { Icon: FaFileContract, label: 'Smart Contracts', color: 'text-emerald-700', rotate: 'rotate-2' },
-                { Icon: FaTree, label: 'Reforestation', color: 'text-green-600', rotate: '-rotate-3' },
-                { Icon: FaWind, label: 'Wind Energy', color: 'text-teal-500', rotate: 'rotate-1' },
-                { Icon: FaSolarPanel, label: 'Solar Projects', color: 'text-yellow-500', rotate: '-rotate-2' },
-                { Icon: FaWallet, label: 'Secure Wallet', color: 'text-gray-900', rotate: 'rotate-2' },
-                { Icon: FaHandshake, label: 'Trustless Audits', color: 'text-emerald-400', rotate: '-rotate-1' }
-              ].map(({ Icon, label, color, rotate }, idx) => (
-                <motion.div
+                { Icon: FaBolt, label: 'Instant Settlement', color: 'text-emerald-500' },
+                { Icon: FaShieldAlt, label: 'Verified Security', color: 'text-gray-900' },
+                { Icon: FaChartLine, label: 'Scalable Impact', color: 'text-lime-500' },
+                { Icon: FaFileContract, label: 'Smart Contracts', color: 'text-emerald-700' },
+                { Icon: FaTree, label: 'Reforestation', color: 'text-green-600' },
+                { Icon: FaWind, label: 'Wind Energy', color: 'text-teal-500' },
+                { Icon: FaSolarPanel, label: 'Solar Projects', color: 'text-yellow-500' },
+                { Icon: FaWallet, label: 'Secure Wallet', color: 'text-gray-900' },
+                { Icon: FaHandshake, label: 'Trustless Audits', color: 'text-emerald-400' }
+              ].map(({ Icon, label, color }, idx) => (
+                <div
                   key={idx}
-                  variants={{
-                    hidden: { opacity: 0, y: 30, scale: 0.9 },
-                    visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 200, damping: 15 } }
-                  }}
                   className="bg-white border border-[#d9e4da] w-full aspect-square flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:border-[#96b99c] hover:shadow-[0_10px_20px_rgba(27,66,39,0.08)] cursor-pointer group"
                 >
                   <Icon className={`text-[26px] sm:text-[34px] mb-2 transition-transform duration-300 group-hover:scale-110 ${color}`} />
                   <span className="text-[8.5px] sm:text-[9.5px] font-bold text-[#294633] uppercase text-center px-1 leading-tight">{label}</span>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ─── HOW IT WORKS (DARK MODE) ─── */}
-      <section ref={howItWorksRef} className="bg-[#123020] text-white overflow-hidden py-24 lg:py-32 relative min-h-[80vh] xl:min-h-[85vh] flex items-center w-full">
-        {/* Massive Parallax Watermark */}
-        <div className="absolute inset-0 flex items-end pb-10 justify-center opacity-[0.05] pointer-events-none overflow-hidden select-none">
-          <motion.span
-            className="text-[20vw] font-black leading-none whitespace-nowrap wise-font"
-            style={{ x: textX }}
-          >
-            CARBONXPLANET DECENTRALIZED MARKET
-          </motion.span>
-        </div>
-
+      <section className="bg-[#123020] text-white overflow-hidden py-24 lg:py-32 relative min-h-[80vh] xl:min-h-[85vh] flex items-center w-full">
         <div className="w-full max-w-[1360px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
           <div className="max-w-xl">
             <h2 className="text-[2.25rem] sm:text-5xl tracking-[-0.05em] mb-4 sm:mb-6 leading-[1.05] sm:leading-[0.98] text-[#e6f0de] uppercase wise-font font-black">
@@ -614,8 +440,7 @@ const Home = () => {
           <div className="absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)',
-              backgroundSize: '40px 40px'
-            }}>
+              backgroundSize: '40px 40px' }}>
           </div>
           {/* Organic glowing orbs for a premium feel */}
           <div className="absolute top-[-20%] left-[-10%] w-[40%] h-[60%] bg-[#d9f99d] rounded-full mix-blend-multiply filter blur-[120px] opacity-60"></div>
@@ -624,52 +449,11 @@ const Home = () => {
         </div>
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
-            variants={{
-              visible: {
-                transition: { staggerChildren: 0.15 }
-              }
-            }}
-            className="text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tighter mb-8 leading-[1.05] text-[#0a0a0a] wise-font font-black flex flex-col items-center text-center"
-            style={{ WebkitTextFillColor: '#0a0a0a', background: 'none' }}
-          >
-            <span className="overflow-hidden block">
-              <motion.span
-                className="block"
-                variants={{
-                  hidden: { y: "110%", opacity: 0 },
-                  visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-                }}
-              >
-                Don't take our word for it.
-              </motion.span>
-            </span>
-            <span className="overflow-hidden block mt-1">
-              <motion.span
-                className="block"
-                variants={{
-                  hidden: { y: "110%", opacity: 0 },
-                  visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-                }}
-              >
-                Take theirs. It's
-              </motion.span>
-            </span>
-            <span className="overflow-hidden block mt-1">
-              <motion.span
-                className="block"
-                variants={{
-                  hidden: { y: "110%", opacity: 0 },
-                  visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-                }}
-              >
-                pretty impactful.
-              </motion.span>
-            </span>
-          </motion.h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tighter mb-8 leading-[1.05] text-[#0a0a0a] wise-font font-black flex flex-col items-center text-center">
+            <span>Don't take our word for it.</span>
+            <span>Take theirs. It's</span>
+            <span>pretty impactful.</span>
+          </h2>
 
           <div className="flex justify-center -space-x-3 mb-7 relative z-50">
             {testimonials.map((t, idx) => {
@@ -683,11 +467,9 @@ const Home = () => {
                 >
                   <img
                     src={t.image}
-                    className={`w-full h-full object-cover transition-all duration-300 ${isActive ? 'grayscale-0 opacity-100' : 'grayscale opacity-60 hover:opacity-100'}`}
-                  />
+                    className={`w-full h-full object-cover transition-all duration-300 ${isActive ? 'grayscale-0 opacity-100' : 'grayscale opacity-60 hover:opacity-100'}`} />
                 </div>
-              );
-            })}
+              ); })}
           </div>
 
           <div className="relative max-w-3xl mx-auto min-h-[175px]">
@@ -699,15 +481,10 @@ const Home = () => {
               <FaArrowRight className="text-sm" />
             </button>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTestimonial}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.4 }}
-                className="px-9 sm:px-14 flex flex-col items-center"
-              >
+            <div
+              key={activeTestimonial}
+              className="px-9 sm:px-14 flex flex-col items-center"
+            >
                 <p className="text-[18px] sm:text-[21px] font-medium leading-relaxed max-w-2xl mx-auto mb-6 text-[#222]">
                   “{testimonials[activeTestimonial].quote}”
                 </p>
@@ -720,8 +497,8 @@ const Home = () => {
                     <span className="font-bold text-[#0a0a0a]">{testimonials[activeTestimonial].company}</span>
                   </div>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+              </div>
+            
           </div>
 
           <Link to="/about" className="inline-flex items-center justify-center gap-2.5 bg-[#0a0a0a] text-white px-8 py-3.5 rounded-md text-[13px] font-bold hover:bg-black transition-all hover:scale-105 shadow-xl w-full sm:w-auto mt-4">
@@ -743,20 +520,16 @@ const Home = () => {
             {[
               {
                 q: "What exactly is a verified carbon credit?",
-                a: "A verified carbon credit represents one metric ton of carbon dioxide equivalent (tCO2e) that has been prevented from entering the atmosphere or removed from it. Our credits are authenticated by top-tier registries like Verra and Gold Standard before being tokenized on-chain."
-              },
+                a: "A verified carbon credit represents one metric ton of carbon dioxide equivalent (tCO2e) that has been prevented from entering the atmosphere or removed from it. Our credits are authenticated by top-tier registries like Verra and Gold Standard before being tokenized on-chain." },
               {
                 q: "How does blockchain improve the carbon market?",
-                a: "By putting credits on an immutable public ledger, we completely eliminate double-counting and reduce the layers of middlemen. This ensures maximum capital goes directly to the project developers protecting our planet."
-              },
+                a: "By putting credits on an immutable public ledger, we completely eliminate double-counting and reduce the layers of middlemen. This ensures maximum capital goes directly to the project developers protecting our planet." },
               {
                 q: "Do I need crypto to buy carbon credits?",
-                a: "While our infrastructure runs on Web3, we offer fiat gateways. You can purchase credits using traditional payment methods (credit card/bank transfer), and we handle the on-chain settlement and wallet custody seamlessly in the background."
-              },
+                a: "While our infrastructure runs on Web3, we offer fiat gateways. You can purchase credits using traditional payment methods (credit card/bank transfer), and we handle the on-chain settlement and wallet custody seamlessly in the background." },
               {
                 q: "Can I resell credits I've purchased?",
-                a: "Yes! Active credits can be traded freely on our marketplace. However, once you choose to 'retire' a credit to offset your own footprint, it is permanently burned and removed from circulation to guarantee the environmental impact."
-              }
+                a: "Yes! Active credits can be traded freely on our marketplace. However, once you choose to 'retire' a credit to offset your own footprint, it is permanently burned and removed from circulation to guarantee the environmental impact." }
             ].map((faq, index) => (
               <details key={index} className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                 <summary className="flex justify-between items-center cursor-pointer px-6 py-4 font-bold text-[15px] md:text-[16px] select-none focus:outline-none focus:ring-0 focus-visible:outline-none list-none [&::-webkit-details-marker]:hidden" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -869,8 +642,7 @@ const Home = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all"
-                  />
+                    className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all" />
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -884,8 +656,7 @@ const Home = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all"
-                    />
+                      className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all" />
                   </div>
                   <div className="relative w-full sm:w-1/2">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -896,8 +667,7 @@ const Home = () => {
                       placeholder="Phone Number"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all"
-                    />
+                      className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all" />
                   </div>
                 </div>
 
@@ -911,12 +681,22 @@ const Home = () => {
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     required
                     rows={4}
-                    className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all resize-none"
-                  />
+                    className="w-full bg-[#1a1a1a] border border-gray-800 py-3.5 pl-12 pr-4 text-sm text-white placeholder-gray-500 rounded-xl focus:outline-none focus:border-[#bef264] focus:ring-1 focus:ring-[#bef264] transition-all resize-none" />
                 </div>
 
-                <button type="submit" className="w-full bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] font-bold py-3.5 px-6 rounded-md transition-all shadow-md hover:shadow-lg text-[13px] uppercase tracking-widest mt-2 flex justify-center items-center">
-                  Send Message
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#bef264] hover:bg-[#a3e635] text-[#0a0a0a] font-bold py-3.5 px-6 rounded-md transition-all shadow-md hover:shadow-lg text-[13px] uppercase tracking-widest mt-2 flex justify-center items-center disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      Sending...
+                    </span>
+                  ) : (
+                    'Send Message'
+                  )}
                 </button>
               </form>
             </div>
@@ -929,7 +709,7 @@ const Home = () => {
       <Footer />
 
     </div>
-  );
-};
+  ); };
 
 export default Home;
+

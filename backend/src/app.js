@@ -36,6 +36,36 @@ app.use(cors({
 app.use(express.json());       // Parse incoming JSON request bodies
 app.use(cookieParser());       // Parse httpOnly cookies (used for refresh token)
 
+// --- Cache control middleware for performance optimization ---
+app.use((req, res, next) => {
+  // Static assets (images, documents) - cache for 30 days
+  if (req.path.startsWith('/uploads/')) {
+    res.set('Cache-Control', 'public, max-age=2592000, immutable'); // 30 days
+  }
+  // Public read-only data (marketplace, projects) - cache for 5 minutes
+  else if (
+    req.method === 'GET' && 
+    (req.path.includes('/marketplace') || 
+     req.path.includes('/project-posts') ||
+     req.path.includes('/projects') && !req.path.includes('/my-projects'))
+  ) {
+    res.set('Cache-Control', 'public, max-age=300'); // 5 minutes
+  }
+  // User-specific or dynamic data - no cache
+  else if (
+    req.path.includes('/dashboard') ||
+    req.path.includes('/wallet') ||
+    req.path.includes('/profile') ||
+    req.path.includes('/notifications')
+  ) {
+    res.set('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  }
+  // Default for other API endpoints - short cache
+  else if (req.path.startsWith('/api/')) {
+    res.set('Cache-Control', 'no-cache');
+  }
+  next();
+});
 
 // --- Health check (useful to confirm the server is alive) ---
 app.get('/api/health', (req, res) => {
@@ -66,6 +96,7 @@ app.use('/api/v1/credits', require('../routes/v1/seller/Creditroutes'));
 app.use('/api/v1/marketplace', require('../routes/v1/seller/Marketplaceroutes'));
 app.use('/api/v1/buyer', require('../routes/v1/buyerRoutes'));
 app.use('/api/v1/notifications', require('../routes/v1/shared/notificationRoutes'));
+app.use('/api/v1/contact', require('../routes/v1/shared/contactRoutes'));
 app.use('/v1/share', require('../routes/v1/shared/ogRoutes'));
 
 app.use((req, res) => {

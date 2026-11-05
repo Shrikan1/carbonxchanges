@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
+import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.webp'; // Changed to WebP
 import { login } from "../../api/endpoint/Authapi";
 import Loader from '../../components/Loader';
 import { useAuthStore } from '../../store/useAuthStore';

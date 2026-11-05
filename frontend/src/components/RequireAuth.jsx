@@ -13,7 +13,7 @@ export default function RequireAuth({
 }) {
   const { user, isAuthenticated, isInitializing } = useAuthStore();
   
-  if (isInitializing) return (
+  if (isInitializing && !user) return (
     <div className="min-h-screen w-full bg-[#f4f7f5] relative">
       <div className="absolute top-0 left-0 w-full h-1 overflow-hidden bg-gray-200">
         <div className="h-full bg-[#173d25] w-1/3 animate-[pulse_1s_ease-in-out_infinite]" />

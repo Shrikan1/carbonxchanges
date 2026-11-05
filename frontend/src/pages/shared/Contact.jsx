@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
+import toast from 'react-hot-toast';
+import { submitContact } from '../../api/endpoint/contactApi';
 import { FaUser, FaPhoneAlt, FaEnvelope, FaPen, FaMapMarkerAlt, FaTwitter, FaLinkedinIn, FaGithub, FaDiscord } from 'react-icons/fa';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('Thank you for reaching out! We will get back to you soon.');
-    setFormData({ name: '', phone: '', email: '', message: '' });
+    if (!formData.name?.trim() || !formData.email?.trim() || !formData.message?.trim()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const res = await submitContact(formData);
+      toast.success(res.data?.message || 'Thank you! Your message has been sent to our team.');
+      setFormData({ name: '', phone: '', email: '', message: '' });
+    } catch (err) {
+      console.error('Contact submission error:', err);
+      toast.error(err.response?.data?.error || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -144,8 +160,19 @@ const Contact = () => {
                 />
               </div>
 
-              <button type="submit" className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg text-sm mt-4 flex justify-center items-center">
-                Send Message
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg text-sm mt-4 flex justify-center items-center disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Sending...
+                  </span>
+                ) : (
+                  'Send Message'
+                )}
               </button>
             </form>
           </div>

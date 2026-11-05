@@ -133,4 +133,59 @@ async function sendPasswordResetEmail(toEmail, otpCode) {
   });
 }
 
-module.exports = { sendOtpEmail, sendAgentCredentialsEmail, sendPasswordResetEmail };
+async function sendContactMessageEmail({ name, email, phone, message }) {
+  const officialEmail = process.env.OFFICIAL_EMAIL || 'carbonxcredit2@gmail.com';
+  try {
+    await transporter.sendMail({
+      from: `"CarbonXPlanet Inquiries" <${process.env.EMAIL_USER}>`,
+      to: officialEmail,
+      replyTo: email,
+      subject: `New Message from ${name} - CarbonXPlanet`,
+      html: `
+        <div style="background-color: #0c0c0c; margin: 0; padding: 40px 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #ffffff;">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; margin: 0 auto; background-color: #111111; border: 1px solid #222222; border-radius: 12px; overflow: hidden;">
+            <tr>
+              <td style="padding: 35px 30px 20px;">
+                <div style="text-align: center; margin-bottom: 25px;">
+                  <span style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">CARBON<span style="color: #bef264;">X</span>PLANET</span>
+                </div>
+                <h2 style="margin: 0 0 15px; font-size: 20px; font-weight: 600; color: #ffffff; text-align: center;">New Contact Inquiry Received</h2>
+                <p style="margin: 0 0 25px; font-size: 14px; line-height: 1.6; color: #a0a0a0; text-align: center;">
+                  A visitor has submitted a message via the CarbonXPlanet contact form.
+                </p>
+                <div style="background-color: #181818; border: 1px solid #2a2a2a; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                  <p style="margin: 0 0 10px; font-size: 14px; color: #ffffff;"><strong>Name:</strong> ${name}</p>
+                  <p style="margin: 0 0 10px; font-size: 14px; color: #ffffff;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #bef264; text-decoration: none;">${email}</a></p>
+                  <p style="margin: 0 0 10px; font-size: 14px; color: #ffffff;"><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+                  <div style="margin-top: 15px; border-top: 1px solid #333333; padding-top: 15px;">
+                    <p style="margin: 0 0 8px; font-size: 13px; font-weight: 600; color: #bef264; text-transform: uppercase; letter-spacing: 0.5px;">Message:</p>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #e0e0e0; white-space: pre-wrap;">${message}</p>
+                  </div>
+                </div>
+                <p style="margin: 0; font-size: 12px; color: #777777; text-align: center;">
+                  You can reply directly to this email to contact <strong>${name}</strong>.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="background-color: #080808; padding: 15px 30px; text-align: center; border-top: 1px solid #1a1a1a;">
+                <p style="margin: 0; font-size: 11px; color: #555555;">
+                  Received at ${new Date().toLocaleString()} &bull; CarbonXPlanet Support
+                </p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error('Failed to send contact inquiry email:', err);
+  }
+}
+
+module.exports = {
+  sendOtpEmail,
+  sendAgentCredentialsEmail,
+  sendPasswordResetEmail,
+  sendContactMessageEmail,
+};

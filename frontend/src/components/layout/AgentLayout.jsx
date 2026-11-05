@@ -13,8 +13,8 @@ const AgentLayout = ({ children, title, subtitle }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
-  const confirmLogout = async () => {
-    if (logout) await logout();
+  const confirmLogout = () => {
+    if (logout) logout();
     window.location.href = '/login';
   };
 

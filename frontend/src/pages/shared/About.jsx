@@ -3,7 +3,7 @@ import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import { FaCheckCircle, FaArrowRight, FaLeaf, FaLink } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import heroImage from '../../assets/Mangrove-Forest-Coast-2000x1237-1.jpg';
+import heroImage from '../../assets/Mangrove-Forest-Coast-2000x1237-1.webp'; // Changed to WebP
 
 const About = () => {
   return (

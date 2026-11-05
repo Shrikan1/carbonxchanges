@@ -65,8 +65,8 @@ const Footer = () => {
           </div>
 
 
-          {/* Subtle large background text like the image (watermark effect) */}
-          <div className="absolute -bottom-[20%] left-1/2 transform -translate-x-1/2 text-[15vw] wise-font font-black uppercase tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
+          {/* Subtle background watermark - full text */}
+          <div className="absolute -bottom-[10%] left-1/2 transform -translate-x-1/2 text-[10vw] md:text-[8vw] wise-font font-black uppercase tracking-tighter opacity-[0.03] text-white pointer-events-none select-none whitespace-nowrap">
             CARBONXPLANET
           </div>
 

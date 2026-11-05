@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.jpg';
+import authBg from '../../assets/jungle-tree-dark-3840x2160-22695.webp'; // Changed to WebP
 import { signup } from '../../api/endpoint/Authapi';
 
 

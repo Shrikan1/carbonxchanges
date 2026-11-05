@@ -474,18 +474,21 @@ function App() {
       try {
         const { data } = await authApi.refreshToken();
 
-        // Set the token immediately so the interceptor can attach it to the getProfile request
-        useAuthStore.getState().setToken(data.token);
-
-        const { data: profileData } = await authApi.getProfile();
-
-        setSession(
-          profileData.user,
-          data.token
-        );
-
+        if (data?.user) {
+          setSession(data.user, data.token);
+        } else if (data?.token) {
+          useAuthStore.getState().setToken(data.token);
+          const { data: profileData } = await authApi.getProfile();
+          setSession(profileData.user, data.token);
+        } else {
+          finishInitializing();
+        }
       } catch {
-        finishInitializing();
+        if (useAuthStore.getState().user) {
+          useAuthStore.getState().logout();
+        } else {
+          finishInitializing();
+        }
       }
     }
 
