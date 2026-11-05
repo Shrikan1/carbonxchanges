@@ -151,7 +151,17 @@ export default function ProjectListPage() {
                       
                       {/* Column 1: Name */}
                       <div className="min-w-0 pr-4 w-full">
-                        <Link to={isDraft ? `/seller/projects/${project.id}/edit` : `/seller/projects/${project.id}/details`} className="block">
+                        <Link 
+                          to={isDraft ? `/seller/projects/${project.id}/edit` : `/seller/projects/${project.id}/details`} 
+                          className="block"
+                          onClick={(e) => {
+                            // Ensure non-draft projects always go to details page
+                            if (!isDraft) {
+                              e.preventDefault();
+                              window.location.href = `/seller/projects/${project.id}/details`;
+                            }
+                          }}
+                        >
                           <p className="text-sm font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors truncate">
                             {project.title || 'Untitled Project'}
                           </p>

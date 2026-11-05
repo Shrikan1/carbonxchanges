@@ -6,18 +6,49 @@ import { ethers } from 'ethers';
 // same pattern for their own signing, but each stays a separate,
 // deliberate call, never auto-triggered.
 export async function connectMetaMask() {
+  // Check if running in browser context
+  if (typeof window === 'undefined') {
+    throw new Error('MetaMask can only be used in a browser environment.');
+  }
+
+  // Check if MetaMask is installed
   if (!window.ethereum) {
-    throw new Error('MetaMask is not installed. Install it from metamask.io to continue.');
+    throw new Error('MetaMask is not installed. Please install MetaMask extension from metamask.io to continue.');
   }
 
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  const accounts = await provider.send('eth_requestAccounts', []);
-
-  if (!accounts || accounts.length === 0) {
-    throw new Error('No account was authorized in MetaMask.');
+  // Check if MetaMask is the provider
+  if (!window.ethereum.isMetaMask) {
+    throw new Error('Please use MetaMask extension to connect your wallet.');
   }
 
-  return accounts[0];
+  try {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    
+    // Request account access
+    const accounts = await provider.send('eth_requestAccounts', []);
+
+    if (!accounts || accounts.length === 0) {
+      throw new Error('No account was authorized. Please unlock MetaMask and try again.');
+    }
+
+    // Verify the account is still accessible
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    
+    return address;
+    
+  } catch (error) {
+    // Handle specific MetaMask errors
+    if (error.code === 4001) {
+      throw new Error('Connection request rejected. Please approve the connection in MetaMask.');
+    } else if (error.code === -32002) {
+      throw new Error('Connection request pending. Please check MetaMask extension.');
+    } else if (error.message) {
+      throw error;
+    } else {
+      throw new Error('Failed to connect MetaMask. Please try again.');
+    }
+  }
 }
 
 // Returns an ethers provider for read-only chain calls (e.g. balance

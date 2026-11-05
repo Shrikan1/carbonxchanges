@@ -291,7 +291,67 @@ const Navbar = ({
                     Profile Settings
                   </Link>
 
-                  {user?.is_seller && (
+                  {/* Role-specific navigation - only show for PRIMARY role */}
+                  {user?.role === 'admin' && (
+                    <>
+                      <Link
+                        to="/admin/projects"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Projects
+                      </Link>
+                      <Link
+                        to="/admin/agents"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Agents
+                      </Link>
+                      <Link
+                        to="/admin/oversight/users"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Users
+                      </Link>
+                      <Link
+                        to="/admin/oversight/transactions"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Transactions
+                      </Link>
+                      <Link
+                        to="/admin/mint-queue"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Minting
+                      </Link>
+                    </>
+                  )}
+                  
+                  {user?.role === 'agent' && (
+                    <>
+                      <Link
+                        to="/agent/projects"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        Assigned Projects
+                      </Link>
+                      <Link
+                        to="/agent/history"
+                        onClick={closeProfileDropdown}
+                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
+                      >
+                        History
+                      </Link>
+                    </>
+                  )}
+
+                  {!user?.role && user?.is_seller && (
                     <>
                       <Link
                         to="/seller/projects"
@@ -299,13 +359,6 @@ const Navbar = ({
                         className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
                       >
                         My Projects
-                      </Link>
-                      <Link
-                        to="/seller/post/new"
-                        onClick={closeProfileDropdown}
-                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
-                      >
-                        Create Post
                       </Link>
                       <Link
                         to="/seller/credits"
@@ -330,70 +383,31 @@ const Navbar = ({
                       </Link>
                     </>
                   )}
-                  {user?.is_buyer && (
-                    <Link
-                      to="/dashboard"
-                      onClick={closeProfileDropdown}
-                      className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
-                    >
-                      Buyer Dashboard
-                    </Link>
-                  )}
 
-                  {user?.role === 'admin' && (
+                  {!user?.role && user?.is_buyer && (
                     <>
                       <Link
-                        to="/dashboard"
+                        to="/buyer/portfolio"
                         onClick={closeProfileDropdown}
                         className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
                       >
-                        Dashboard
+                        Portfolio
                       </Link>
                       <Link
-                        to="/admin/projects"
+                        to="/buyer/retire"
                         onClick={closeProfileDropdown}
                         className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
                       >
-                        Projects
+                        Retire Credits
                       </Link>
                       <Link
-                        to="/admin/agents"
+                        to="/buyer/certificates"
                         onClick={closeProfileDropdown}
                         className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
                       >
-                        Agents
-                      </Link>
-                      <Link
-                        to="/admin/users"
-                        onClick={closeProfileDropdown}
-                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
-                      >
-                        Users
-                      </Link>
-                      <Link
-                        to="/admin/transactions"
-                        onClick={closeProfileDropdown}
-                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
-                      >
-                        Transactions
-                      </Link>
-                      <Link
-                        to="/admin/minting"
-                        onClick={closeProfileDropdown}
-                        className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
-                      >
-                        Minting
+                        Certificates
                       </Link>
                     </>
-                  )}
-                  {user?.role === 'agent' && (
-                    <Link
-                      to="/dashboard"
-                      onClick={closeProfileDropdown}
-                      className="block px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors font-medium"
-                    >
-                      Agent Dashboard
-                    </Link>
                   )}
                 </div>
 
